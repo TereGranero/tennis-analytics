@@ -25,12 +25,12 @@ export default {
       async editPlayer(id, player){
          try {
             await updatePlayer(id, player)
-            console.log(`Player ${id} has been updated successfully.`)
+            console.log(`Player ${id} has been updated successfully!`)
             this.$router.push('/players')
 
          } catch(err){
-            console.error(`Update Player Error: ${err}`)
-            alert('Error: El jugador no se ha actualizado!')
+            console.error(`Error updating player ${id}: ${err}`)
+            alert('Error: ¡El jugador no se ha actualizado!')
          }
       },
    },

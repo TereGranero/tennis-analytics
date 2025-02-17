@@ -1,8 +1,8 @@
 <template>
    <div class="container">
-      <br>
+
       <!-- Header fullname and flag -->
-      <div class="row bg-dark text-white mb-5">
+      <div class="row bg-dark text-white mb-5 mt-3">
          <div class="d-flex align-items-center justify-content-center text-center w-100">
             <img
                v-if="player.country !== 'unknown'"
@@ -47,17 +47,18 @@ export default {
             hand: '-',
             birth_date: null,
             country: '-',
-            height: '-',
-            wikidata_id: '-',
+            height: '',
+            wikidata_id: '',
             fullname: '',
+            weight: '',
+            instagram: '',
+            facebook: '',
+            x_twitter: '',
+            pro_since: '',
             ranks_by_year: []
          },
 
       }
-   },
-
-   computed : {
-      rankingsData
    },
 
    methods: {

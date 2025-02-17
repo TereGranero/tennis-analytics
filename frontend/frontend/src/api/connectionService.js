@@ -19,6 +19,11 @@ export const getPlayerById = async (id) => {
   return res.data;
 };
 
+export const getPlayerByIdForEditing = async (id) => {
+  const res = await httpClient.get(`${playersEndpoint}/edit/${id}`);
+  return res.data;
+};
+
 export const createPlayer = async (player) => {
   const res = await httpClient.post(playersEndpoint, player);
   return res.data;
@@ -35,7 +40,7 @@ export const deletePlayer = async (id) => {
 };
 
 export const getWikiPlayerImage = async (wikidata_id) => {
-  console.log('Requesting to Wikidata...');
+  console.log('Requesting to Wikidata for player image...');
   const res = await httpClientWiki.get(wikiEndpoint, {
     params: {
       action: 'wbgetclaims',

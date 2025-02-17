@@ -1,5 +1,6 @@
 <template>
       <div class="row d-flex flex-wrap gap-3 justify-content-center">
+
          <!-- Player photo -->
          <div class="col-md-4 d-flex justify-content-center align-items-center">
             <img 
@@ -9,34 +10,56 @@
                width="200" />
             <span v-else class="text-center"> Imagen no disponible</span>
          </div>  
+
          <!-- Personal details -->
          <div class="col-md-7">
             <h3 class="mb-3">DETALLES PERSONALES</h3>
             <table class="table table-hover">
                <tbody>
                   <tr v-if="player.country !== 'unknown'">
-                     <th scope="row">País</th>
+                     <th scope="row">País:</th>
                      <td> {{ countryName }}</td>
                   </tr>
                   <tr>
-                     <th scope="row">Nacimiento</th>
+                     <th scope="row">Nacimiento:</th>
                      <td>{{ player.birth_date }}</td>
                   </tr>
                   <tr>
-                     <th scope="row">Mano</th>
+                     <th scope="row">Mano:</th>
                      <td>{{ player.hand }}</td>
                   </tr>
                   <tr>
-                     <th scope="row">Altura</th>
+                     <th scope="row">Altura en cm:</th>
                      <td>{{ player.height }}</td>
                   </tr>
                   <tr>
-                     <th scope="row">Peso</th>
-                     <td> ? </td>
+                     <th scope="row">Peso en kg:</th>
+                     <td> {{ player.weight }} </td>
                   </tr>
                   <tr>
-                     <th scope="row">Profesional desde</th>
-                     <td> ? </td>
+                     <th scope="row">Profesional desde: </th>
+                     <td> {{ player.pro_since }} </td>
+                  </tr>
+                  <tr>
+                     <th scope="row">Síguelo en:</th>
+                     <td>  
+                        <i 
+                           v-if="player.instagram !== '-'"
+                           class="fa-brands fa-instagram text-secondary cursor-pointer me-2"
+                           @click="goToNetwork('instagram', player.instagram)">
+                        </i>
+                        <i 
+                           v-if="player.facebook !== '-'"
+                           class="fa-brands fa-facebook text-secondary cursor-pointer me-2"
+                           @click="goToNetwork('facebook', player.facebook)">
+                        </i>
+
+                        <i 
+                           v-if="player.x_twitter !== '-'"
+                           class="fa-brands fa-x-twitter text-secondary cursor-pointer"
+                           @click="goToNetwork('twitter', player.x_twitter)">
+                        </i>
+                     </td>
                   </tr>
                </tbody>
             </table>
@@ -62,6 +85,8 @@ export default {
    },
    
    watch: {
+      // Loads when data is available
+      
       'player.wikidata_id': {
          immediate: true, // If value is not null, launches
          handler(newWikidata_id) {
@@ -97,7 +122,19 @@ export default {
          } catch (err) {
             console.error(`Error retrieving Wikidata player image: ${err}`)
          }
-      },  
+      },
+
+      goToNetwork(network, username) {
+         const url_list = {
+            instagram: `https://www.instagram.com/${username}`,
+            facebook: `https://www.facebook.com/${username}`,
+            twitter: `https://x.com/${username}`
+         };
+
+         if (url_list[network]) {
+            window.open(url_list[network], '_blank');
+         }
+      }
    },
 
    async mounted() {

@@ -466,3 +466,8 @@ def get_wikidata_pro_since(wikidata_id):
       print(f'WikidataServices Error in get_wikidata_pro_since: {str(e)}')
       return None
 
+def compose_name_for_search(name_last, name_first='-'):
+   # Composes complete player name to search its wikidata_id
+   
+   return name_last.strip() if name_first == '-'
+      else name_first.strip() + ' ' + name_last.strip()

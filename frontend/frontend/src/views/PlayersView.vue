@@ -23,6 +23,7 @@
       </div>
 
       <div class="row align-items-center mb-3">
+
          <!-- Add Player Button -->
          <div class="col-md-6">
             <button 
@@ -32,6 +33,7 @@
                Añadir Jugador
             </button>
          </div>
+
          <!-- Search by Last Name -->
          <div class="col-md-6">
             <div class="input-group">
@@ -159,11 +161,11 @@ export default {
             this.players = this.players.filter(
                player => player.id != id
             )
-            console.log(`Player ${id} has been removed`)
+            console.log(`Player ${id} has been removed successfully`)
             await this.loadPlayers()
 
          } catch (err) {
-            console.error(`Delete Error: ${err}`)
+            console.error(`Error deleting player id ${id}: ${err}`)
          }
       }
    },

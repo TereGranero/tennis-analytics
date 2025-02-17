@@ -15,12 +15,12 @@
       async addPlayer(player){
          try{
             await createPlayer(player)
-            console.log(`Player id: ${player.player_id} has been added successfully.`)
+            console.log(`Player id: ${player.player_id} has been added successfully!`)
             this.$router.push('/players')
             
          }catch(err){
-            console.error(`Adding Player Error: ${err}`)
-            alert('Error: El jugador no se ha añadido.')
+            console.error(`Error adding player ${player.player_id}: ${err}`)
+            alert('Error: ¡El jugador no se ha añadido!')
          }
       }
    }

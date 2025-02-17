@@ -45,7 +45,7 @@
             </div>
 
             <!-- Birth Date -->
-            <!-- <div class="row justify-content-center">
+            <div class="row justify-content-center">
                <div class="col-md-6">
                   <div class="form-group">
                      <label>Fecha de nacimiento:</label>
@@ -58,20 +58,6 @@
                      <div v-if="processing && invalidBirthDate" class="invalid-feedback">
                         Debes seleccionar una fecha válida
                      </div>
-                  </div>
-               </div>
-            </div> -->
-
-            <!-- Birth Date -->
-            <div class="row justify-content-center">
-               <div class="col-md-6">
-                  <div class="form-group">
-                     <label>Fecha de nacimiento:</label>
-                     <input 
-                        type="date" 
-                        class="form-control"
-                        @focus="resetState"
-                        v-model="player.birth_date">
                   </div>
                </div>
             </div>
@@ -99,6 +85,26 @@
                   </div>
                </div>
             </div>
+
+            <!-- Pro Since -->
+            <div class="row justify-content-center">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label>Profesional desde el año: </label>
+                     <input 
+                        type="number"
+                        step="1"
+                        pattern="\d{1,4}"
+                        class="form-control"
+                        :class="{'is-invalid': processing && invalidProSince}"
+                        @focus="resetState"
+                        v-model="player.pro_since">
+                     <div v-if="processing && invalidProSince" class="invalid-feedback">
+                        Debes proporcionar un año válido
+                     </div>
+                  </div>
+               </div>
+            </div>
          
             <!-- Height -->
             <div class="row justify-content-center">
@@ -106,13 +112,35 @@
                   <div class="form-group">
                      <label>Altura (cm): </label>
                      <input 
-                        type="text" 
+                        type="number"
+                        step="1"
+                        pattern="\d{1,3}"
                         class="form-control"
                         :class="{'is-invalid': processing && invalidHeight}"
                         @focus="resetState"
                         v-model="player.height">
                      <div v-if="processing && invalidHeight" class="invalid-feedback">
-                        Debes proporcionar una altura en centímetros
+                        Debes proporcionar una altura válida en centímetros
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Weight -->
+            <div class="row justify-content-center">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label>Peso (Kg): </label>
+                     <input 
+                        type="number"
+                        step="1"
+                        pattern="\d{1,3}"
+                        class="form-control"
+                        :class="{'is-invalid': processing && invalidWeight}"
+                        @focus="resetState"
+                        v-model="player.weight">
+                     <div v-if="processing && invalidWeight" class="invalid-feedback">
+                        Debes proporcionar un peso válido en kilogramos
                      </div>
                   </div>
                </div>
@@ -156,6 +184,48 @@
                </div>
             </div>
 
+            <!-- Instagram Username -->
+            <div class="row justify-content-center">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label>Instagram: </label>
+                     <input 
+                        type="text" 
+                        class="form-control"
+                        @focus="resetState"
+                        v-model="player.instagram">
+                  </div>
+               </div>
+            </div>
+
+            <!-- Facebook Username -->
+            <div class="row justify-content-center">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label>Facebook: </label>
+                     <input 
+                        type="text" 
+                        class="form-control"
+                        @focus="resetState"
+                        v-model="player.facebook">
+                  </div>
+               </div>
+            </div>
+
+            <!-- X-Twitter Username -->
+            <div class="row justify-content-center">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label>X-Twitter: </label>
+                     <input 
+                        type="text" 
+                        class="form-control"
+                        @focus="resetState"
+                        v-model="player.x_twitter">
+                  </div>
+               </div>
+            </div>
+
             <!-- Buttons -->
             <div class="row">
                <div class="col-md-12">
@@ -174,7 +244,8 @@
 <script>
 import countries from 'i18n-iso-countries'
 import es from 'i18n-iso-countries/langs/es.json'
-import { getPlayerById } from '@/api/connectionService'
+import { getPlayerByIdForEditing } from '@/api/connectionService'
+import { normalizeIntoBackend, normalizeIntoForm } from '@/services/normalization_services'
 
 export default {
    props: {
@@ -193,9 +264,14 @@ export default {
             hand: '-',
             birth_date: null,
             country: '-',
-            height: '-',
-            wikidata_id: '-',
+            height: 0,
+            wikidata_id: '',
             fullname: '',
+            weight: 0,
+            instagram: '',
+            facebook: '',
+            x_twitter: '',
+            pro_since: 2000
          },
          allCountries: [],  // comes from library
          allHands: ['-', 'Derecha', 'Izquierda'],
@@ -229,21 +305,35 @@ export default {
       // --------------------------- Validates Form ---------------------------
       
       invalidLastName() {
-         return this.player.name_last < 1
+         // 2 chars o more
+         return this.player.name_last < 2
       },
 
       invalidFirstName() {
+         // 1 char or more
          return this.player.name_first < 1
       },
 
       invalidBirthDate() {
+         // not future dates
          if (this.player.birth_date){
-            return ( new Date(this.player.birth_date) >= new Date() ) 
+            return ( new Date(this.player.birth_date) > new Date() ) 
          }
          return false
       },
       
+      invalidProSince() {
+         // allowed years 1800-current_year
+         if (this.player.pro_since){
+            return (      
+               this.player.pro_since < 1800 || 
+               this.player.pro_since > new Date().getFullYear() ) 
+         }
+         return false
+      },
+
       invalidCountry() {
+         // choose one from select
          return (
             !this.player.country || 
             this.player.country == '-'
@@ -251,18 +341,25 @@ export default {
       },
 
       invalidHeight() {
+         // allowed values 100-270
          return (
-            this.player.height && 
-            this.player.height !== '-' && 
-            (parseInt(this.player.height, 10) < 100 || 
-               parseInt(this.player.height, 10) > 270)
+            this.player.height < 100 || 
+            this.player.height > 270
+         )
+      },
+
+      invalidWeight() {
+         // allowed values 45-150
+         return (
+            this.player.weight < 45 || 
+            this.player.weight > 150
          )
       },
             
       invalidHand() {
+         // no restrictions for now
          return ( 
-            !this.player.hand || 
-            this.player.hand == '-'
+            !this.player.hand // || this.player.hand == '-'
          )
       },
    },
@@ -298,15 +395,24 @@ export default {
          this.resetState()
 
          // Validates fields
-         //if(this.invalidLastName || this.invalidFirstName || this.invalidBirthDate || this.invalidCountry || this.invalidHeight || this.invalidHand) {
-         if(this.invalidLastName || this.invalidFirstName || this.invalidCountry || this.invalidHeight || this.invalidHand) {
-            this.error = true
-            return
+         if(this.invalidLastName || 
+            this.invalidFirstName ||
+            this.invalidBirthDate ||
+            this.invalidCountry || 
+            this.invalidHeight || 
+            this.invalidWeight || 
+            this.invalidProSince ||
+            this.invalidHand) {
+               this.error = true
+               return
          }
+
+         // Normalizes into backend
+         this.player = normalizeIntoBackend(this.player)
 
          // Sends events
          if (this.editing) {
-            console.log(`Player updated to: ${JSON.stringify(this.player, null, 2)}`) // 2spaces identation   REVISA SI ES this.player O QUE...
+            console.log(`Player updated to: ${JSON.stringify(this.player, null, 2)}`) // 2spaces identation 
             this.$emit('edit-player', this.player.player_id, this.player)
 
          } else {
@@ -325,9 +431,14 @@ export default {
             hand: '-',
             birth_date: null,
             country: '-',
-            height: '-',
-            wikidata_id: '-',
+            height: 0,
+            wikidata_id: '',
             fullname: '',
+            weight: 0,
+            instagram: '',
+            facebook: '',
+            x_twitter: '',
+            pro_since: 2000
          },
          this.processing = false
          this.error = false
@@ -346,28 +457,17 @@ export default {
       if (this.editing) {
          
          console.log(`Editing player id: ${this.id}`)
-         const data = await getPlayerById(this.id)
+         const data = await getPlayerByIdForEditing(this.id)
 
          if (data.status == 'error') {
             console.error(`Backend response error: ${data.message}`)
 
          } else {
-            this.player = { ...data.player }
-            console.log(`Player retrieved: ${JSON.stringify(this.player, null, 2)}`)
+            let player_retrieved = { ...data.player }
+            console.log(`Player retrieved: ${JSON.stringify(player_retrieved , null, 2)}`)
 
-            // Extracts first name
-            this.firstName = this.player.fullname.replace(this.player.name_last, '').trim()
-
-            // Capitalizes country
-            if (this.player.country) {
-               this.player.country = this.player.country.toUpperCase()
-            }
-
-            // Formats birth date dd-mm-yyyy --> yyyy-mm-dd
-            if (this.player.birth_date) {
-               const [day, month, year] = this.player.birth_date.split("-")
-               this.player.birth_date = `${year}-${month}-${day}`
-            }
+            // Normalizes into Form
+            this.player = normalizeIntoForm(player_retrieved )
          }
       }
       this.initCountries()
