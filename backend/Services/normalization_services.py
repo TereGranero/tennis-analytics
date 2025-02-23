@@ -31,9 +31,9 @@ def normalize_to_frontend(player):
                player[field] = country.alpha_2.lower() if country else 'unknown'
             elif (len(value) == 2):
                country = pycountry.countries.get(alpha_2=value.upper())
-                player[field] = country.alpha_2.lower() if country else 'unknown'
+               player[field] = country.alpha_2.lower() if country else 'unknown'
             else:
-                player[field] = 'unknown'
+               player[field] = 'unknown'
          
          except Exception as e:
             error_msg = f'Error converting country: {value}: {str(e)}'
@@ -65,14 +65,25 @@ def normalize_into_db(player):
          continue
       
       if (field == 'birth_date'):
-         try:
-            player[field] = (datetime.strptime(value, '%Y-%m-%d').date() if value 
-                             else datetime.strptime('1800-01-01', '%Y-%m-%d').date())
-         
-         except Exception as e:
-            error_msg = f'Error converting birth_date {value}: {str(e)}'
-            app.logger.error(error_msg, exc_info=True)
+         birth_date_formats = ['%Y-%m-%d', '%d-%m-%Y']
+    
+         if not value:
             player[field] = datetime.strptime('1800-01-01', '%Y-%m-%d').date()
+         else:
+            parsed = False
+            for f in birth_date_formats:
+               try:
+                  player[field] = datetime.strptime(value, f).date()
+                  parsed = True
+                  break
+               except ValueError:
+                  continue
+            
+            if not parsed:
+               error_msg = f'Error converting birth_date {value}'
+               app.logger.error(error_msg, exc_info=True)
+               player[field] = datetime.strptime('1800-01-01', '%Y-%m-%d').date()
+
       
       elif (field == 'country'):
          try:
@@ -81,9 +92,9 @@ def normalize_into_db(player):
                player[field] = country.alpha_2.lower() if country else 'unknown'
             elif (len(value) == 2):
                country = pycountry.countries.get(alpha_2=value.upper())
-                player[field] = country.alpha_2.lower() if country else 'unknown'
+               player[field] = country.alpha_2.lower() if country else 'unknown'
             else:
-                player[field] = 'unknown'
+               player[field] = 'unknown'
          
          except Exception as e:
             error_msg = f'Error converting country {value}: {str(e)}'

@@ -5,7 +5,7 @@
       <div class="row bg-dark text-white mb-5 mt-3">
          <div class="d-flex align-items-center justify-content-center text-center w-100">
             <img
-               v-if="player.country !== 'unknown'"
+               v-if="player.country !== 'unknown' && player.country!== '-'"
                :src="'https://flagcdn.com/w40/' + player.country + '.png'"
                :alt="player.country"
                :title="player.country"

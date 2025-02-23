@@ -1,6 +1,8 @@
 from sqlalchemy import func, extract
+from database import db
 
 from Services.normalization_services import normalize_to_frontend
+from Models.Rankings import Rankings 
 
 # Model for table Players
 class Players(db.Model):
@@ -40,7 +42,7 @@ class Players(db.Model):
          'pro_since': self.pro_since
       }
       
-      return normalize_to_fronted(player_dict)
+      return normalize_to_frontend(player_dict)
    
 
    def get_best_ranking(self):

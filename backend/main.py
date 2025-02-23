@@ -1,47 +1,36 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+from database import db
 from sqlalchemy import func, desc, extract
 import os
-from datetime import datetime
 
-from Services.wikidata_services import get_wikidata_id,\
-                                       get_wikidata_country,\
-                                       get_wikidata_birth_date, \
-                                       get_wikidata_height, \
-                                       get_wikidata_weight, \
-                                       get_wikidata_hand, \
-                                       compose_name_for_search
-                                       
-from Services.normalization_services import normalize_into_db
-from Services.validation_services import validate_request_data
-                                       
-from Models.Players import Players
-from Models.Rankings import Rankings
+from Services.wikidata_services import get_wikidata_enrichment              
+from Services.normalization_services import normalize_into_db, normalize_to_frontend
+from Services.validation_services import validate_request_data                            
 
 
 # -------------------------- CONFIGURATION ---------------------------------- #
 
-# instanciates a Flask application
+# Instanciates a Flask application
 app = Flask(__name__) 
-# updates the application constantly
+
+# Updates the application constantly
 app.config.from_object(__name__) 
 
-# determines the database system used 
+# Determines the database system used 
 # and path to database relative to the app instance folder
 app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
-# reduces terminal warnings
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
-# We need: username, password, server location, database name. 
+# Inits database
+db.init_app(app)
 
-# enablse CORS, the route and leave it open to other origins
+with app.app_context():
+   from Models.Players import Players
+   from Models.Rankings import Rankings
+
+# Enables CORS, the route and leave it open to other origins
 CORS(app, resources={r"/*":{'origins':"*"}}) 
-
-# instantiates the database
-db = SQLAlchemy(app)
-
-   
 
 # ------------------------------- ROUTES ------------------------------------ #
 
@@ -88,56 +77,39 @@ def get_players():
       # List of players objects
       players_objects_list = query.all()
       
-      # Converts to list of dicts
+      # List of players dicts to be sent in response
       players_list_in_page = []
       
-      # Composes dict for each player and searches missings in Wikidata
-      #for player, best_rank in players_page:
+      
       for player_object in players_objects_list:
          
-         player = player_object.to_dict()         
-         
-         # Controls if commit is needed
-         update_flag = False    
+         player_dict = player_object.to_dict()         
+          
+         # Enriches missing data with Wikidata
+         update_flag, player_enriched = get_wikidata_enrichment(player_dict)
 
-         # Gets wikidata id
-         if player['wikidata_id'] == '-':
-            
-            # Composes complete player name to search its wikidata_id
-            player_name = compose_name_for_search( 
-               player['name_last'], 
-               player['name_first']
-            )
-               
-            wikidata_id = get_wikidata_id(player_name)
-            if wikidata_id:
-               player['wikidata_id'] = wikidata_id
-               player_object.wikidata_id = wikidata_id 
-               update_flag = True
-         
-         # Gets country
-         if player['wikidata_id'] != '-' and player['country'] == 'unknown':
-            
-            country = get_wikidata_country(player['wikidata_id'])
-            if country: 
-               player['country'] = country
-               player_object.country = country
-               update_flag = True
-               
-         # Gets birth_date
-         if player['wikidata_id'] != '-' and \
-            ( player['birth_date'] == None or player['birth_date'] == '' or player['birth_date'] == '01-01-1800'):
-            
-            birth_date = get_wikidata_birth_date(player['wikidata_id'])
-            if birth_date: 
-               player['birth_date'] = birth_date.strftime('%d-%m-%Y') 
-               player_object.birth_date = birth_date
-               update_flag = True
-            
-         players_list_in_page.append(player)
+         players_list_in_page.append(player_enriched)
          
          # Commits changes into database
          if update_flag:
+            
+            player_normalized = normalize_into_db(player_enriched)
+            
+            # Updates player object
+            player_object.name_first = player_normalized['name_first']
+            player_object.name_last = player_normalized['name_last']
+            player_object.hand = player_normalized['hand']
+            player_object.birth_date = player_normalized['birth_date']
+            player_object.country = player_normalized['country']
+            player_object.height = player_normalized['height']
+            player_object.wikidata_id = player_normalized['wikidata_id']
+            player_object.fullname = player_normalized['fullname']
+            player_object.weight = player_normalized['weight']
+            player_object.instagram = player_normalized['instagram']
+            player_object.facebook = player_normalized['facebook']
+            player_object.x_twitter = player_normalized['x_twitter']
+            player_object.pro_since = player_normalized['pro_since']
+            
             db.session.commit()
                
       
@@ -178,12 +150,12 @@ def get_player_for_editing(player_id):
          }
          return jsonify(response_object), 404
       
-      player = player_object.to_dict()
+      player_dict = player_object.to_dict()
       
       response_object = {
          'status': 'success',
          'message': f'Player {player_id} has been retrieved successfully!',
-         'player': player
+         'player': player_dict
       }
       return jsonify(response_object), 200
 
@@ -212,13 +184,44 @@ def get_player(player_id):
          }
          return jsonify(response_object), 404
       
-      player = player_object.to_dict()
-      player['ranks_by_year'] = player_object.get_rank_by_year()  
+      # Converts object to dict with frontend format
+      player_dict = player_object.to_dict()
+      
+      # Enriches missing data with Wikidata
+      update_flag, player_enriched = get_wikidata_enrichment(player_dict)
+      
+      # Commits changes into database
+      if update_flag:
+         
+         # Normalizes data
+         player_normalized = normalize_into_db(player_enriched)
+         
+         # Updates player object
+         player_object.name_first = player_normalized['name_first']
+         player_object.name_last = player_normalized['name_last']
+         player_object.hand = player_normalized['hand']
+         player_object.birth_date = player_normalized['birth_date']
+         player_object.country = player_normalized['country']
+         player_object.height = player_normalized['height']
+         player_object.wikidata_id = player_normalized['wikidata_id']
+         player_object.fullname = player_normalized['fullname']
+         player_object.weight = player_normalized['weight']
+         player_object.instagram = player_normalized['instagram']
+         player_object.facebook = player_normalized['facebook']
+         player_object.x_twitter = player_normalized['x_twitter']
+         player_object.pro_since = player_normalized['pro_since']
+         
+         db.session.commit()
+         
+         player_dict = normalize_to_frontend(player_normalized)
+         
+      # Retrieves ranks      
+      player_dict['ranks_by_year'] = player_object.get_rank_by_year()  
       
       response_object = {
          'status': 'success',
          'message': f'Player {player_id} has been retrieved successfully!',
-         'player': player
+         'player': player_dict
       }
       return jsonify(response_object), 200
 
@@ -354,18 +357,18 @@ def update_player(player_id):
       player_normalized = normalize_into_db(data)
       
       # Updates player
-      player.name_first = player_normalized['name_first'],
-      player.name_last = player_normalized['name_last'],
-      player.hand = player_normalized['hand'],
-      player.birth_date = player_normalized['birth_date'],
-      player.country = player_normalized['country'],
-      player.height = player_normalized['height'],
-      player.wikidata_id = player_normalized['wikidata_id'],
-      player.fullname = player_normalized['fullname'],
-      player.weight = player_normalized['weight'],
-      player.instagram = player_normalized['instagram'],
-      player.facebook = normalize_into_db('facebook', data.get('facebook', 0)),
-      player.x_twitter = player_normalized['x_twitter'],
+      player.name_first = player_normalized['name_first']
+      player.name_last = player_normalized['name_last']
+      player.hand = player_normalized['hand']
+      player.birth_date = player_normalized['birth_date']
+      player.country = player_normalized['country']
+      player.height = player_normalized['height']
+      player.wikidata_id = player_normalized['wikidata_id']
+      player.fullname = player_normalized['fullname']
+      player.weight = player_normalized['weight']
+      player.instagram = player_normalized['instagram']
+      player.facebook = player_normalized['facebook']
+      player.x_twitter = player_normalized['x_twitter']
       player.pro_since = player_normalized['pro_since']
       
       # Commits changes into database

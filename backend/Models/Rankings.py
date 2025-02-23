@@ -1,3 +1,5 @@
+from database import db
+
 # Model for table Rankings
 class Rankings(db.Model):
    player_id = db.Column(db.String(7), db.ForeignKey('players.player_id'), primary_key=True)

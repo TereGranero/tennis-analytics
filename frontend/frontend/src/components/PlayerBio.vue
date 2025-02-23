@@ -16,7 +16,7 @@
             <h3 class="mb-3">DETALLES PERSONALES</h3>
             <table class="table table-hover">
                <tbody>
-                  <tr v-if="player.country !== 'unknown'">
+                  <tr v-if="player.country !== 'unknown' && player.country !== '-'">
                      <th scope="row">País:</th>
                      <td> {{ countryName }}</td>
                   </tr>

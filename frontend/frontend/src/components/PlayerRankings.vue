@@ -1,5 +1,5 @@
 <template>
-   <div class="row justify-content-center">
+   <div class="row justify-content-center mt-5">
       <div class="col-md-12 justify-content-center align-items-center">
          <v-chart class="chart" :option="ranksChartOption" autoresize />
       </div>
@@ -45,7 +45,7 @@ export default {
                   symbol: 'circle',
                   symbolSize: 10,
                   itemStyle: {
-                     color: '#5470C6',
+                     color: '#d1dd25',
                      borderWidth: 2,
                      borderColor: '#fff'
                   },

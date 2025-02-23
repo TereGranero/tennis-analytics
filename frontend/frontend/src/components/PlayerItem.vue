@@ -1,7 +1,9 @@
 <template>
    <tr>
       <!-- Full Name -->
-      <td>{{ player.fullname }}</td>
+      <td @click="$emit('view-player', player.player_id)" class="cursor-pointer">
+         {{ player.fullname }}
+      </td>
 
       <!-- Flag and country -->
       <td> 
