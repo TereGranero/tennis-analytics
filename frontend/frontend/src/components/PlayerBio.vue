@@ -7,7 +7,7 @@
                v-if="urlPlayerImage" 
                :src="urlPlayerImage" 
                :alt="urlPlayerImage" 
-               width="200" />
+               width="250" />
             <span v-else class="text-center"> Imagen no disponible</span>
          </div>  
 

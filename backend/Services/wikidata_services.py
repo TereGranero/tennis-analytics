@@ -54,6 +54,8 @@ def get_wikidata_property(wikidata_id, property):
 
 def is_tennis_player(wikidata_id):
    
+   validated = False
+   
    try:
       # Validates argument
       if not wikidata_id.strip():
@@ -61,27 +63,41 @@ def is_tennis_player(wikidata_id):
          return None
       
       # Requests Wikidata API
-      jobs_claim = get_wikidata_property(wikidata_id, 'P31')
+      jobs_claim = get_wikidata_property(wikidata_id, 'P106')
+      sport_claim = get_wikidata_property(wikidata_id, 'P641')
       
       # Empty response
-      if not jobs_claim or len(jobs_claim) == 0:
-         print(f'WikidataServices Warning from is_tennis_player: wikidata_id {wikidata_id} has not been validated as a tennis player because there is no property P31.')
+      if (not jobs_claim or len(jobs_claim) == 0) and (not sport_claim or len(sport_claim) == 0) :
+         print(f'WikidataServices Warning from is_tennis_player: wikidata_id {wikidata_id} has not been validated as a tennis player because there is no property P106.')
          return False
       
-      # Loops claim array
+      # Loops jobs claim array
       for job in jobs_claim:
          
          # Extracts job
          job_id = job['mainsnak']['datavalue']['value']['id']
          
-         # Not a tennis player
-         if job_id not in ['Q10833314', 'Q13382460', 'Q15100009']:
-            print(f'WikidataServices Warning from is_tennis_player: wikidata_id {wikidata_id} has not been validated as a tennis player')
-            return False
+         if job_id in ['Q10833314', 'Q11513337']:
+            validated = True
+            break
+            
+      # Loops sports claim array
+      for sport in sport_claim:
          
-         # Validated tennis player
+         # Extracts sport
+         sport_id = sport['mainsnak']['datavalue']['value']['id']
+         
+         if sport_id == 'Q847':
+            validated = True
+            break
+         
+
+      if validated:
          print(f'WikidataServices Info from is_tennis_player: wikidata_id {wikidata_id} has been validated as a tennis player.')
          return True
+      else:
+         print(f'WikidataServices Warning from is_tennis_player: wikidata_id {wikidata_id} has not been validated as a tennis player')
+         return False
       
    except Exception as e:
       print(f'WikidataServices Error in is_tennis_player: {str(e)}')
@@ -320,22 +336,22 @@ def get_wikidata_birth_date(wikidata_id):
       frontend_format="%d-%m-%Y"
 
       if birth_date.startswith("+"):
-         wikidata_date = wikidata_date[1:]
+         birth_date = birth_date[1:]
          
-      if "T" in wikidata_date and "Z" in wikidata_date:   # 2007-10-01T00:00:00Z
-         birth_date_obj = datetime.fromisoformat(wikidata_date.replace("Z", "+00:00"))
+      if "T" in birth_date and "Z" in birth_date:   # 2007-10-01T00:00:00Z
+         birth_date_obj = datetime.fromisoformat(birth_date.replace("Z", "+00:00"))
     
-      elif "T" in wikidata_date:                         # 2007-10-01T00:00:00
-         birth_date_obj = datetime.fromisoformat(wikidata_date)
+      elif "T" in birth_date:                         # 2007-10-01T00:00:00
+         birth_date_obj = datetime.fromisoformat(birth_date)
     
-      elif wikidata_date.count("-") == 2:                # 2007-10-01
-         birth_date_obj = datetime.fromisoformat(wikidata_date)
+      elif birth_date.count("-") == 2:                # 2007-10-01
+         birth_date_obj = datetime.fromisoformat(birth_date)
       
-      elif wikidata_date.count("-") == 1:                # 2007-10
-         birth_date_obj = datetime.fromisoformat(wikidata_date + "-01")
+      elif birth_date.count("-") == 1:                # 2007-10
+         birth_date_obj = datetime.fromisoformat(birth_date + "-01")
 
       else:                                              # 2007
-         birth_date_obj = datetime.fromisoformat(wikidata_date + "-01-01")
+         birth_date_obj = datetime.fromisoformat(birth_date + "-01-01")
     
       formatted_birth_date = birth_date_obj.strftime(frontend_format)
     

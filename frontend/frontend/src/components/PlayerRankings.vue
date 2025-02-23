@@ -1,6 +1,7 @@
 <template>
    <div class="row justify-content-center mt-5">
-      <div class="col-md-12 justify-content-center align-items-center">
+      <div class="col-md-10 justify-content-center align-items-center">
+         <h3 class="mb-3 mt-3">EVOLUCIÓN RANKING ATP</h3>
          <v-chart class="chart" :option="ranksChartOption" autoresize />
       </div>
    </div>
@@ -20,14 +21,11 @@ export default {
    computed: {
       ranksChartOption() {
          return {
-            title: {
-               text: 'ATP Ranking'
-            },
             tooltip: { // shows value as moving through axis
                trigger: 'axis'
             },
             xAxis: {
-               name: 'Año',
+               name: '',
                type: 'category',
                data: this.ranksByYear.map(rankObject=> rankObject.year)
             },
@@ -35,7 +33,12 @@ export default {
                name: 'Ranking',
                type: 'value',
                min: 1,
-               inverse: true
+               inverse: true,
+               nameLocation: 'middle',
+               nameTextStyle: {
+                  padding: [0, 0, 30, 0],
+                  fontSize: 14,
+               }
             },
             series: [
                {

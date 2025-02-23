@@ -19,7 +19,8 @@ app.config.from_object(__name__)
 
 # Determines the database system used 
 # and path to database relative to the app instance folder
-app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
+#app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
+app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('testdb.sqlite')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 # Inits database
