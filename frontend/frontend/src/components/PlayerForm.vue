@@ -1,7 +1,7 @@
 <template>
    <div>
       <!-- Conditional title -->
-      <h2>{{ editing ? 'Modificar Jugador' : 'Añadir Jugador' }}</h2>
+      <h2>{{ isEditing ? 'Modificar Jugador' : 'Añadir Jugador' }}</h2>
 
       <form @submit.prevent="sendForm">
          <div class="container">
@@ -281,7 +281,7 @@ export default {
    },
 
    computed: {
-      editing() {
+      isEditing() {
          console.log(`Checking if there is an id for editing: ${this.id}`)
          return this.id !== null
       },
@@ -411,7 +411,7 @@ export default {
          this.player = normalizeIntoBackend(this.player)
 
          // Sends events
-         if (this.editing) {
+         if (this.isEditing) {
             console.log(`Player updated to: ${JSON.stringify(this.player, null, 2)}`) // 2spaces identation 
             this.$emit('edit-player', this.player.player_id, this.player)
 
@@ -454,7 +454,7 @@ export default {
    },
 
    async mounted() {
-      if (this.editing) {
+      if (this.isEditing) {
          
          console.log(`Editing player id: ${this.id}`)
          const data = await getPlayerByIdForEditing(this.id)

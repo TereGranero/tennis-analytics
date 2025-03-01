@@ -6,17 +6,11 @@ import PlayerView from '@/views/PlayerView.vue'
 
 const routes = [
   {
-    path: "/players",
+    path: "/players/:lastname?",  //optional param
     name: "Players",
     component: PlayersView,
+    props: (route) => ({ lastname: route.params.lastname || null }),
   },
-
-  // {
-  //   path: "/players-search/:last-name",
-  //   name: "SearchPlayers",
-  //   component: SearchPlayersView,
-  //   props: true,
-  // },
 
   {
     path: "/add-player",

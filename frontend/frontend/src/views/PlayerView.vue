@@ -1,8 +1,15 @@
 <template>
    <div class="container">
+      
+      <!-- Search by Last Name -->
+      <div class="row mb-5">
+         <div class="col-md-5 offset-md-7">
+            <PlayerSearch @search-player="searchPlayer" />
+         </div>
+      </div>
 
       <!-- Header fullname and flag -->
-      <div class="row bg-dark text-white mb-5 mt-3">
+      <div v-if="player" class="row bg-dark text-white mb-5 mt-3">
          <div class="d-flex align-items-center justify-content-center text-center w-100">
             <img
                v-if="player.country !== 'unknown' && player.country!== '-'"
@@ -15,50 +22,91 @@
             </h2>
          </div>
       </div>
+      <div v-else class="row">
+         <div class="col-md-12">
+            <div class="alert alert-info text-center" role="alert">
+               Cargando jugador...
+            </div>
+         </div>
+         </div>
 
       <!-- Basic information -->
-      <PlayerBio :player="player" />
-      <PlayerRankings :ranksByYear="player.ranks_by_year" />
+      <PlayerBio 
+         v-if="player"
+         :player="player" />
+
+      <!-- KPIs -->
+      <PlayerKpiGrid 
+         v-if="player"
+         :kpis="kpiData" 
+         :columns="3"/>
+
+      <!-- Ranking chart -->
+      <PlayerRankings 
+         v-if="player"
+         :ranksByYear="player.ranks_by_year" />
+
+      <!-- Titles table -->
+      <PlayerTitles
+         v-if="player && player.titles.length > 0"
+         :titles="player.titles" />
 
    </div>
 </template>
 
 <script>
+import PlayerSearch from '@/components/PlayerSearch.vue'
 import PlayerBio from '@/components/PlayerBio.vue'
+import PlayerKpiGrid from '@/components/PlayerKpiGrid.vue'
 import PlayerRankings from '@/components/PlayerRankings.vue'
+import PlayerTitles from '@/components/PlayerTitles.vue'
 import { getPlayerById } from '@/api/connectionService'
 
 export default {
+
    name: 'PlayerView',
+
+   components: { 
+      PlayerSearch,
+      PlayerBio, 
+      PlayerKpiGrid, 
+      PlayerRankings,
+      PlayerTitles
+   },
 
    props: {
       id: String,
       required: true
    },
 
-   components: { PlayerBio, PlayerRankings },
-
    data() {
       return {
-         player: {
-            player_id: '',
-            name_first: '',
-            name_last: '',
-            hand: '-',
-            birth_date: null,
-            country: '-',
-            height: '',
-            wikidata_id: '',
-            fullname: '',
-            weight: '',
-            instagram: '',
-            facebook: '',
-            x_twitter: '',
-            pro_since: '',
-            ranks_by_year: []
-         },
-
+         player: null,
+         lastNameToSearch: '',
+         invalidLastName: false
       }
+   },
+
+   computed: {
+      kpiData() {
+         if (!this.player) {
+            return []
+         }
+         return [
+            {
+               title: 'Mejor Ranking ATP',
+               value: this.player.best_ranking || '-'
+            },
+            {
+               title: 'Nº Títulos',
+               value: this.player.total_titles  || '-'
+            },
+            {
+               title: 'W/L Ratio',
+               value: this.player.w_l  || '-'
+            }
+         ]
+      },
    },
 
    methods: {
@@ -77,9 +125,15 @@ export default {
             console.error(`Error retrieving player id ${this.id}: ${err}`)
          }
       },
+
+      searchPlayer(lastName) {
+         console.log(`PlayerView pushes name_last ${lastName} to PlayersView`)
+         this.$router.push({ name: 'Players', params: { lastname: lastName } })
+      }
+      
    },
 
-   async mounted() {
+   async created() {
       await this.getPlayer()
    },
 

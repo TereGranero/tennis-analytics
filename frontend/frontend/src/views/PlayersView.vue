@@ -2,19 +2,21 @@
    <div class="container">
 
       <!-- Header Image -->
-      <div class="row">
+      <div class="row mb-3 banner">
          <div class="col-md-12">
             <img 
                src="../../public/images/jugadores-banner.png" 
                alt="Jugadores Header" 
-               class="img-fluid mb-3" 
-               style="max-width: 100%; height: auto;"
+               class="img-fluid" 
             />
          </div>
       </div>
 
-      <!-- Alert Message -->
-      <div class="row" v-if="!players.length" >
+      <!-- Alert Messages -->
+      <div 
+         class="row mb-3" 
+         v-if="!players.length && isSearching" >
+
          <div class="col-md-12">
             <div class="alert alert-info text-center" role="alert">
                Cargando jugadores...
@@ -22,7 +24,9 @@
          </div>
       </div>
 
-      <div class="row align-items-center mb-3">
+      <div 
+         class="row align-items-center mb-5" 
+         v-if="players.length  && !isSearching">
 
          <!-- Add Player Button -->
          <div class="col-md-6">
@@ -35,18 +39,8 @@
          </div>
 
          <!-- Search by Last Name -->
-         <div class="col-md-6">
-            <div class="input-group">
-               <label for="searchInput" class="input-group-text">
-                  Buscar:
-               </label>
-               <input 
-                  type="text" 
-                  class="form-control" 
-                  v-model="lastNameToSearch" 
-                  @input="searchPlayersByLastName" 
-                  placeholder="Buscar por apellido" >
-            </div>
+         <div class="col-md-5 offset-md-1">
+            <PlayerSearch @search-player="searchPlayer" />
          </div>
       </div>
 
@@ -65,20 +59,10 @@
       <!-- Players pages navigation -->
       <div class="row">
          <div class="col-md-12">
-            <button 
-               type="text" 
-               class="btn btn-secondary btn-sm" 
-               @click="goToPage(page - 1)" :disabled="page <= 1">
-            Anterior
-            </button>
-            Página {{ page }} de {{ totalPages }}
-            <button 
-               type="text" 
-               class="btn btn-secondary btn-sm" 
-               @click="goToPage(page + 1)" 
-               :disabled="page >= totalPages">
-            Siguiente
-            </button>
+            <Pagination 
+               :page="page" 
+               :totalPages="totalPages" 
+               @goToPage="goToPage" />
          </div>
       </div>
 
@@ -86,12 +70,29 @@
 </template>
 
 <script>
+import PlayerSearch from '@/components/PlayerSearch.vue'
 import PlayersList from '@/components/PlayersList.vue'
+import Pagination from '@/components/Pagination.vue'
 import { getAllPlayers, deletePlayer } from '@/api/connectionService'
 
 export default {
+
    name: 'PlayersView',
-   components: { PlayersList },
+
+   components: { 
+      PlayerSearch,
+      PlayersList, 
+      Pagination 
+   },
+
+   props: {
+      lastname: {
+         type: String,
+         default: null,
+      }
+   },
+
+
    data() {
       return {
          players: [],
@@ -99,14 +100,25 @@ export default {
          page: 1,
          perPage: 10,
          totalPages: 0,
+         isSearching: false,
          lastNameToSearch: '',
       }
    },
 
+   computed: {
+      isSearchingByLastName() {
+         console.log(`Checking if there is a lastname: ${this.lastname}`)
+         return this.lastname !== null
+      },
+   },
+
    methods: {
       async loadPlayers() {
-         // Retrieve all players or filtered players with pagination
+         // Retrieve all players or filtered players by last name, with pagination
          try {
+
+            this.players = []
+            
             const data = await getAllPlayers(
                this.page, 
                this.perPage,
@@ -115,19 +127,41 @@ export default {
             
             if (data.status == 'error') {
                console.error(`Backend response error: ${data.message}`)
+               alert('Se ha producido un error y los jugadores no se han podido cargar.')
+               this.lastNameToSearch= ''
+               this.page = 1
+               await this.loadPlayers()
+
             } else {
                this.players = data.players
                this.totalPlayers = data.total_players
                this.totalPages = data.pages
                console.log(`${this.totalPlayers} players have been retrieved. Page ${this.page} of ${this.totalPages} is shown.`)
+
+               if (this.totalPlayers == 0){
+                  alert('No se ha encontrado ningún jugador.')
+                  this.lastNameToSearch= ''
+                  this.page = 1
+                  await this.loadPlayers()
+
+               } else {  // ok
+                  this.isSearching = false
+               }
             }
 
          } catch(err) {
             console.error(`Error retrieving players: ${err}`)
+            alert('Se ha producido un error y los jugadores no se han podido cargar.')
+            this.lastNameToSearch= ''
+            this.page = 1
+            await this.loadPlayers()
          }
       },
 
-      searchPlayersByLastName() {
+      searchPlayer(lastName) {
+         this.isSearching = true
+         this.lastNameToSearch = lastName
+         console.log(`Searching by last name: ${this.lastNameToSearch}.`)
          this.page = 1
          this.loadPlayers()
       },
@@ -161,8 +195,13 @@ export default {
             this.players = this.players.filter(
                player => player.id != id
             )
+            this.totalPlayers--
             console.log(`Player ${id} has been removed successfully`)
-            await this.loadPlayers()
+            
+            if (this.players.length == 0 && this.page > 1) {
+               this.page--
+               await this.loadPlayers()
+            }
 
          } catch (err) {
             console.error(`Error deleting player id ${id}: ${err}`)
@@ -170,11 +209,19 @@ export default {
       }
    },
 
-   async created() {
+   async mounted() {
+      if (this.isSearchingByLastName){
+         this.lastNameToSearch = this.lastname
+      }
       await this.loadPlayers()
    }
 
 }
 </script>
 
-<style></style>
+<style>
+   .banner img{
+      max-width: 100%; 
+      height: auto;
+   }
+</style>

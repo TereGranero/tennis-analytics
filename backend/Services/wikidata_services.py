@@ -68,28 +68,30 @@ def is_tennis_player(wikidata_id):
       
       # Empty response
       if (not jobs_claim or len(jobs_claim) == 0) and (not sport_claim or len(sport_claim) == 0) :
-         print(f'WikidataServices Warning from is_tennis_player: wikidata_id {wikidata_id} has not been validated as a tennis player because there is no property P106.')
+         print(f'WikidataServices Warning from is_tennis_player: wikidata_id {wikidata_id} has not been validated as a tennis player. No properties P106, P641.')
          return False
       
       # Loops jobs claim array
-      for job in jobs_claim:
-         
-         # Extracts job
-         job_id = job['mainsnak']['datavalue']['value']['id']
-         
-         if job_id in ['Q10833314', 'Q11513337']:
-            validated = True
-            break
+      if (jobs_claim and len(jobs_claim) != 0):
+         for job in jobs_claim:
+            
+            # Extracts job
+            job_id = job['mainsnak']['datavalue']['value']['id']
+            
+            if job_id in ['Q10833314', 'Q11513337']:
+               validated = True
+               break
             
       # Loops sports claim array
-      for sport in sport_claim:
-         
-         # Extracts sport
-         sport_id = sport['mainsnak']['datavalue']['value']['id']
-         
-         if sport_id == 'Q847':
-            validated = True
-            break
+      if (sport_claim and len(sports_claim) != 0):
+         for sport in sport_claim:
+            
+            # Extracts sport
+            sport_id = sport['mainsnak']['datavalue']['value']['id']
+            
+            if sport_id == 'Q847':
+               validated = True
+               break
          
 
       if validated:

@@ -38,7 +38,12 @@ export default {
                nameTextStyle: {
                   padding: [0, 0, 30, 0],
                   fontSize: 14,
-               }
+               },
+               axisLabel: {
+                  formatter: function (value) {
+                     return value.toLocaleString('es-ES')
+                  }
+               },
             },
             series: [
                {
@@ -64,9 +69,9 @@ export default {
 </script>
  
 <style scoped>
-.chart {
-   height: 400px;
-   width: 100%;
-}
+   .chart {
+      height: 400px;
+      width: 100%;
+   }
 </style>
  

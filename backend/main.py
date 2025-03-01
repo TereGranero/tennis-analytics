@@ -19,8 +19,8 @@ app.config.from_object(__name__)
 
 # Determines the database system used 
 # and path to database relative to the app instance folder
-#app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
-app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('testdb.sqlite')}"
+app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
+#app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('testdb.sqlite')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 # Inits database
@@ -29,6 +29,7 @@ db.init_app(app)
 with app.app_context():
    from Models.Players import Players
    from Models.Rankings import Rankings
+   from Models.Matches import Matches
 
 # Enables CORS, the route and leave it open to other origins
 CORS(app, resources={r"/*":{'origins':"*"}}) 
@@ -88,30 +89,35 @@ def get_players():
           
          # Enriches missing data with Wikidata
          update_flag, player_enriched = get_wikidata_enrichment(player_dict)
-
-         players_list_in_page.append(player_enriched)
          
          # Commits changes into database
          if update_flag:
             
-            player_normalized = normalize_into_db(player_enriched)
+            player_normalized_into_db = normalize_into_db(player_enriched)
             
             # Updates player object
-            player_object.name_first = player_normalized['name_first']
-            player_object.name_last = player_normalized['name_last']
-            player_object.hand = player_normalized['hand']
-            player_object.birth_date = player_normalized['birth_date']
-            player_object.country = player_normalized['country']
-            player_object.height = player_normalized['height']
-            player_object.wikidata_id = player_normalized['wikidata_id']
-            player_object.fullname = player_normalized['fullname']
-            player_object.weight = player_normalized['weight']
-            player_object.instagram = player_normalized['instagram']
-            player_object.facebook = player_normalized['facebook']
-            player_object.x_twitter = player_normalized['x_twitter']
-            player_object.pro_since = player_normalized['pro_since']
+            player_object.name_first = player_normalized_into_db['name_first']
+            player_object.name_last = player_normalized_into_db['name_last']
+            player_object.hand = player_normalized_into_db['hand']
+            player_object.birth_date = player_normalized_into_db['birth_date']
+            player_object.country = player_normalized_into_db['country']
+            player_object.height = player_normalized_into_db['height']
+            player_object.wikidata_id = player_normalized_into_db['wikidata_id']
+            player_object.fullname = player_normalized_into_db['fullname']
+            player_object.weight = player_normalized_into_db['weight']
+            player_object.instagram = player_normalized_into_db['instagram']
+            player_object.facebook = player_normalized_into_db['facebook']
+            player_object.x_twitter = player_normalized_into_db['x_twitter']
+            player_object.pro_since = player_normalized_into_db['pro_since']
             
             db.session.commit()
+            
+            # Normalizes into frontend
+            player_normalized_to_frontend = normalize_to_frontend(player_enriched)
+            players_list_in_page.append(player_normalized_to_frontend)
+         
+         else:
+            players_list_in_page.append(player_dict)   
                
       
       response_object = {
@@ -191,6 +197,21 @@ def get_player(player_id):
       # Enriches missing data with Wikidata
       update_flag, player_enriched = get_wikidata_enrichment(player_dict)
       
+      # Retrieves ranks      
+      player_enriched['ranks_by_year'] = player_object.get_rank_by_year()  
+      
+      # Best_rank
+      player_enriched['best_ranking'] = player_object.get_best_ranking()
+      
+      # Number of titles won
+      player_enriched['total_titles'] = player_object.get_number_of_titles()
+      
+      # W/L ratio
+      player_enriched['w_l'] = player_object.get_won_lost_ratio()
+      
+      # Titles
+      player_enriched['titles'] = player_object.get_titles()
+      
       # Commits changes into database
       if update_flag:
          
@@ -214,11 +235,9 @@ def get_player(player_id):
          
          db.session.commit()
          
-         player_dict = normalize_to_frontend(player_normalized)
+      player_dict = normalize_to_frontend(player_enriched)
          
-      # Retrieves ranks      
-      player_dict['ranks_by_year'] = player_object.get_rank_by_year()  
-      
+
       response_object = {
          'status': 'success',
          'message': f'Player {player_id} has been retrieved successfully!',
