@@ -15,6 +15,11 @@ class Rankings(db.Model):
    def fullname(self):
    # Returns player fullname corresponding to the ranking register player_id
       return self.player.fullname if self.player else 'unknown'
+   
+   @property
+   def country(self):
+   # Returns player country corresponding to the ranking register player_id
+      return self.player.country if self.player else 'unknown'
      
 
    def to_dict(self):
@@ -25,7 +30,8 @@ class Rankings(db.Model):
          'ranking_date': self.ranking_date,
          'points': self.points,
          'rank': self.rank,
-         'player_fullname': self.fullname
+         'fullname': self.fullname,
+         'country': self.country
       }
       
       return normalize_to_frontend(ranking_dict)

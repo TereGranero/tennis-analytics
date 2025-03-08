@@ -27,6 +27,8 @@
 <script>
 export default {
    
+   name: 'PlayerSearch',
+   
    data() {
       return {
          lastNameToSearch: '',

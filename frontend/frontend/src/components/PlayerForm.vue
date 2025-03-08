@@ -244,7 +244,7 @@
 <script>
 import countries from 'i18n-iso-countries'
 import es from 'i18n-iso-countries/langs/es.json'
-import { getPlayerByIdForEditing } from '@/api/connectionService'
+import { getPlayerByIdForEditing } from '@/api/serverConnectionService.js'
 import { normalizeIntoBackend, normalizeIntoForm } from '@/services/normalization_services'
 
 export default {
@@ -326,8 +326,10 @@ export default {
          // allowed years 1800-current_year
          if (this.player.pro_since){
             return (      
-               this.player.pro_since < 1800 || 
-               this.player.pro_since > new Date().getFullYear() ) 
+               this.player.pro_since != 0 &&
+               (this.player.pro_since < 1800 || 
+               this.player.pro_since > new Date().getFullYear()) 
+            ) 
          }
          return false
       },
@@ -343,16 +345,18 @@ export default {
       invalidHeight() {
          // allowed values 100-270
          return (
-            this.player.height < 100 || 
-            this.player.height > 270
+            this.player.height != 0 &&
+            (this.player.height < 100 || 
+            this.player.height > 270)
          )
       },
 
       invalidWeight() {
          // allowed values 45-150
          return (
-            this.player.weight < 45 || 
-            this.player.weight > 150
+            this.player.weight != 0 &&
+            (this.player.weight < 45 || 
+            this.player.weight > 150)
          )
       },
             

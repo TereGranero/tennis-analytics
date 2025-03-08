@@ -5,8 +5,8 @@
  </template>
  
  <script>
- import PlayerForm from '@/components/PlayerForm.vue';
- import { createPlayer } from '@/api/connectionService'
+ import PlayerForm from '@/components/PlayerForm.vue'
+ import { createPlayer } from '@/api/serverConnectionService.js'
 
  export default {
    components: { PlayerForm },

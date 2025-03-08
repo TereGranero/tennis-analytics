@@ -9,7 +9,7 @@
 
 <script>
 import PlayerForm from '@/components/PlayerForm.vue'
-import { updatePlayer } from '@/api/connectionService'
+import { updatePlayer } from '@/api/serverConnectionService.js'
 
 export default {
    components: { PlayerForm },
@@ -34,6 +34,10 @@ export default {
          }
       },
    },
+
+   mounted() {
+      console.log('EditPlayerView received id:', this.id);
+  }
 }
 </script>
 

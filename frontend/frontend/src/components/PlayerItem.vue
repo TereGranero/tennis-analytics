@@ -37,20 +37,24 @@
 <script>
 export default {
    props: {
-      player: Object,
+      player: {
+         type: Object,
+         required: true
+      }
    },
 }
 </script>
 
-<style scoped> 
+<style> 
    .flag {
-      width: 20px;
+      width: 30px;
       height: auto;
-      margin-right: 5px;
+      margin-right: 10px;
       vertical-align: middle;
       border: 1px solid #140202;
    }
+
    .cursor-pointer {
-   cursor: pointer;
+      cursor: pointer;
    }
 </style>

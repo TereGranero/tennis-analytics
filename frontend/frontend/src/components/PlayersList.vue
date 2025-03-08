@@ -15,8 +15,7 @@
             :player="player"
             @view-player="viewPlayer"
             @edit-player="editPlayer"
-            @delete-player="deleteOnePlayer" 
-         /> 
+            @delete-player="deleteOnePlayer" /> 
       </tbody>
    </table>
 </template>
@@ -25,6 +24,9 @@
 import PlayerItem from './PlayerItem.vue'
 
 export default {
+
+   name: 'PlayersList',
+
    components: { PlayerItem },
 
    props: {

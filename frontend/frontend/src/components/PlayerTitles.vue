@@ -1,5 +1,5 @@
 <template>
-   <div class="row justify-content-center mt-5">
+   <div class="row justify-content-center mt-5 mb-5">
       <div class="col-md-10 justify-content-center align-items-center">
          
          <h3 class="mb-3 mt-3">TITULOS TOUR ATP</h3>
@@ -28,6 +28,7 @@
  
 <script>
 export default {
+   
    name: 'PlayerTitles',
 
    props: {

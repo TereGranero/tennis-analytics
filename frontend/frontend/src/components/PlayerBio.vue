@@ -2,12 +2,11 @@
       <div class="row d-flex flex-wrap gap-3 justify-content-center">
 
          <!-- Player photo -->
-         <div class="col-md-4 d-flex justify-content-center align-items-center">
+         <div class="col-md-4 d-flex justify-content-center align-items-center photo">
             <img 
                v-if="urlPlayerImage" 
-               :src="urlPlayerImage" 
-               :alt="urlPlayerImage" 
-               width="250" />
+               :src="urlPlayerImage"
+               alt="Foto del jugador" />
             <span v-else class="text-center"> Imagen no disponible</span>
          </div>  
 
@@ -70,11 +69,17 @@
 <script>
 import countries from 'i18n-iso-countries'
 import es from 'i18n-iso-countries/langs/es.json'
-import { getWikiPlayerImage } from '@/api/connectionService'
+import { getWikiPlayerImage } from '@/api/wikiConnectionService.js'
 
 export default {
+   
+   name: 'PlayerBio',
+
    props: {
-      player: Object,
+      player: {
+         type: Object,
+         required: true
+      }
    },
 
    data() {
@@ -145,7 +150,9 @@ export default {
 </script>
 
 <style scoped>
-   img {
+   .photo img {
       border: 1px solid #140202;
+      width: auto;
+      max-height: 350px;
    }
 </style>

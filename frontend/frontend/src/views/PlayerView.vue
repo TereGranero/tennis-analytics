@@ -2,21 +2,34 @@
    <div class="container">
       
       <!-- Search by Last Name -->
-      <div class="row mb-5">
-         <div class="col-md-5 offset-md-7">
+      <div class="row align-items-center my-5"
+         v-if="player">
+            
+         <!-- Edit Player Button -->
+         <div class="col-md-6">
+            <button 
+               type="button" 
+               class="btn btn-secondary" 
+               @click="editPlayer">
+               Editar Jugador
+            </button>
+         </div>
+
+         <!-- Search by Last Name -->
+         <div class="col-md-5 offset-md-1">
             <PlayerSearch @search-player="searchPlayer" />
          </div>
       </div>
 
       <!-- Header fullname and flag -->
-      <div v-if="player" class="row bg-dark text-white mb-5 mt-3">
+      <div v-if="player" class="row bg-dark text-white mb-5">
          <div class="d-flex align-items-center justify-content-center text-center w-100">
             <img
                v-if="player.country !== 'unknown' && player.country!== '-'"
                :src="'https://flagcdn.com/w40/' + player.country + '.png'"
                :alt="player.country"
                :title="player.country"
-               class="flag me-3"> 
+               class="flag"> 
             <h2 class="text-center m-0">
                {{ (player.name_first + ' ' + player.name_last).toUpperCase() }}
             </h2>
@@ -28,7 +41,7 @@
                Cargando jugador...
             </div>
          </div>
-         </div>
+      </div>
 
       <!-- Basic information -->
       <PlayerBio 
@@ -43,12 +56,12 @@
 
       <!-- Ranking chart -->
       <PlayerRankings 
-         v-if="player"
+         v-if="player && player.ranks_by_year.length > 0 && player.ranks_by_year != '-'"
          :ranksByYear="player.ranks_by_year" />
 
       <!-- Titles table -->
       <PlayerTitles
-         v-if="player && player.titles.length > 0"
+         v-if="player && player.titles.length > 0 && player.titles != '-'"
          :titles="player.titles" />
 
    </div>
@@ -60,7 +73,7 @@ import PlayerBio from '@/components/PlayerBio.vue'
 import PlayerKpiGrid from '@/components/PlayerKpiGrid.vue'
 import PlayerRankings from '@/components/PlayerRankings.vue'
 import PlayerTitles from '@/components/PlayerTitles.vue'
-import { getPlayerById } from '@/api/connectionService'
+import { getPlayerById } from '@/api/serverConnectionService.js'
 
 export default {
 
@@ -129,6 +142,11 @@ export default {
       searchPlayer(lastName) {
          console.log(`PlayerView pushes name_last ${lastName} to PlayersView`)
          this.$router.push({ name: 'Players', params: { lastname: lastName } })
+      },
+
+      editPlayer() {
+         console.log(`PlayerView sends id ${this.id} to EditPlayerView` )
+         this.$router.push({ name: 'EditPlayer', params: { id: this.id } }) 
       }
       
    },

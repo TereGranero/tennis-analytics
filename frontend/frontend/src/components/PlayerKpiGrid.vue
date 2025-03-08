@@ -13,6 +13,7 @@
  import PlayerKpi from './PlayerKpi.vue'
  
  export default {
+   
    name: 'PlayerKpiGrid',
 
    components: { PlayerKpi },

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from database import db
-from sqlalchemy import func, desc, extract
+from sqlalchemy import func, desc, extract, and_, cast, Integer
 import os
 
 from Services.wikidata_services import get_wikidata_enrichment              
@@ -20,7 +20,6 @@ app.config.from_object(__name__)
 # Determines the database system used 
 # and path to database relative to the app instance folder
 app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
-#app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('testdb.sqlite')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 # Inits database
@@ -34,7 +33,7 @@ with app.app_context():
 # Enables CORS, the route and leave it open to other origins
 CORS(app, resources={r"/*":{'origins':"*"}}) 
 
-# ------------------------------- ROUTES ------------------------------------ #
+# ------------------------------- PLAYER ROUTES ------------------------------------ #
 
 # GET all players route handle
 @app.route('/players', methods=['GET'])
@@ -69,26 +68,37 @@ def get_players():
          page = total_pages if total_pages > 0 else 1
      
       # Retrieves filtered players for current page
-      query = (
-         base_query
+      players_objects_list = (base_query
          .order_by(desc(Players.birth_date))
          .offset((page - 1) * per_page)
          .limit(per_page)
+         .all()
       )
       
-      # List of players objects
-      players_objects_list = query.all()
-      
+            
       # List of players dicts to be sent in response
       players_list_in_page = []
       
       
       for player_object in players_objects_list:
          
-         player_dict = player_object.to_dict()         
-          
+         player_dict = player_object.to_dict()
+         
+         # Filters fields of interest
+         fields_to_send = [
+            'player_id',
+            'name_first',
+            'name_last',
+            'birth_date',
+            'country',
+            'fullname',
+            'wikidata_id'
+         ]
+         short_player_dict = {key: player_dict[key] for key in fields_to_send}
+
+
          # Enriches missing data with Wikidata
-         update_flag, player_enriched = get_wikidata_enrichment(player_dict)
+         update_flag, player_enriched = get_wikidata_enrichment(short_player_dict)
          
          # Commits changes into database
          if update_flag:
@@ -98,17 +108,10 @@ def get_players():
             # Updates player object
             player_object.name_first = player_normalized_into_db['name_first']
             player_object.name_last = player_normalized_into_db['name_last']
-            player_object.hand = player_normalized_into_db['hand']
             player_object.birth_date = player_normalized_into_db['birth_date']
             player_object.country = player_normalized_into_db['country']
-            player_object.height = player_normalized_into_db['height']
             player_object.wikidata_id = player_normalized_into_db['wikidata_id']
             player_object.fullname = player_normalized_into_db['fullname']
-            player_object.weight = player_normalized_into_db['weight']
-            player_object.instagram = player_normalized_into_db['instagram']
-            player_object.facebook = player_normalized_into_db['facebook']
-            player_object.x_twitter = player_normalized_into_db['x_twitter']
-            player_object.pro_since = player_normalized_into_db['pro_since']
             
             db.session.commit()
             
@@ -117,7 +120,7 @@ def get_players():
             players_list_in_page.append(player_normalized_to_frontend)
          
          else:
-            players_list_in_page.append(player_dict)   
+            players_list_in_page.append(short_player_dict)   
                
       
       response_object = {
@@ -410,6 +413,128 @@ def update_player(player_id):
       }
       return jsonify(response_object), 500
 
+
+# ------------------------------- RANKINGS ROUTES ------------------------------------ #
+
+# GET rankings by year route handle
+@app.route('/rankings', methods=['GET'])
+def get_rankings_by_year():
+   try:
+      
+      # Gets and validates arguments
+      page = int(request.args.get('page', 1))     
+      per_page = int(request.args.get('per_page', 10))
+      search_year = request.args.get('search_year', '2023').strip()
+      
+      if page < 1 : 
+         page = 1
+      
+      if (per_page < 1 or per_page > 30): 
+         per_page = 10
+      
+         
+      # Selects last-day-of-year date for selected year
+      subquery = (db.session
+         .query(func.max(Rankings.ranking_date))
+         .filter(func.strftime('%Y', Rankings.ranking_date) == str(search_year))
+         .scalar_subquery()  # to use inside filter
+      )
+
+      # End-of-year rankings by year. Query object
+      base_query = (db.session
+         .query(Rankings)
+         .filter(Rankings.ranking_date == subquery)
+         .order_by(cast(Rankings.rank, Integer))
+      )
+      
+      # Calculates the number of End-of-year rankings filtered by year
+      total_rankings = base_query.count()
+      
+      # Calculates number of pages for all filtered rankings
+      total_pages = (total_rankings + per_page - 1) // per_page
+      
+      if page > total_pages: 
+         page = total_pages if total_pages > 0 else 1
+
+      # Retrieves rankings for current page
+      rankings_objects_list = (base_query
+         .offset((page - 1) * per_page)
+         .limit(per_page)
+         .all()
+      )
+      
+      # List of rankings dicts to be sent in response
+      rankings_list_in_page = []
+      
+      # Converts objects to dicts with frontend format
+      for ranking_object in rankings_objects_list:
+         ranking_dict = ranking_object.to_dict()
+         
+         # Enriches missing country with Wikidata
+         if ranking_dict['country'] == 'unknown':
+
+            # Retrieves player object from database
+            player_object = (db.session
+               .query(Players)
+               .filter_by(player_id=ranking_dict['player_id'])
+               .first()
+            )
+            
+            if player_object: 
+               
+               # Converts into a short dict with only fields of interest
+               player_dict = player_object.to_dict()
+               fields_of_interest = [
+                  'player_id',
+                  'name_first',
+                  'name_last',
+                  'country',
+                  'wikidata_id'
+               ]
+               short_player_dict = {key: player_dict[key] for key in fields_of_interest}      
+
+               # Enriches
+               update_flag, player_enriched = get_wikidata_enrichment(short_player_dict)
+               
+               if update_flag:
+                  
+                  # Normalizes into database
+                  player_normalized_into_db = normalize_into_db(player_enriched)
+            
+                  # Updates player object
+                  player_object.name_first = player_normalized_into_db['name_first']
+                  player_object.name_last = player_normalized_into_db['name_last']
+                  player_object.country = player_normalized_into_db['country']
+                  player_object.wikidata_id = player_normalized_into_db['wikidata_id']
+                  db.session.commit()
+                  
+                  # Normalizes into frontend
+                  player_normalized_to_frontend = normalize_to_frontend(player_enriched)
+               
+                  ranking_dict['country'] = player_normalized_to_frontend['country']
+         
+         rankings_list_in_page.append(ranking_dict)
+               
+      response_object = {
+         'status':'success',
+         'message': 'Rankings have been retrieved successfully!',
+         'rankings': rankings_list_in_page,
+         'total_rankings': total_rankings, 
+         'page': page,
+         'pages': total_pages
+      } 
+      return jsonify(response_object), 200
+   
+   except Exception as e:
+      error_msg = f'Error retrieving rankings: {str(e)}'
+      app.logger.error(error_msg, exc_info=True)
+      response_object = {
+         'status': 'error', 
+         'message': error_msg
+      }
+      return jsonify(response_object), 500
+      
+   
 
 if __name__ == "__main__":
    app.run(debug=True) #development mode

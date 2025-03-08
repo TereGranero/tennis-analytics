@@ -9,7 +9,8 @@
  
  <script>
  export default {
-   name: 'PlayerKpi',
+   
+  name: 'PlayerKpi',
    
    props: {
       title: {

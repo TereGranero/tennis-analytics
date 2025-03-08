@@ -83,7 +83,7 @@ def is_tennis_player(wikidata_id):
                break
             
       # Loops sports claim array
-      if (sport_claim and len(sports_claim) != 0):
+      if (sport_claim and len(sport_claim) != 0):
          for sport in sport_claim:
             
             # Extracts sport
@@ -378,7 +378,7 @@ def get_wikidata_height(wikidata_id):
       height_claim = get_wikidata_property(wikidata_id, 'P2048')
 
       # Empty response
-      if (not height_claim or len(height_claim)) == 0:
+      if (not height_claim or len(height_claim) == 0):
          print(f'WikidataServices Warning from get_wikidata_height: No height has been found for wikidata_id {wikidata_id}')
          return None
       
@@ -632,6 +632,8 @@ def compose_name_for_search(name_last, name_first='-'):
       
 def get_wikidata_enrichment(player):
    """  
+   Searches in Wikidata the missing fields of the provided player.
+   
    Args:
       player (dict): register from database
    

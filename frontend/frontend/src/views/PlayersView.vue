@@ -4,11 +4,8 @@
       <!-- Header Image -->
       <div class="row mb-3 banner">
          <div class="col-md-12">
-            <img 
-               src="../../public/images/jugadores-banner.png" 
-               alt="Jugadores Header" 
-               class="img-fluid" 
-            />
+            <HeaderImage
+               :pageName="pageName" />
          </div>
       </div>
 
@@ -73,7 +70,7 @@
 import PlayerSearch from '@/components/PlayerSearch.vue'
 import PlayersList from '@/components/PlayersList.vue'
 import Pagination from '@/components/Pagination.vue'
-import { getAllPlayers, deletePlayer } from '@/api/connectionService'
+import { getAllPlayers, deletePlayer } from '@/api/serverConnectionService.js'
 
 export default {
 
@@ -95,10 +92,11 @@ export default {
 
    data() {
       return {
+         pageName: 'players',
          players: [],
          totalPlayers: 0,
          page: 1,
-         perPage: 10,
+         perPage: 12,
          totalPages: 0,
          isSearching: false,
          lastNameToSearch: '',
