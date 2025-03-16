@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import PlayerForm from '@/components/PlayerForm.vue'
+import PlayerForm from '@/components/players/PlayerForm.vue'
 import { updatePlayer } from '@/api/serverConnectionService.js'
 
 export default {

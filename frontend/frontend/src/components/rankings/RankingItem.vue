@@ -8,13 +8,13 @@
       <!-- Player fullname and flag -->
       <td 
          @click="$emit('view-player', ranking.player_id)" 
-         class="ps-5">
+         class="ps-sm-5">
          <img
             v-if="ranking.country !== 'unknown'"
             :src="'https://flagcdn.com/w40/' + ranking.country + '.png'"
             :alt="ranking.country"
             :title="ranking.country"
-            class="flag"> 
+            class="flag me-2"> 
          <span class="cursor-pointer">{{ ranking.fullname }}</span>
       </td>
 

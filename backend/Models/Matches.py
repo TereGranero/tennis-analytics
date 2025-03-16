@@ -1,3 +1,6 @@
+import re
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import func
 from database import db
 from Services.normalization_services import normalize_to_frontend
 
@@ -32,10 +35,32 @@ class Matches(db.Model):
    l_bpFaced = db.Column(db.String(8))
    year = db.Column(db.String(4))
    court = db.Column(db.String(8))
-   
+     
    winner = db.relationship('Players', foreign_keys=[winner_id], back_populates='matches_won')
    loser = db.relationship('Players', foreign_keys=[loser_id], back_populates='matches_lost')
    
+   @hybrid_property
+   def tourney_slug(self):
+      # Converts tourney_name into a slug to use in Python
+      # Replaces parts of the text that accomplish with the given pattern: one or more spaces
+      return re.sub(r'\s+', '-', self.tourney_name.lower())
+   
+   @tourney_slug.expression
+   def tourney_slug(cls):
+      # Converts tourney_name into a slug in SQL
+      # class method, not instance method
+      # Mandatory if you want to use this attribute in SQL queries
+      return func.lower(func.replace(cls.tourney_name, ' ', '-'))
+   
+   @hybrid_property
+   def tourney_level_slug(self):
+      # Converts tourney_level into a slug
+      return re.sub(r'\s+', '-', self.tourney_level.lower())
+   
+   @tourney_level_slug.expression
+   def tourney_level_slug(cls):
+      # Converts tourney_level into a slug in SQL
+      return func.lower(func.replace(cls.tourney_level, ' ', '-'))
     
    def to_dict(self):
    # Converts registers to dict and normalizes some values according to frontend
@@ -45,10 +70,14 @@ class Matches(db.Model):
          'loser_id': self.loser_id,
          'winner_fullname': self.winner.fullname if self.winner else 'unknown',
          'loser_fullname': self.loser.fullname if self.loser else 'unknown',
+         'winner_country': self.winner.country if self.winner else 'unknown',
+         'loser_country': self.loser.country if self.loser else 'unknown',
          'tourney_date': self.tourney_date,
          'tourney_name': self.tourney_name,
+         'tourney_slug': self.tourney_slug,
          'surface': self.surface,
          'tourney_level': self.tourney_level,
+         'tourney_level_slug': self.tourney_level_slug,
          'score': self.score,
          'best_of': self.best_of,
          'round_': self.round_,

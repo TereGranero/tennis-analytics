@@ -1,11 +1,11 @@
 <template>
-   <table class="table table-hover">
+   <table class="table table-hover text-responsive-4">
       <thead>
          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">País</th>
-            <th scope="col">Nacimiento</th>
-            <th scope="col"></th>
+            <th scope="col-4">Jugador</th>
+            <th scope="col-2">País</th>
+            <th scope="col-4">Nacimiento</th>
+            <th scope="col-2"></th>
          </tr>
       </thead>
       <tbody>
@@ -13,6 +13,7 @@
             v-for="player in players" 
             :key="player.id"
             :player="player"
+            class="text-responsive-4"
             @view-player="viewPlayer"
             @edit-player="editPlayer"
             @delete-player="deleteOnePlayer" /> 
@@ -30,7 +31,10 @@ export default {
    components: { PlayerItem },
 
    props: {
-      players: Array,
+      players: {
+         type: Array,
+         required: true
+      }
    },
    
    methods:{

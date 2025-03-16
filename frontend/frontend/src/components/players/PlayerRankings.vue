@@ -1,10 +1,11 @@
 <template>
-   <div class="row justify-content-center mt-5">
-      <div class="col-md-10 justify-content-center align-items-center">
-         <h3 class="mb-3 mt-3">EVOLUCIÓN RANKING ATP</h3>
-         <v-chart class="chart" :option="ranksChartOption" autoresize />
-      </div>
+   <div class="d-flex flex-column align-items-start mb-5">
+      <h2 class="text-responsive-3 fw-bold m-0">
+         EVOLUCIÓN RANKING ATP
+      </h2>
+      <v-chart class="chart w-100" :option="ranksChartOption" autoresize />
    </div>
+
 </template>
  
 <script>

@@ -6,19 +6,17 @@ import re
 
 def normalize_to_frontend(register):
    
-   date_fields = ['birth_date', 'ranking_date', 'tourney_date']
-   
    for field, value in register.items():
       
       # Cleans strings
       value = value.strip() if (isinstance(value, str)) else value
    
       # Handles unknown values
-      if ((not value or value == '-' or value == 'unknown') and field not in date_fields):
-         register[field] = 'unknown' if (field == 'country') else '-'
+      if ((not value or value == '-' or value == 'unknown') and 'date' not in field):
+         register[field] = 'unknown' if 'country' in field else '-'
          continue
       
-      if (field in date_fields):
+      if ('date' in field):
          date_format_pattern = re.compile(r'^\d{2}-\d{2}-\d{4}$')
          if value and isinstance(value, str) and date_format_pattern.match(value):
             continue
@@ -31,7 +29,7 @@ def normalize_to_frontend(register):
             current_app.logger.error(error_msg, exc_info=True)
             register[field] = '01-01-1800'
          
-      elif (field == 'country'):
+      elif 'country' in field:
          try:
             if (len(value) == 3):
                country = pycountry.countries.get(alpha_3=value.upper())
@@ -76,20 +74,18 @@ def normalize_to_frontend(register):
     
 
 def normalize_into_db(register):
-   
-   date_fields = ['birth_date', 'ranking_date', 'tourney_date']
-   
+      
    for field, value in register.items():
       
       # Cleans strings
       value = value.strip() if (isinstance(value, str)) else value
       
       # Handles unknown values
-      if ((not value or value == '-' or value == 'unknown') and field not in date_fields):
+      if ((not value or value == '-' or value == 'unknown') and 'date' not in field):
          register[field] = 'unknown' 
          continue
       
-      if (field in date_fields):
+      if ('date' in field):
          date_formats = ['%Y-%m-%d', '%d-%m-%Y']
     
          if not value:
@@ -111,7 +107,7 @@ def normalize_into_db(register):
                register[field] = datetime.strptime('1800-01-01', '%Y-%m-%d').date()
 
       
-      elif (field == 'country'):
+      elif ('country' in field):
          try:
             if (len(value) == 3):
                country = pycountry.countries.get(alpha_3=value.upper())

@@ -1,47 +1,51 @@
 <template>
-      <div class="row d-flex flex-wrap gap-3 justify-content-center">
+      <div class="d-flex flex-wrap gap-5 justify-content-center align-items-center mb-5">
 
-         <!-- Player photo -->
-         <div class="col-md-4 d-flex justify-content-center align-items-center photo">
-            <img 
-               v-if="urlPlayerImage" 
-               :src="urlPlayerImage"
-               alt="Foto del jugador" />
-            <span v-else class="text-center"> Imagen no disponible</span>
-         </div>  
+      <!-- Player photo -->
+         <img 
+            v-if="urlPlayerImage" 
+            :src="urlPlayerImage"
+            class="img-fluid photo" 
+            alt="Foto del jugador" />
+         <span v-else class="text-center"> Imagen no disponible</span>
+
 
          <!-- Personal details -->
-         <div class="col-md-7">
-            <h3 class="mb-3">DETALLES PERSONALES</h3>
-            <table class="table table-hover">
+         <div class="d-flex flex-column align items-start">
+            <h2 class="text-responsive-3 fw-bold m-0">
+               DETALLES PERSONALES
+            </h2>
+            <table class="table table-hover mt-3">
                <tbody>
-                  <tr v-if="player.country !== 'unknown' && player.country !== '-'">
+                  <tr 
+                     v-if="player.country !== 'unknown' && player.country !== '-'"
+                     class="text-responsive-4">
                      <th scope="row">País:</th>
-                     <td> {{ countryName }}</td>
+                     <td class="text-center"> {{ countryName }}</td>
                   </tr>
-                  <tr>
+                  <tr class="text-responsive-4">
                      <th scope="row">Nacimiento:</th>
-                     <td>{{ player.birth_date }}</td>
+                     <td class="text-center">{{ player.birth_date }}</td>
                   </tr>
-                  <tr>
+                  <tr class="text-responsive-4">
                      <th scope="row">Mano:</th>
-                     <td>{{ player.hand }}</td>
+                     <td class="text-center">{{ player.hand }}</td>
                   </tr>
-                  <tr>
+                  <tr class="text-responsive-4">
                      <th scope="row">Altura en cm:</th>
-                     <td>{{ player.height }}</td>
+                     <td class="text-center">{{ player.height }}</td>
                   </tr>
-                  <tr>
+                  <tr class="text-responsive-4">
                      <th scope="row">Peso en kg:</th>
-                     <td> {{ player.weight }} </td>
+                     <td class="text-center"> {{ player.weight }} </td>
                   </tr>
-                  <tr>
+                  <tr class="text-responsive-4">
                      <th scope="row">Profesional desde: </th>
-                     <td> {{ player.pro_since }} </td>
+                     <td class="text-center"> {{ player.pro_since }} </td>
                   </tr>
-                  <tr>
+                  <tr class="text-responsive-4">
                      <th scope="row">Síguelo en:</th>
-                     <td>  
+                     <td class="text-center">  
                         <i 
                            v-if="player.instagram !== '-'"
                            class="fa-brands fa-instagram text-secondary cursor-pointer me-2"
@@ -69,7 +73,7 @@
 <script>
 import countries from 'i18n-iso-countries'
 import es from 'i18n-iso-countries/langs/es.json'
-import { getWikiPlayerImage } from '@/api/wikiConnectionService.js'
+import { getWikiDataImage } from '@/api/wikiDataConnectionService.js'
 
 export default {
    
@@ -123,7 +127,7 @@ export default {
       
       async getPlayerImage() {
          try{
-            this.urlPlayerImage = await getWikiPlayerImage(this.player.wikidata_id)
+            this.urlPlayerImage = await getWikiDataImage(this.player.wikidata_id)
          } catch (err) {
             console.error(`Error retrieving Wikidata player image: ${err}`)
          }
@@ -150,9 +154,9 @@ export default {
 </script>
 
 <style scoped>
-   .photo img {
-      border: 1px solid #140202;
-      width: auto;
-      max-height: 350px;
-   }
+.photo {
+   width: auto;
+   max-height: 350px;
+   border: 1px solid #576973;
+}
 </style>

@@ -41,7 +41,7 @@ export const deletePlayer = async (id) => {
 
 
 
-const rankingsEndpoint = 'rankings';
+const rankingsEndpoint = '/rankings';
 
 export const getEndYearRankings = async (page, perPage, yearToSearch = '2023') => {
    const res = await httpClient.get(rankingsEndpoint, {
@@ -49,6 +49,29 @@ export const getEndYearRankings = async (page, perPage, yearToSearch = '2023') =
          page: page, 
          per_page: perPage,
          search_year: yearToSearch
+      }
+   });
+return res.data;
+};
+
+
+const tournamentsEndpoint = '/tournaments';
+
+export const getTournamentsByLevel = async (page, perPage, levelSlug = 'grand-slam') => {
+   const res = await httpClient.get(`${tournamentsEndpoint}/level/${levelSlug}`, {
+      params: {
+         page: page, 
+         per_page: perPage
+      }
+   });
+return res.data;
+};
+
+export const getTournamentWinners = async (page, perPage, tourneySlug = 'roland_garros') => {
+   const res = await httpClient.get(`${tournamentsEndpoint}/winners/${tourneySlug}`, {
+      params: {
+         page: page, 
+         per_page: perPage
       }
    });
 return res.data;

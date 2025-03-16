@@ -1,5 +1,5 @@
 <template>
-   <table class="table table-hover text-sm fs-4 text-md fs-3 text-lg fs-2">
+   <table class="table table-hover text-responsive-4">
       <thead>
          <tr class="text-center">
             <th scope="col-3">Ranking</th>
@@ -12,7 +12,7 @@
             v-for="(rk, index) in rankings" 
             :key="index"
             :ranking="rk"
-            class="text-sm fs-4 text-md fs-3 text-lg fs-2"
+            class="text-responsive-4"
             @view-player="viewPlayer" />
       </tbody>
    </table>

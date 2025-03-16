@@ -1,7 +1,9 @@
 <template>
    <tr>
       <!-- Full Name -->
-      <td @click="$emit('view-player', player.player_id)" class="cursor-pointer">
+      <td 
+         @click="$emit('view-player', player.player_id)" 
+         class="cursor-pointer">
          {{ player.fullname }}
       </td>
 
@@ -12,8 +14,10 @@
             :src="'https://flagcdn.com/w40/' + player.country + '.png'"
             :alt="player.country"
             :title="player.country"
-            class="flag"> 
-         <span v-if="player.country !== 'unknown'"> {{ player.country.toUpperCase() }}</span>
+            class="flag me-2"> 
+         <span v-if="player.country !== 'unknown' && player.country !== '-'"> 
+            {{ countryName }}
+         </span>
       </td>
 
       <!-- Birthday -->
@@ -35,26 +39,49 @@
 </template>
 
 <script>
+import countries from 'i18n-iso-countries'
+import es from 'i18n-iso-countries/langs/es.json'
+
 export default {
+
+   name: 'PlayerItem',
+
    props: {
       player: {
          type: Object,
          required: true
       }
    },
+
+   data() {
+      return {
+         countryName: null,
+      }
+   },
+
+   watch: {
+      // Loads when data is available
+      'player.country': {
+         immediate: true, 
+         handler(newCountry) {
+            if (newCountry && newCountry !== '-' && newCountry !== 'unknown') {
+               this.initCountry();
+            }
+         }
+      }
+   },
+
+   methods: {
+      initCountry() {
+         try {
+            countries.registerLocale(es)
+            this.countryName = countries.getName(this.player.country.toUpperCase(), 'es')      
+         } catch (err) {
+            console.error(`Error retrieving country name from i18n-iso-countries: ${err}`)
+         }
+      },
+   }
 }
 </script>
 
-<style> 
-   .flag {
-      width: 30px;
-      height: auto;
-      margin-right: 10px;
-      vertical-align: middle;
-      border: 1px solid #140202;
-   }
-
-   .cursor-pointer {
-      cursor: pointer;
-   }
-</style>
+<style> </style>

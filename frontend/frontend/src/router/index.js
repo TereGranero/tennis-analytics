@@ -5,6 +5,8 @@ import AddPlayerView from '@/views/AddPlayerView.vue'
 import EditPlayerView from '@/views/EditPlayerView.vue'
 import PlayerView from '@/views/PlayerView.vue'
 import RankingsView from '@/views/RankingsView.vue'
+import TournamentsView from '@/views/TournamentsView.vue'
+import TournamentWinnersView from '@/views/TournamentWinnersView.vue'
 
 const routes = [
    {
@@ -42,10 +44,22 @@ const routes = [
 
    {
       path: '/rankings',
-      name: 'RankingsView',
+      name: 'Rankings',
       component: RankingsView,
    },
 
+   {
+      path: '/tournaments', // levels select, chose tournament
+      name: 'Tournaments',
+      component: TournamentsView,
+   },
+
+   {
+      path: '/tournaments/winners/:tournamentSlug',
+      name: 'TournamentWinners',
+      component: TournamentWinnersView,
+      props: true
+   },
 ];
 
 const router = createRouter({

@@ -77,3 +77,7 @@ export const normalizeIntoForm = (player) => {
 
    return player
 };
+
+export const convertIntoSlug = (name) => {
+   return name.toLowerCase().replace(/\s+/g, '-')
+};

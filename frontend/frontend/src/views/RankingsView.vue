@@ -2,8 +2,8 @@
    <div class="container">
 
       <!-- Header Image -->
-      <div class="row mb-3 banner">
-         <div class="col-md-12">
+      <div class="row mb-3">
+         <div class="col-12">
             <HeaderImage
                imgName="rankings-banner"
                alt="Titulo Rankings" />
@@ -13,56 +13,66 @@
 
       <!-- Alert Messages -->
       <div 
-         class="row mb-3" 
-         v-if="!rankings.length" >
+         class="row" 
+         v-if="!rankings.length && isLoading" >
 
-         <div class="col-md-12">
-            <div class="alert alert-info text-center" role="alert">
-               Cargando ranking...
+         <div class="col-12">
+            <div class="alert alert-info text-responsive-3 text-center" role="alert">
+               Cargando rankings...
             </div>
          </div>
       </div>
 
+      <!-- Select year -->
       <div 
-         class="row align-items-center" 
-         v-if="rankings.length">
+         class="row justify-content-center align-items-center mb-3 mb-sm-4 mb-md-5" 
+         v-if="rankings.length && !isLoading">
 
-         <!-- Select year -->
-         <div class="col-6 offset-5 col-sm-4 offset-sm-7 mb-3 mb-md-5">
-            <div class="form-group">
-               <label class="font-weight-bold text-sm fs-4 text-md fs-3 text-lg fs-2">Año:</label>
-               <select
-                  class="form-control text-sm fs-5 text-md fs-4 text-lg fs-3"
-                  v-model="yearToShow"
-                  @change="loadRankings">
-                  <option 
-                     v-for="year in years"
-                     :key="year"
-                     :value="year">
-                     {{ year }}
-                  </option>
-               </select>
-            </div>
+         <div class="col-auto">
+            <label for="yearToSelect" class="form-label me-2 text-responsive-4">Año:</label>
+            <select
+               id="yearToSelect"
+               class="form-select text-responsive-4"
+               v-model="yearToShow"
+               @change="loadRankings">
+               <option 
+                  v-for="year in years"
+                  :key="year"
+                  :value="year">
+                  {{ year }}
+               </option>
+            </select>
          </div>
       </div>
+     
+      <div 
+         class="row align-items-center justify-content-center mb-3 mb-md-4"
+         v-if="rankings.length && !isLoading">
 
-      <!-- Ranking Table Component -->
-      <div class="row mb-3 mb-md-4">
-         <div class="col-12 col-md-8 offset-md-2">
+         <!-- Player No.1 Image -->
+         <div class="col-12 col-md-3">
+            <Ranking1Image 
+               :player="player1" /> 
+         </div>
+
+         <!-- Ranking Table Component -->
+         <div class="col-12 col-md-8">
             <RankingsTable 
                :rankings="rankings"
-               @view-player="viewPlayer"
-            /> 
+               @view-player="viewPlayer" /> 
          </div>
       </div>
 
-      <!-- Players pages navigation -->
-      <div class="row">
+      <!-- Rankings pages navigation -->
+      <div 
+         class="row justify-content-center"
+         v-if="rankings.length && !isLoading">
+
          <div class="col-12">
             <Pagination 
                :page="page" 
                :totalPages="totalPages"
-               class="text-sm fs-5"
+               class="text-responsive-4"
                @goToPage="goToPage" />
          </div>
       </div>
@@ -72,7 +82,8 @@
 
 <script>
 import HeaderImage from '@/components/HeaderImage.vue'
-import RankingsTable from '@/components/RankingsTable.vue'
+import Ranking1Image from '@/components/rankings/Ranking1Image.vue'
+import RankingsTable from '@/components/rankings/RankingsTable.vue'
 import Pagination from '@/components/Pagination.vue'
 import { getEndYearRankings } from '@/api/serverConnectionService.js'
 
@@ -82,6 +93,7 @@ export default {
 
    components: {
       HeaderImage,
+      Ranking1Image,
       RankingsTable, 
       Pagination
    },
@@ -95,19 +107,30 @@ export default {
          totalPages: 0,
          years: Array.from({ length: 2023 - 1973 + 1 }, (_, index) => 1973 + index),
          yearToShow: 2023,
+         isLoading: false,
       }
    },
 
-
+   computed: {
+      player1() {
+         if (this.rankings.length) {
+            return {
+               name : `${this.rankings[0].name_first} ${this.rankings[0].name_last}`,
+               year: this.yearToShow.toString()
+            }
+         }
+         return null
+      }
+   },
 
    methods: {
       async loadRankings() {
          // Retrieve all rankings for selected year, with pagination
          
          try {
-
             this.rankings = []
-            
+            this.isLoading = true
+
             const data = await getEndYearRankings(
                this.page, 
                this.perPage,
@@ -134,7 +157,7 @@ export default {
                   await this.loadRankings()
 
                } else {  // ok
-                  this.isSearching = false
+                  this.isLoading = false
                }
             }
 
@@ -163,9 +186,6 @@ export default {
    },
 
    async mounted() {
-      if (this.isSearchingByLastName){
-         this.yearToShow = this.lastname
-      }
       await this.loadRankings()
    }
 

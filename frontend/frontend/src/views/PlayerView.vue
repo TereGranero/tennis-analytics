@@ -1,12 +1,14 @@
 <template>
    <div class="container">
       
-      <!-- Search by Last Name -->
-      <div class="row align-items-center my-5"
+      <div 
+         class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5"
          v-if="player">
             
          <!-- Edit Player Button -->
-         <div class="col-md-6">
+         <div 
+            v-if="player"
+            class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
                class="btn btn-secondary" 
@@ -16,28 +18,33 @@
          </div>
 
          <!-- Search by Last Name -->
-         <div class="col-md-5 offset-md-1">
+         <div
+            v-if="player"
+            class="col-12 col-md-auto me-md-5">
             <PlayerSearch @search-player="searchPlayer" />
          </div>
       </div>
 
       <!-- Header fullname and flag -->
-      <div v-if="player" class="row bg-dark text-white mb-5">
-         <div class="d-flex align-items-center justify-content-center text-center w-100">
+      <div 
+         v-if="player" 
+         class="row bg-dark text-white mb-3 mb-md-5">
+
+         <div class="d-flex align-items-center justify-content-center w-100">
             <img
                v-if="player.country !== 'unknown' && player.country!== '-'"
                :src="'https://flagcdn.com/w40/' + player.country + '.png'"
                :alt="player.country"
                :title="player.country"
-               class="flag"> 
-            <h2 class="text-center m-0">
+               class="flag me-3"> 
+            <span class="text-responsive-2 text-center m-0">
                {{ (player.name_first + ' ' + player.name_last).toUpperCase() }}
-            </h2>
+            </span>
          </div>
       </div>
       <div v-else class="row">
-         <div class="col-md-12">
-            <div class="alert alert-info text-center" role="alert">
+         <div class="col-12">
+            <div class="alert alert-info text-responsive-3 text-center" role="alert">
                Cargando jugador...
             </div>
          </div>
@@ -51,8 +58,7 @@
       <!-- KPIs -->
       <PlayerKpiGrid 
          v-if="player"
-         :kpis="kpiData" 
-         :columns="3"/>
+         :kpis="kpiData" />
 
       <!-- Ranking chart -->
       <PlayerRankings 
@@ -62,18 +68,20 @@
       <!-- Titles table -->
       <PlayerTitles
          v-if="player && player.titles.length > 0 && player.titles != '-'"
+         @view-tournament="viewTournament"
          :titles="player.titles" />
 
    </div>
 </template>
 
 <script>
-import PlayerSearch from '@/components/PlayerSearch.vue'
-import PlayerBio from '@/components/PlayerBio.vue'
-import PlayerKpiGrid from '@/components/PlayerKpiGrid.vue'
-import PlayerRankings from '@/components/PlayerRankings.vue'
-import PlayerTitles from '@/components/PlayerTitles.vue'
+import PlayerSearch from '@/components/players/PlayerSearch.vue'
+import PlayerBio from '@/components/players/PlayerBio.vue'
+import PlayerKpiGrid from '@/components/players/PlayerKpiGrid.vue'
+import PlayerRankings from '@/components/players/PlayerRankings.vue'
+import PlayerTitles from '@/components/players/PlayerTitles.vue'
 import { getPlayerById } from '@/api/serverConnectionService.js'
+import { convertIntoSlug } from '@/services/normalization_services'
 
 export default {
 
@@ -147,8 +155,17 @@ export default {
       editPlayer() {
          console.log(`PlayerView sends id ${this.id} to EditPlayerView` )
          this.$router.push({ name: 'EditPlayer', params: { id: this.id } }) 
-      }
-      
+      },
+
+      viewTournament(tournamentName) {
+         let tournamentSlug = convertIntoSlug(tournamentName)
+         console.log(`PlayerView sends tournament ${tournamentSlug} to TournamentWinnersView` )
+         this.$router.push({ 
+            name: 'TournamentWinners', 
+            params: { tournamentSlug } 
+         })
+      },
+
    },
 
    async created() {
@@ -161,11 +178,6 @@ export default {
 <style scoped> 
    .flag {
       width: 30px;
-      height: 1.5em; 
-      vertical-align: middle;
-      border: 1px solid #140202;
-   }
-   h2 {
       height: 1.5em; 
    }
 </style>

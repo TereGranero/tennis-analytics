@@ -2,31 +2,32 @@
    <div class="container">
 
       <!-- Header Image -->
-      <div class="row mb-3 banner">
-         <div class="col-md-12">
+      <div class="row mb-3">
+         <div class="col-12">
             <HeaderImage
-               :pageName="pageName" />
+               imgName="players-banner"
+               alt="Título Jugadores" />
          </div>
       </div>
 
       <!-- Alert Messages -->
       <div 
-         class="row mb-3" 
+         class="row" 
          v-if="!players.length && isSearching" >
 
-         <div class="col-md-12">
-            <div class="alert alert-info text-center" role="alert">
+         <div class="col-12">
+            <div class="alert alert-info text-responsive-3 text-center" role="alert">
                Cargando jugadores...
             </div>
          </div>
       </div>
 
       <div 
-         class="row align-items-center mb-5" 
+         class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
          v-if="players.length  && !isSearching">
 
          <!-- Add Player Button -->
-         <div class="col-md-6">
+         <div class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
                class="btn btn-secondary" 
@@ -36,29 +37,34 @@
          </div>
 
          <!-- Search by Last Name -->
-         <div class="col-md-5 offset-md-1">
+         <div class="col-12 col-md-auto me-md-5">
             <PlayerSearch @search-player="searchPlayer" />
          </div>
       </div>
 
-      <!-- PlayersList Component -->
-      <div class="row">
-         <div class="col-md-12 mb-3">
-            <PlayersList 
+      <!-- PlayersTable Component -->
+      <div class="row justify-content-center mb-3 mb-md-4"
+      v-if="players.length && !isSearching">
+
+         <div class="col-12 col-lg-12">
+            <PlayersTable 
                :players="players"
                @view-player="viewPlayer"
                @edit-player="editPlayer"
-               @delete-player="deleteOnePlayer"
-            /> 
+               @delete-player="deleteOnePlayer" /> 
          </div>
       </div>
 
       <!-- Players pages navigation -->
-      <div class="row">
-         <div class="col-md-12">
+      <div 
+         class="row justify-content-center"
+         v-if="players.length && !isSearching">
+
+         <div class="col-12">
             <Pagination 
                :page="page" 
-               :totalPages="totalPages" 
+               :totalPages="totalPages"
+               class="text-responsive-4"
                @goToPage="goToPage" />
          </div>
       </div>
@@ -67,8 +73,9 @@
 </template>
 
 <script>
-import PlayerSearch from '@/components/PlayerSearch.vue'
-import PlayersList from '@/components/PlayersList.vue'
+import HeaderImage from '@/components/HeaderImage.vue'
+import PlayerSearch from '@/components/players/PlayerSearch.vue'
+import PlayersTable from '@/components/players/PlayersTable.vue'
 import Pagination from '@/components/Pagination.vue'
 import { getAllPlayers, deletePlayer } from '@/api/serverConnectionService.js'
 
@@ -76,9 +83,10 @@ export default {
 
    name: 'PlayersView',
 
-   components: { 
+   components: {
+      HeaderImage,
       PlayerSearch,
-      PlayersList, 
+      PlayersTable, 
       Pagination 
    },
 
@@ -217,9 +225,4 @@ export default {
 }
 </script>
 
-<style>
-   .banner img{
-      max-width: 100%; 
-      height: auto;
-   }
-</style>
+<style></style>

@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from database import db
 from sqlalchemy import func, desc, extract, and_, cast, Integer
+from sqlalchemy.ext.hybrid import hybrid_property
+
 import os
 
 from Services.wikidata_services import get_wikidata_enrichment              
@@ -265,13 +267,13 @@ def add_player():
       data = request.get_json()
       
       # Validates request data
-      if not ( validate_request_data(data, 'POST')):         
+      if not (validate_request_data(data, 'POST')):         
          error_msg = f'Error adding new player. Incomplete request'
          response_object = {
             'status': 'error', 
             'message': error_msg
          }
-      return jsonify(response_object), 400
+         return jsonify(response_object), 400
    
       
       # Normalizes values into dababase
@@ -512,7 +514,7 @@ def get_rankings_by_year():
                   player_normalized_to_frontend = normalize_to_frontend(player_enriched)
                
                   ranking_dict['country'] = player_normalized_to_frontend['country']
-         
+                          
          rankings_list_in_page.append(ranking_dict)
                
       response_object = {
@@ -534,7 +536,201 @@ def get_rankings_by_year():
       }
       return jsonify(response_object), 500
       
+
+
+# ------------------------------- TOURNAMENT ROUTES ------------------------------------ #
+
+# GET tournaments by level route handle
+@app.route('/tournaments/level/<string:search_level_slug>', methods=['GET'])
+def get_tournaments_by_level(search_level_slug):
+   try:
+      
+      # Gets and validates arguments
+      page = int(request.args.get('page', 1))     
+      per_page = int(request.args.get('per_page', 10))
+
+      
+      if page < 1 : 
+         page = 1
+      
+      if (per_page < 1 or per_page > 30): 
+         per_page = 10
+         
+      if not search_level_slug:
+         search_level_slug = 'grand-slam'
+      
+         
+      # Unique tournaments with search_level_slug
+      base_query = (db.session
+         .query(Matches.tourney_name)
+         .filter(Matches.tourney_level_slug == search_level_slug)
+         .distinct()
+         .order_by(Matches.tourney_name)
+      )
+      
+      # Calculates the number of tournaments filtered by search_level_slug
+      total_tournaments = base_query.count()
+      
+      # Calculates number of pages for all filtered tournaments
+      total_pages = (total_tournaments + per_page - 1) // per_page
+      
+      if page > total_pages: 
+         page = total_pages if total_pages > 0 else 1
+
+      # Retrieves tournaments for current page
+      tournaments_objects_list = (base_query
+         .offset((page - 1) * per_page)
+         .limit(per_page)
+         .all()
+      )
+      
+      # List of tournaments dicts to be sent in response
+      tournaments_list_in_page = [tournament_object[0] for tournament_object in tournaments_objects_list]
+      
+      response_object = {
+         'status':'success',
+         'message': f'Tournaments with level {search_level_slug} have been retrieved successfully!',
+         'tournaments': tournaments_list_in_page,
+         'total_tournaments': total_tournaments, 
+         'page': page,
+         'pages': total_pages
+      } 
+      return jsonify(response_object), 200
    
+   except Exception as e:
+      error_msg = f'Error retrieving tournaments with level {search_level_slug}: {str(e)}'
+      app.logger.error(error_msg, exc_info=True)
+      response_object = {
+         'status': 'error', 
+         'message': error_msg
+      }
+      return jsonify(response_object), 500
+   
+   
+# GET tournaments winners route handle
+@app.route('/tournaments/winners/<string:search_tournament_slug>', methods=['GET'])
+def get_tournament_winners(search_tournament_slug):
+   try:
+      
+      # Gets and validates arguments
+      page = int(request.args.get('page', 1))     
+      per_page = int(request.args.get('per_page', 10))
+      
+      if page < 1 : 
+         page = 1
+      
+      if (per_page < 1 or per_page > 30): 
+         per_page = 10
+      
+         
+      # Retrieves all The Final matches for search_tournament_slug
+      base_query = (db.session
+         .query(Matches)
+         .filter(Matches.tourney_slug == search_tournament_slug)
+         .filter(Matches.round_ == 'The Final')
+         .order_by(desc(Matches.year))
+      )
+      
+      # Calculates the number of tournament editions/winners
+      total_winners = base_query.count()
+      
+      # Calculates number of pages for all tournaments editions/winners
+      total_pages = (total_winners + per_page - 1) // per_page
+      
+      if page > total_pages: 
+         page = total_pages if total_pages > 0 else 1
+
+      # Retrieves The Final matches for current page
+      tournaments_objects_list = (base_query
+         .offset((page - 1) * per_page)
+         .limit(per_page)
+         .all()
+      )
+      
+      # List of winners dicts to be sent in response
+      winners_list_in_page = []
+      
+      # Converts objects to dicts with frontend format
+      for tournament_object in tournaments_objects_list:
+         winner_dict = tournament_object.to_dict()
+         
+         # Converts into a short dict with only fields of interest
+         winner_fields_of_interest = [
+            'tourney_name',
+            'tourney_level',
+            'year',
+            'winner_id',
+            'winner_fullname',
+            'winner_country'
+         ]
+         short_winner_dict = {key: winner_dict[key] for key in winner_fields_of_interest}
+         
+         # Enriches missing winner country with Wikidata
+         if short_winner_dict['winner_country'] == 'unknown':
+
+            # Retrieves player object from database
+            player_object = (db.session
+               .query(Players)
+               .filter_by(player_id=short_winner_dict['winner_id'])
+               .first()
+            )
+            
+            if player_object: 
+               
+               # Converts into a short dict with only fields of interest
+               player_dict = player_object.to_dict()
+               player_fields_of_interest = [
+                  'player_id',
+                  'name_first',
+                  'name_last',
+                  'country',
+                  'wikidata_id'
+               ]
+               short_player_dict = {key: player_dict[key] for key in player_fields_of_interest}
+               
+               # Enriches
+               update_flag, player_enriched = get_wikidata_enrichment(short_player_dict)
+               short_winner_dict['winner_country'] = player_enriched['country']
+               
+               if update_flag:
+                  
+                  # Normalizes into database
+                  player_normalized_into_db = normalize_into_db(player_enriched)
+            
+                  # Updates player object
+                  player_object.name_first = player_normalized_into_db['name_first']
+                  player_object.name_last = player_normalized_into_db['name_last']
+                  player_object.country = player_normalized_into_db['country']
+                  player_object.wikidata_id = player_normalized_into_db['wikidata_id']
+                  db.session.commit()
+                  
+                  # Normalizes into frontend
+                  player_normalized_to_frontend = normalize_to_frontend(player_enriched)
+               
+                  short_winner_dict['winner_country'] = player_normalized_to_frontend['country']
+            
+         winners_list_in_page.append(short_winner_dict)
+               
+      
+      response_object = {
+         'status':'success',
+         'message': f'Winners of {search_tournament_slug} have been retrieved successfully!',
+         'winners': winners_list_in_page,
+         'total_winners': total_winners, 
+         'page': page,
+         'pages': total_pages
+      } 
+      return jsonify(response_object), 200
+   
+   except Exception as e:
+      error_msg = f'Error retrieving winners of {search_tournament_slug}: {str(e)}'
+      app.logger.error(error_msg, exc_info=True)
+      response_object = {
+         'status': 'error', 
+         'message': error_msg
+      }
+      return jsonify(response_object), 500
+       
 
 if __name__ == "__main__":
    app.run(debug=True) #development mode

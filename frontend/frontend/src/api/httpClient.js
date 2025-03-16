@@ -21,7 +21,7 @@ httpClient.interceptors.response.use(
 
 // -------------- Wikidata API ----------------
 
-const httpClientWiki = axios.create({
+const httpClientWikiData = axios.create({
    baseURL: 'https://www.wikidata.org', 
    timeout: 5000,                              
    headers: {
@@ -29,10 +29,10 @@ const httpClientWiki = axios.create({
    },
 });
 
-httpClientWiki.interceptors.response.use(
+httpClientWikiData.interceptors.response.use(
    response => response,
    error => {
-      console.error(`WikiServer Error: ${error}`);
+      console.error(`WikiDataServer Error: ${error}`);
       return Promise.reject(error);
    }
 );
@@ -56,4 +56,23 @@ httpClientNews.interceptors.response.use(
    }
 );
 
-export { httpClient, httpClientWiki, httpClientNews }; 
+
+// --------------- WikiCommons API --------------------
+
+const httpClientWikiCommons = axios.create({
+   baseURL: 'https://commons.wikimedia.org', 
+   timeout: 5000,                              
+   headers: {
+      'Content-Type': 'application/json',
+   },
+});
+
+httpClientNews.interceptors.response.use(
+   response => response,
+   error => {
+      console.error(`WikiCommonsServer Error: ${error}`);
+      return Promise.reject(error);
+   }
+);
+
+export { httpClient, httpClientWikiData, httpClientNews, httpClientWikiCommons }; 

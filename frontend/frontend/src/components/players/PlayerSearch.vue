@@ -6,7 +6,8 @@
          :class="{'is-invalid': invalidLastName}" 
          v-model="lastNameToSearch" 
          @focus="resetState" 
-         @input="resetState" 
+         @input="resetState"
+         @keydown.enter="search"
          placeholder="Buscar por apellido"
       />
       <button 
@@ -54,5 +55,5 @@ export default {
 }
 </script>
  
- <style> </style>
+<style> </style>
  

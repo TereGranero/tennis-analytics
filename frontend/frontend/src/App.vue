@@ -1,9 +1,9 @@
 <template>
-   <div class="app">
-      <div class="row align-items-center m-3 mt-md-5 mt-lg-8">
+   <div class="app m-3 mt-md-4 mt-lg-5">
+      <div class="row align-items-center">
 
          <!-- Logo -->
-         <div class="col-12 col-sm-12 col-md-7 col-lg-5 col-xl-3">
+         <div class="col-12 col-sm-12 col-md-7 col-lg-5 col-xl-3 mb-sm-3 mb-md-5">
             <HeaderImage
                imgName="logo"
                alt="Logo" />
@@ -11,7 +11,7 @@
 
          <!-- Navigation menu -->
          <div class="col-12 col-sm-12 col-md-5 col-lg-7 col-xl-9">
-            <nav class="navbar navbar-expand-md navbar-light bg-white">
+            <nav class="navbar navbar-expand-md navbar-light bg-white text-responsive-3">
 
                <button
                   class="navbar-toggler"
@@ -55,12 +55,4 @@ export default {
 </script>
 
 
-<style>
-  #app {
-    margin: 10px;
-  }
-
-  li {
-    font-size: 1.4rem;
-  }
-</style>
+<style></style>

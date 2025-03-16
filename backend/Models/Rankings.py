@@ -20,6 +20,16 @@ class Rankings(db.Model):
    def country(self):
    # Returns player country corresponding to the ranking register player_id
       return self.player.country if self.player else 'unknown'
+   
+   @property
+   def name_last(self):
+   # Returns player last name corresponding to the ranking register player_id
+      return self.player.name_last if self.player else 'unknown'
+   
+   @property
+   def name_first(self):
+   # Returns player first name corresponding to the ranking register player_id
+      return self.player.name_first if self.player else 'unknown'
      
 
    def to_dict(self):
@@ -31,6 +41,8 @@ class Rankings(db.Model):
          'points': self.points,
          'rank': self.rank,
          'fullname': self.fullname,
+         'name_last': self.name_last,
+         'name_first': self.name_first,
          'country': self.country
       }
       
