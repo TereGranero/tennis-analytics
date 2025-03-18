@@ -1,39 +1,103 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from config import Config
+from dotenv import load_dotenv
+from werkzeug.security import check_password_hash
 from database import db
 from sqlalchemy import func, desc, extract, and_, cast, Integer
 from sqlalchemy.ext.hybrid import hybrid_property
-
-import os
-
-from Services.wikidata_services import get_wikidata_enrichment              
-from Services.normalization_services import normalize_into_db, normalize_to_frontend
-from Services.validation_services import validate_request_data                            
+from services.wikidata_services import get_wikidata_enrichment              
+from services.normalization_services import normalize_into_db, normalize_to_frontend
+from services.validation_services import validate_request_data                            
 
 
 # -------------------------- CONFIGURATION ---------------------------------- #
 
-# Instanciates a Flask application
+# Loads enviroment variables from .env
+load_dotenv()
+
+# Instanciates a Flask application and configures
 app = Flask(__name__) 
+app.config.from_object(Config) 
 
-# Updates the application constantly
-app.config.from_object(__name__) 
-
-# Determines the database system used 
-# and path to database relative to the app instance folder
-app.config['SQLALCHEMY_DATABASE_URI'] =  f"sqlite:///{os.path.abspath('tennisdb.sqlite')}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+# Inits JWT
+jwt = JWTManager(app)
 
 # Inits database
 db.init_app(app)
 
 with app.app_context():
-   from Models.Players import Players
-   from Models.Rankings import Rankings
-   from Models.Matches import Matches
+   from models.Players import Players
+   from models.Rankings import Rankings
+   from models.Matches import Matches
 
 # Enables CORS, the route and leave it open to other origins
 CORS(app, resources={r"/*":{'origins':"*"}}) 
+
+
+
+# ------------------------------- LOGIN ROUTE ------------------------------------ #
+
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_payload):
+    return jsonify({"error": "Token expirado"}), 401
+ 
+
+@app.route('/login', methods=['POST'])
+def login():
+   try:
+      data = request.get_json()
+      if not data:
+         error_msg = "Error login. No json data received"
+         print(error_msg)
+         response_object = {
+            'status': 'error',
+            'message': error_msg
+         }
+         return jsonify(response_object), 400
+         
+      username = data.get('username')
+      password = data.get('password')
+
+   except Exception as e:
+      error_msg = f"Error: {str(e)}"
+      print(error_msg)
+      response_object = {
+         'status': 'error',
+         'message': error_msg
+      }
+      return jsonify(response_object), 500
+     
+     
+   # Verifies user credentials as administrator in database
+   admin = Administrators.query.filter_by(username=username).first()
+
+   if not admin or not check_password_hash(admin.password, password):
+      error_msg = "Wrong administrator credentials"
+      print(error_msg)
+      response_object = {
+         'status': 'error',
+         'message': error_msg
+      }
+      return jsonify(response_object), 401
+
+   # Creates JWT
+   access_token = create_access_token(
+      identity={
+         "id": admin.id,
+         "username": admin.username
+      }
+   )
+   
+   response_object = {
+      'status':'success',
+      'message': 'JWT have been created successfully!',
+      'access_token': access_token
+   } 
+   return jsonify(response_object), 200
+
+      
 
 # ------------------------------- PLAYER ROUTES ------------------------------------ #
 
@@ -42,7 +106,7 @@ CORS(app, resources={r"/*":{'origins':"*"}})
 def get_players():
    try:
       
-      # Gets and validates arguments
+      # Gets and validates url arguments
       page = int(request.args.get('page', 1))     
       per_page = int(request.args.get('per_page', 10))
       search_name_last = request.args.get('search_name_last', '').strip()
@@ -76,11 +140,9 @@ def get_players():
          .limit(per_page)
          .all()
       )
-      
             
       # List of players dicts to be sent in response
       players_list_in_page = []
-      
       
       for player_object in players_objects_list:
          
@@ -148,6 +210,7 @@ def get_players():
       
 # GET player by id for editing route handle
 @app.route('/players/edit/<string:player_id>', methods=['GET'])
+@jwt_required()
 def get_player_for_editing(player_id):
    # No ranking data
    try:
@@ -262,12 +325,13 @@ def get_player(player_id):
 
 # POST player route handle
 @app.route('/players', methods=['POST'])
+@jwt_required()
 def add_player():
    try:
       data = request.get_json()
       
       # Validates request data
-      if not (validate_request_data(data, 'POST')):         
+      if not data or not (validate_request_data(data, 'POST')):         
          error_msg = f'Error adding new player. Incomplete request'
          response_object = {
             'status': 'error', 
@@ -321,6 +385,7 @@ def add_player():
       
 # DELETE player route handle
 @app.route('/players/<string:player_id>', methods=['DELETE'])
+@jwt_required()
 def delete_player(player_id):
    try:
       player = Players.query.filter_by(player_id=player_id).first()
@@ -355,6 +420,7 @@ def delete_player(player_id):
 
 # PUT player by id route handle
 @app.route('/players/<string:player_id>', methods=['PUT'])
+@jwt_required()
 def update_player(player_id):
    try:
       # Retrieves player to update
@@ -370,7 +436,7 @@ def update_player(player_id):
       data = request.get_json()
       
       # Validates request data
-      if not ( validate_request_data(data, 'PUT')):
+      if not data or not ( validate_request_data(data, 'PUT')):
          error_msg = f'Error updating player id {player_id}. Incomplete request'
          response_object = {
             'status': 'error', 
@@ -419,14 +485,13 @@ def update_player(player_id):
 # ------------------------------- RANKINGS ROUTES ------------------------------------ #
 
 # GET rankings by year route handle
-@app.route('/rankings', methods=['GET'])
-def get_rankings_by_year():
+@app.route('/rankings/<string:search_year>', methods=['GET'])
+def get_rankings_by_year(search_year):
    try:
       
       # Gets and validates arguments
       page = int(request.args.get('page', 1))     
       per_page = int(request.args.get('per_page', 10))
-      search_year = request.args.get('search_year', '2023').strip()
       
       if page < 1 : 
          page = 1

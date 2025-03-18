@@ -1,4 +1,4 @@
-import { httpClient } from './httpClient';
+import { httpClient, httpAuthClient } from './httpClients';
 
 
 const playersEndpoint = '/players';
@@ -20,22 +20,22 @@ export const getPlayerById = async (id) => {
 };
 
 export const getPlayerByIdForEditing = async (id) => {
-   const res = await httpClient.get(`${playersEndpoint}/edit/${id}`);
+   const res = await httpAuthClient.get(`${playersEndpoint}/edit/${id}`);
    return res.data;
 };
 
 export const createPlayer = async (player) => {
-   const res = await httpClient.post(playersEndpoint, player);
+   const res = await httpAuthClient.post(playersEndpoint, player);
    return res.data;
 };
 
 export const updatePlayer = async (id, player) => {
-   const res = await httpClient.put(`${playersEndpoint}/${id}`, player);
+   const res = await httpAuthClient.put(`${playersEndpoint}/${id}`, player);
    return res.data;
 };
 
 export const deletePlayer = async (id) => {
-   const res = await httpClient.delete(`${playersEndpoint}/${id}`);
+   const res = await httpAuthClient.delete(`${playersEndpoint}/${id}`);
    return res.data;
 };
 
@@ -44,11 +44,10 @@ export const deletePlayer = async (id) => {
 const rankingsEndpoint = '/rankings';
 
 export const getEndYearRankings = async (page, perPage, yearToSearch = '2023') => {
-   const res = await httpClient.get(rankingsEndpoint, {
+   const res = await httpClient.get(`${rankingsEndpoint}/${yearToSearch}`, {
       params: {
          page: page, 
-         per_page: perPage,
-         search_year: yearToSearch
+         per_page: perPage
       }
    });
 return res.data;

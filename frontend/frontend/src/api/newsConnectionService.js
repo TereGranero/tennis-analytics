@@ -1,4 +1,4 @@
-import { httpClientNews } from './httpClient';
+import { httpClientNews } from './httpClients';
 
 // GET https://newsapi.org/v2/everything?q=bitcoin&apiKey=67f0427492e14efd9231262983d61fe9
 

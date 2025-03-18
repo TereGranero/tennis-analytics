@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { authMiddleware } from '@/middleware/auth'
 import HomeView from '@/views/HomeView.vue'
 import PlayersView from '@/views/PlayersView.vue'
 import AddPlayerView from '@/views/AddPlayerView.vue'
@@ -7,12 +8,19 @@ import PlayerView from '@/views/PlayerView.vue'
 import RankingsView from '@/views/RankingsView.vue'
 import TournamentsView from '@/views/TournamentsView.vue'
 import TournamentWinnersView from '@/views/TournamentWinnersView.vue'
+import LoginView from '@/views/LoginView.vue'
 
 const routes = [
    {
       path: '/',
       name: 'Home',
       component: HomeView,
+   },
+
+   {
+      path: '/login',
+      name: 'Login',
+      component: LoginView,
    },
 
    {
@@ -26,6 +34,7 @@ const routes = [
       path: '/add-player',
       name: 'AddPlayer',
       component: AddPlayerView,
+      meta: { requiresAuth: true }
    },
 
    {
@@ -33,6 +42,7 @@ const routes = [
       name: 'EditPlayer',
       component: EditPlayerView,
       props: true,
+      meta: { requiresAuth: true }
    },
 
    {
@@ -60,11 +70,24 @@ const routes = [
       component: TournamentWinnersView,
       props: true
    },
+
+   {
+      path: "/404",
+      redirect: "/error"
+    }
 ];
 
 const router = createRouter({
    history: createWebHistory(process.env.BASE_URL),
    routes,
+});
+
+router.beforeEach((to, from, next) => {
+   if (to.meta.requiresAuth) {
+      authMiddleware(to, from, next);
+   } else {
+      next();
+   }
 });
 
 export default router

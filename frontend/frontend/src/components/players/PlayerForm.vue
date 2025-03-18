@@ -23,10 +23,12 @@
             </label>
             <input
                id="nameFirstInput"
+               ref="reference"
                type="text" 
                class="form-control"
                :class="{'is-invalid': processing && invalidFirstName}"
                @focus="resetState"
+               @keypress="resetState"
                v-model="player.name_first">
             <div v-if="processing && invalidFirstName" class="invalid-feedback">
                Debes rellenar el campo Nombre
@@ -42,12 +44,10 @@
             </label>
             <input 
                id="nameLastInput"
-               ref="reference"
                type="text" 
                class="form-control"
                :class="{'is-invalid': processing && invalidLastName}"
                @focus="resetState"
-               @keypress="resetState"
                v-model="player.name_last">
             <div 
                v-if="processing && invalidLastName" 

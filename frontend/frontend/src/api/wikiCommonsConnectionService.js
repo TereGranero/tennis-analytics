@@ -1,4 +1,4 @@
-import { httpClientWikiCommons } from './httpClient';
+import { httpClientWikiCommons } from './httpClients';
 
 const wikiCommonsEndpoint = '/w/api.php';
 

@@ -1,4 +1,4 @@
-import { httpClientWikiData } from './httpClient';
+import { httpClientWikiData } from './httpClients';
 
 const wikiDataEndpoint = '/w/api.php';
 
