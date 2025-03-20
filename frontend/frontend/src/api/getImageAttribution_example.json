@@ -1,0 +1,115 @@
+GET: https://commons.wikimedia.org/w/api.php?action=query&format=json&titles=File:25th%20Laureus%20World%20Sports%20Awards%20-%20Red%20Carpet%20-%20Carlos%20Alcaraz%20-%20240422%20192324%20(cropped).jpg&prop=imageinfo&iiprop=url|extmetadata&origin=*
+
+{
+   "batchcomplete": "",
+   "query": {
+       "pages": {
+           "147942085": {
+               "pageid": 147942085,
+               "ns": 6,
+               "title": "File:25th Laureus World Sports Awards - Red Carpet - Carlos Alcaraz - 240422 192324 (cropped).jpg",
+               "imagerepository": "local",
+               "imageinfo": [
+                   {
+                       "url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/25th_Laureus_World_Sports_Awards_-_Red_Carpet_-_Carlos_Alcaraz_-_240422_192324_%28cropped%29.jpg",
+                       "descriptionurl": "https://commons.wikimedia.org/wiki/File:25th_Laureus_World_Sports_Awards_-_Red_Carpet_-_Carlos_Alcaraz_-_240422_192324_(cropped).jpg",
+                       "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=147942085",
+                       "extmetadata": {
+                           "DateTime": {
+                               "value": "2024-05-01 17:06:47",
+                               "source": "mediawiki-metadata",
+                               "hidden": ""
+                           },
+                           "ObjectName": {
+                               "value": "25th Laureus World Sports Awards - Red Carpet - Carlos Alcaraz - 240422 192324 (cropped)",
+                               "source": "mediawiki-metadata"
+                           },
+                           "CommonsMetadataExtension": {
+                               "value": 1.2,
+                               "source": "extension",
+                               "hidden": ""
+                           },
+                           "Categories": {
+                               "value": "All media supported by Wikimedia España in 2024|Carlos Alcaraz in 2024|Extracted images|Files with coordinates missing SDC location of creation|Laureus World Sports Awards 2024 - Supported by Wikimedia España|Male sportspeople from the Region of Murcia|Personality rights warning|Self-published work",
+                               "source": "commons-categories",
+                               "hidden": ""
+                           },
+                           "Assessments": {
+                               "value": "",
+                               "source": "commons-categories",
+                               "hidden": ""
+                           },
+                           "GPSLatitude": {
+                               "value": "40.419130",
+                               "source": "commons-desc-page"
+                           },
+                           "GPSLongitude": {
+                               "value": "-3.691628",
+                               "source": "commons-desc-page"
+                           },
+                           "GPSMapDatum": {
+                               "value": "WGS-84",
+                               "source": "commons-desc-page",
+                               "hidden": ""
+                           },
+                           "ImageDescription": {
+                               "value": "Carlos Alcaraz, the rising Spanish tennis sensation, showcases his youthful charisma on the red carpet at the 25th Laureus World Sports Awards in Madrid.",
+                               "source": "commons-desc-page"
+                           },
+                           "DateTimeOriginal": {
+                               "value": "2024-04-22 19:23:24",
+                               "source": "commons-desc-page"
+                           },
+                           "Credit": {
+                               "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                               "source": "commons-desc-page"
+                           },
+                           "Artist": {
+                               "value": "<a href=\"//commons.wikimedia.org/wiki/User:Barcex\" title=\"User:Barcex\">Barcex</a>",
+                               "source": "commons-desc-page"
+                           },
+                           "Permission": {
+                               "value": "I, the copyright holder of this work, hereby publish it under the following license:",
+                               "source": "commons-desc-page",
+                               "hidden": ""
+                           },
+                           "LicenseShortName": {
+                               "value": "CC BY-SA 4.0",
+                               "source": "commons-desc-page",
+                               "hidden": ""
+                           },
+                           "UsageTerms": {
+                               "value": "Creative Commons Attribution-Share Alike 4.0",
+                               "source": "commons-desc-page"
+                           },
+                           "AttributionRequired": {
+                               "value": "true",
+                               "source": "commons-desc-page",
+                               "hidden": ""
+                           },
+                           "LicenseUrl": {
+                               "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                               "source": "commons-desc-page"
+                           },
+                           "Copyrighted": {
+                               "value": "True",
+                               "source": "commons-desc-page",
+                               "hidden": ""
+                           },
+                           "Restrictions": {
+                               "value": "personality",
+                               "source": "commons-desc-page",
+                               "hidden": ""
+                           },
+                           "License": {
+                               "value": "cc-by-sa-4.0",
+                               "source": "commons-templates",
+                               "hidden": ""
+                           }
+                       }
+                   }
+               ]
+           }
+       }
+   }
+}

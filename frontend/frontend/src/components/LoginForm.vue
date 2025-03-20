@@ -1,10 +1,10 @@
 <template>
    <form 
-      class="row g-3 g-md-5 text-responsive-4"
+      class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-4"
       @submit.prevent="sendForm">
 
       <!-- Username -->
-      <div class="col-12">
+      <div class="col-12 col-md-5">
          <label
             for="usernameInput"
             class="form-label">
@@ -23,7 +23,7 @@
       </div>
 
       <!-- Password -->
-      <div class="col-12">
+      <div class="col-12  col-md-5">
          <label 
             for="passwordInput" 
             class="form-label">

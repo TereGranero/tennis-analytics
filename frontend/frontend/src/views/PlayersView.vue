@@ -27,7 +27,9 @@
          v-if="players.length  && !isSearching">
 
          <!-- Add Player Button -->
-         <div class="col-12 mb-3 col-md-auto mb-md-0">
+         <div 
+            v-if="isAdmin"
+            class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
                class="btn btn-secondary" 
@@ -43,12 +45,14 @@
       </div>
 
       <!-- PlayersTable Component -->
-      <div class="row justify-content-center mb-3 mb-md-4"
-      v-if="players.length && !isSearching">
+      <div 
+         class="row justify-content-center mb-3 mb-md-4"
+         v-if="players.length && !isSearching">
 
          <div class="col-12 col-lg-12">
             <PlayersTable 
                :players="players"
+               :isAdmin="isAdmin"
                @view-player="viewPlayer"
                @edit-player="editPlayer"
                @delete-player="deleteOnePlayer" /> 
@@ -78,6 +82,7 @@ import PlayerSearch from '@/components/players/PlayerSearch.vue'
 import PlayersTable from '@/components/players/PlayersTable.vue'
 import Pagination from '@/components/Pagination.vue'
 import { getAllPlayers, deletePlayer } from '@/api/serverConnectionService.js'
+import { tokenService } from "@/api/authConnectionService.js"
 
 export default {
 
@@ -108,6 +113,7 @@ export default {
          totalPages: 0,
          isSearching: false,
          lastNameToSearch: '',
+         isAdmin: false
       }
    },
 
@@ -219,6 +225,7 @@ export default {
       if (this.isSearchingByLastName){
          this.lastNameToSearch = this.lastname
       }
+      this.isAdmin = tokenService.isLoggedIn()
       await this.loadPlayers()
    }
 

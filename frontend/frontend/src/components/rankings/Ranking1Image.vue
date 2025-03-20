@@ -8,8 +8,13 @@
             :src="urlPlayerImage" 
             alt="ATP Number 1" 
             class="img-fluid photo" />
-         <figcaption class="mt-2 text-muted">
-            {{ player.name }} - ATP No. 1 en {{ player.year }}
+         <figcaption class="mt-2 text-muted text-break w-40">
+            {{ player.name }} - ATP No. 1 en {{ player.year }} <br>
+            <small>
+               "<span v-html="imageAttribution.title"></span>" por <span v-html="imageAttribution.author"></span>,
+               bajo licencia <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
+               <a :href="imageAttribution.filePageUrl" target="_blank">Ver en Wikimedia Commons</a>
+            </small>
          </figcaption>
       </figure>
    </div>
@@ -32,6 +37,7 @@ export default {
    data() {
       return {
          urlPlayerImage: null, 
+         imageAttribution: null,
       }
    },
 
@@ -60,10 +66,18 @@ export default {
    methods: {
       async getPlayer1Image() {
          try {
-            this.urlPlayerImage = await getWikiCommonsImage(this.wikiCommonsQuery)
-            if (!this.urlPlayerImage) {
-               this.urlPlayerImage = await getWikiCommonsImage(this.player.name)
+            const res = await getWikiCommonsImage(this.wikiCommonsQuery)
+            if (res){
+               this.urlPlayerImage = res.imageUrl
+               this.imageAttribution = res.imageAttribution
+            } else {
+               const res2 = await getWikiCommonsImage(this.player.name)
+               if (res2){
+                  this.urlPlayerImage = res2.imageUrl
+                  this.imageAttribution = res2.imageAttribution
+               }
             }
+
          } catch (err) {
             console.error(`Error retrieving WikiCommons player No.1 image: ${err}`)
          }

@@ -3,15 +3,14 @@
       <div class="row align-items-center">
 
          <!-- Logo -->
-         <div class="col-12 col-sm-12 col-md-7 col-lg-5 col-xl-3 mb-sm-3 mb-md-5">
+         <div class="col-12 col-md-8 col-lg-6 col-xl-3 mb-3 mb-xl-0">
             <HeaderImage
-               imgName="logo"
-               alt="Logo" />
+               imgName="logo" />
          </div>
 
          <!-- Navigation menu -->
-         <div class="col-12 col-sm-12 col-md-5 col-lg-7 col-xl-9">
-            <nav class="navbar navbar-expand-md navbar-light bg-white text-responsive-3">
+         <div class="col-12 mb-3 mb-xl-5">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white text-responsive-3 ms-3 me-5">
 
                <button
                   class="navbar-toggler"
@@ -27,13 +26,19 @@
                <div class="collapse navbar-collapse" id="navBarMenu">
                   <ul class="navbar-nav ms-auto">
                      <li class="nav-item">
-                        <router-link to="/players" class="nav-link p-2 p-lg-3">Jugadores</router-link>
+                        <router-link to="/" class="nav-link p-1 p-lg-3">Inicio</router-link>
                      </li>
                      <li class="nav-item">
-                        <router-link to="/rankings" class="nav-link p-2 p-lg-3">Rankings</router-link>
+                        <router-link to="/players" class="nav-link p-1 p-lg-3">Jugadores</router-link>
                      </li>
                      <li class="nav-item">
-                        <router-link to="/tournaments" class="nav-link p-2 p-lg-3">Torneos</router-link>
+                        <router-link to="/rankings" class="nav-link p-1 p-lg-3">Rankings</router-link>
+                     </li>
+                     <li class="nav-item">
+                        <router-link to="/tournaments" class="nav-link p-1 p-lg-3">Torneos</router-link>
+                     </li>
+                     <li class="nav-item me-5">
+                        <router-link to="/login" class="nav-link p-1 p-lg-3">Login</router-link>
                      </li>
                   </ul>
                </div>
@@ -49,10 +54,13 @@
 import HeaderImage from './components/HeaderImage.vue'
 
 export default {
+
    name: 'App',
+
    components: { HeaderImage }
 }
 </script>
 
 
-<style></style>
+<style scoped>
+</style>

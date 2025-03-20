@@ -3,6 +3,7 @@ import { httpClient } from './httpClients';
 const loginEndpoint = '/login'
 
 export const tokenService = {
+   
    login: async (user) => {
       const payload = { 
          "username": user.username, 
@@ -13,10 +14,16 @@ export const tokenService = {
       localStorage.setItem('token', token);
       return token;
    },
+   
    logout: () => {
       localStorage.removeItem('token');
    },
+   
    getToken: () => {
       return localStorage.getItem('token');
    },
+   
+   isLoggedIn: () => {
+      return !!localStorage.getItem('token');
+   }
 };

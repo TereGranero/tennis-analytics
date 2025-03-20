@@ -24,7 +24,7 @@
       <td>{{ player.birth_date }}</td>
 
       <!-- Font Awesome Buttons -->
-      <td>
+      <td v-if="isAdmin">
          <i class="fas fa-eye text-secondary cursor-pointer me-2" 
             @click="$emit('view-player', player.player_id)" 
             title="Ver"></i>
@@ -50,7 +50,12 @@ export default {
       player: {
          type: Object,
          required: true
+      },
+      isAdmin: {
+         type: Boolean,
+         required: true
       }
+
    },
 
    data() {

@@ -5,7 +5,9 @@
             <th scope="col-4">Jugador</th>
             <th scope="col-2">País</th>
             <th scope="col-4">Nacimiento</th>
-            <th scope="col-2"></th>
+            <th 
+               v-if="isAdmin"
+               scope="col-2"></th>
          </tr>
       </thead>
       <tbody>
@@ -13,6 +15,7 @@
             v-for="player in players" 
             :key="player.id"
             :player="player"
+            :isAdmin="isAdmin"
             class="text-responsive-4"
             @view-player="viewPlayer"
             @edit-player="editPlayer"
@@ -34,6 +37,10 @@ export default {
       players: {
          type: Array,
          required: true
+      },
+      isAdmin: {
+         type: Boolean,
+         required: true
       }
    },
    
@@ -50,7 +57,6 @@ export default {
          this.$emit('delete-player', id)
       },
    },
-
 }
 </script>
 

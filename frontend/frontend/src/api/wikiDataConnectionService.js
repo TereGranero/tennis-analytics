@@ -1,6 +1,8 @@
 import { httpClientWikiData } from './httpClients';
+import { getImageAttribution } from './wikiCommonsConnectionService';
 
 const wikiDataEndpoint = '/w/api.php';
+
 
 export const getWikiDataImage = async (wikidata_id) => {
    console.log('Requesting to WikiData for image...');
@@ -18,7 +20,10 @@ export const getWikiDataImage = async (wikidata_id) => {
       if (fileName) {
          const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`;
          console.log(`Image URL: ${imageUrl}`);
-         return imageUrl;
+
+         const imageAttribution = await getImageAttribution(fileName);
+
+         return { imageUrl, imageAttribution };
       }
 
    console.log('Image URL no encontrada');
@@ -87,7 +92,10 @@ export const getWikiDataLogo = async (wikidata_id) => {
 
       const logoUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`;
       console.log(`Logo URL: ${logoUrl}`);
-      return logoUrl;
+      
+      const imageAttribution = await getImageAttribution(fileName);
+
+      return { logoUrl, imageAttribution };
    }
    console.log('Logo URL no encontrada');
    return null;

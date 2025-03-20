@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, verify_jwt_in_request
 from config import Config
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
@@ -31,11 +31,18 @@ with app.app_context():
    from models.Players import Players
    from models.Rankings import Rankings
    from models.Matches import Matches
+   from models.Administrators import Administrators
 
 # Enables CORS, the route and leave it open to other origins
-CORS(app, resources={r"/*":{'origins':"*"}}) 
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
-
+@app.route('/debug-token', methods=['GET'])
+def debug_token():
+    try:
+        verify_jwt_in_request()  # Intenta validar el token manualmente
+        return jsonify({"message": "Token válido"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
 
 # ------------------------------- LOGIN ROUTE ------------------------------------ #
 
@@ -84,10 +91,7 @@ def login():
 
    # Creates JWT
    access_token = create_access_token(
-      identity={
-         "id": admin.id,
-         "username": admin.username
-      }
+      identity=str(admin.id)
    )
    
    response_object = {
@@ -212,7 +216,8 @@ def get_players():
 @app.route('/players/edit/<string:player_id>', methods=['GET'])
 @jwt_required()
 def get_player_for_editing(player_id):
-   # No ranking data
+   # No ranking data    
+   
    try:
       player_object = Players.query.filter_by(player_id=player_id).first()
 

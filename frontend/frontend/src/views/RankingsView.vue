@@ -32,7 +32,7 @@
             <label for="yearToSelect" class="form-label me-2 text-responsive-4">Año:</label>
             <select
                id="yearToSelect"
-               class="form-select text-responsive-4"
+               class="form-select "
                v-model="yearToShow"
                @change="loadRankings">
                <option 

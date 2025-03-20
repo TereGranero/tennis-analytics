@@ -10,8 +10,13 @@
             class="img-fluid logo" />
          <figcaption 
             v-if="logoFound"
-            class="mt-2 text-muted">
-            {{ tournament }}
+            class="mt-2 text-muted text-break w-40">
+            {{ tournament }} <br>
+            <small>
+               "<span v-html="imageAttribution.title"></span>" por <span v-html="imageAttribution.author"></span>,
+               bajo licencia <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
+               <a :href="imageAttribution.filePageUrl" target="_blank">Ver en Wikimedia Commons</a>
+            </small>
          </figcaption>
       </figure>
    </div>
@@ -38,6 +43,7 @@ export default {
    data() {
       return {
          urlTournamentLogo: null, 
+         imageAttribution: null,
          wikidata_id: null,
          imagesPath: '/images',
          mappingImage: {
@@ -57,8 +63,12 @@ export default {
             this.wikidata_id = await getWikiDataId(`${this.tournament}`)
 
             if (this.wikidata_id) {
-               this.urlTournamentLogo = await getWikiDataLogo(this.wikidata_id)
-               this.logoFound = true
+               const res = await getWikiDataLogo(this.wikidata_id)
+               if (res) {
+                  this.urlTournamentLogo = res.logoUrl
+                  this.imageAttribution = res.imageAttribution
+                  this.logoFound = true
+               }
                console.log(`Logo: ${this.urlTournamentLogo}`)
             } else {
                console.log(`Logo not found in WikiData`)

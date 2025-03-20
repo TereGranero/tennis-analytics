@@ -5,8 +5,8 @@
       <div class="row mb-3">
          <div class="col-12">
             <HeaderImage
-               :imgName="imgName"
-               :alt="alt" />
+               imgName="login-banner"
+               alt="Título login" />
          </div>
       </div>
 
@@ -16,15 +16,15 @@
  </template>
  
  <script>
- import HeaderImage from '../HeaderImage.vue'
- import UserForm from '@/components/players/UserForm.vue'
+import HeaderImage from '@/components/HeaderImage.vue'
+import LoginForm from '@/components/LoginForm.vue'
 import { tokenService } from '@/api/authConnectionService'
 
  export default {
 
    name: 'LoginView',
 
-   components: { HeaderImage, UserForm },
+   components: { HeaderImage, LoginForm },
 
    methods: {
       async sendLogin(user){

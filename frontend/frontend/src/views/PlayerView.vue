@@ -7,7 +7,7 @@
             
          <!-- Edit Player Button -->
          <div 
-            v-if="player"
+            v-if="player && isAdmin"
             class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
@@ -82,6 +82,7 @@ import PlayerRankings from '@/components/players/PlayerRankings.vue'
 import PlayerTitles from '@/components/players/PlayerTitles.vue'
 import { getPlayerById } from '@/api/serverConnectionService.js'
 import { convertIntoSlug } from '@/services/normalization_services'
+import { tokenService } from "@/api/authConnectionService.js"
 
 export default {
 
@@ -104,7 +105,8 @@ export default {
       return {
          player: null,
          lastNameToSearch: '',
-         invalidLastName: false
+         invalidLastName: false,
+         isAdmin: false
       }
    },
 
@@ -169,6 +171,7 @@ export default {
    },
 
    async created() {
+      this.isAdmin = tokenService.isLoggedIn()
       await this.getPlayer()
    },
 
