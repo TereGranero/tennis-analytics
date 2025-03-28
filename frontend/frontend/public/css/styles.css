@@ -1,0 +1,59 @@
+:root {
+
+   /* Font sizes for mobile screens */
+   --text-size-1: 2rem;
+   --text-size-2: 1.5rem;
+   --text-size-3: 1.25rem;
+   --text-size-4: 1rem;
+}
+
+@media (min-width: 768px) {
+   :root {
+      --text-size-1: 2.2rem;
+      --text-size-2: 1.7rem;
+      --text-size-3: 1.45rem;
+      --text-size-4: 1.2rem;
+   }
+}
+@media (min-width: 992px) {
+   :root {
+      --text-size-1: 2.4rem;
+      --text-size-2: 1.9rem;
+      --text-size-3: 1.65rem;
+      --text-size-4: 1.4rem;
+   }
+}
+
+
+/* Responsive font sizes classes */
+.text-responsive-1 { font-size: var(--text-size-1); }
+.text-responsive-2 { font-size: var(--text-size-2); }
+.text-responsive-3 { font-size: var(--text-size-3); }
+.text-responsive-4 { font-size: var(--text-size-4); }
+
+
+/* Font-family to avoid Bootstrap Noto Sans and Liberation Sans */
+body {
+   font-family: Arial, sans-serif !important;
+}
+
+
+/* Flag */
+.flag {
+   width: 30px;
+   height: auto; 
+   vertical-align: middle;
+   box-sizing: border-box;
+   border: 1px solid #140202;
+}
+
+/* Links */
+.cursor-pointer {
+   cursor: pointer;
+}
+
+.form-label {
+   color: rgba(0,0,0, 0.65)
+}
+
+
