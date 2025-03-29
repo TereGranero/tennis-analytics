@@ -2,7 +2,7 @@
    <div class="d-flex flex-row flex-wrap gap-5 justify-content-center align-items-center mb-5">
 
       <!-- Player photo -->
-      <PlayerPhoto
+      <PlayerPhotoByWikidataId
          v-if="player" 
          :playerWikidataId="player.wikidata_id"/>   
 
@@ -68,13 +68,13 @@
 <script>
 import countries from 'i18n-iso-countries'
 import es from 'i18n-iso-countries/langs/es.json'
-import PlayerPhoto from './PlayerPhoto.vue'
+import PlayerPhotoByWikidataId from './PlayerPhotoByWikidataId.vue'
 
 export default {
    
    name: 'PlayerBio',
 
-   components: { PlayerPhoto },
+   components: { PlayerPhotoByWikidataId },
 
    props: {
       player: {
@@ -95,7 +95,7 @@ export default {
          immediate: true, 
          handler(newCountry) {
             if (newCountry && newCountry !== '-' && newCountry !== 'unknown') {
-               this.initCountry();
+               this.initCountry()
             }
          }
       }

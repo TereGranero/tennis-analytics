@@ -13,7 +13,7 @@
             :src="'https://flagcdn.com/w40/' + winner.winner_country + '.png'"
             :alt="winner.winner_country"
             :title="winner.winner_country"
-            class="flag me-2"> 
+            class="flag ms-5 me-2"> 
          <span class="cursor-pointer">{{ winner.winner_fullname }}</span>
       </td>
    </tr>

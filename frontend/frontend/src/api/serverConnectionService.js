@@ -76,10 +76,24 @@ export const getTournamentWinners = async (page, perPage, tourneySlug = 'roland_
 return res.data;
 };
 
+export const getRankingTitles = async (page, perPage, levelSlug = 'grand-slam') => {
+   const res = await httpClient.get(`${tournamentsEndpoint}/titles/level/${levelSlug}`, {
+      params: {
+         page: page, 
+         per_page: perPage
+      }
+   });
+return res.data;
+};
+
 const face2faceEndpoint = '/face2face';
 
-export const getTop10Players = async () => {
-   const res = await httpClient.get(`${face2faceEndpoint}/top10-players`);
+export const getNamePlayers = async (lastNameToSearch = '') => {
+   const res = await httpClient.get(`${face2faceEndpoint}/name-players`, {
+      params: {
+         search_name_last: lastNameToSearch, 
+      }
+   });
    return res.data;
 };
 

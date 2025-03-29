@@ -16,29 +16,61 @@ class Face2FaceAPI(Resource):
    def get(self, player_id=None):
       if player_id:
          return self.get_statistics(player_id)
-      elif not player_id and request.path.endswith('/top10-players'):
-         return self.get_top10_names()
+      elif not player_id and request.path.endswith('/name-players'):
+         return self.get_names()
    
       
-   def get_top10_names(self):
+   def get_names(self):
+      
+      # --------------- Parameters validation -------------------
+      
+      # Default values
+      default_name_last = ''
+      
+      # Validates search_name_last
       try:
-         # Calculates best rank for each player
-         subquery = db.session.query(
-            Ranking.player_id,
-            func.min(cast(Ranking.rank, Integer)).label('best_rank')
-         ).group_by(Ranking.player_id).subquery()
+         search_name_last = request.args.get('search_name_last', default_name_last).strip()
          
-         # Filters players top 10
-         query= db.session.query(
-            Player
-         ).join(
-            subquery,
-            Player.player_id == subquery.c.player_id
-         ).filter(
-            subquery.c.best_rank <= 10
-         ).order_by(Player.fullname)
+         # only alphanumerics
+         if search_name_last and not search_name_last.isalnum():
+            error_msg = f'Error retrieving players: search_name_last only accepts alphanumeric characters.'
+            print(error_msg)
+            response_object = {
+               'status': 'error', 
+               'message': error_msg
+            }
+            return response_object, 400
          
-         top10_players = [
+         # if exists en database
+         if not db.session.query(Player).filter(Player.name_last.ilike(f'%{search_name_last}%')).first():
+            error_msg = f'Error retrieving players: Last name {search_name_last} not found in database.'
+            print(error_msg)
+            response_object = {
+               'status': 'error', 
+               'message': error_msg
+            }
+            return response_object, 400
+      
+      except Exception as e:
+         error_msg = f'Error retrieving players with Last Name {search_name_last}: {str(e)}' if search_name_last else f'Error retrieving players: {str(e)}'
+         current_app.logger.error(error_msg, exc_info=True)
+         response_object = {
+            'status': 'error', 
+            'message': error_msg
+         }
+         return response_object, 500
+      
+      # Ends validation -----------------------------------------------
+      
+      try:
+
+         query = (db.session
+            .query(Player)
+            .filter(Player.name_last.ilike(f'%{search_name_last}%'))
+            .all()
+         )
+         
+         players = [
             {
                'player_id': player.player_id,
                'fullname': player.fullname
@@ -48,13 +80,13 @@ class Face2FaceAPI(Resource):
          
          response_object = {
             'status': 'success',
-            'message': 'Top 10 players names have been retrieved successfully!',
-            'top10_players': top10_players
+            'message': 'Players names have been retrieved successfully!',
+            'players': players
          }
          return response_object, 200
          
       except Exception as e:
-         error_msg = f'Error retrieving Top 10 players names: {str(e)}'
+         error_msg = f'Error retrieving players names: {str(e)}'
          current_app.logger.error(error_msg, exc_info=True)
          response_object = {
             'status': 'error',
@@ -89,13 +121,17 @@ class Face2FaceAPI(Resource):
          player_enriched['masters1000'] = player_object.get_number_of_titles('Masters 1000')       
          player_enriched['w_l'] = player_object.get_won_lost_ratio()
          player_enriched['aces'] = player_object.get_aces()
+         player_enriched['aces_match'] = player_object.get_aces_by_match()
          player_enriched['double_faults'] = player_object.get_double_faults()
+         player_enriched['double_faults_match'] = player_object.get_double_faults_by_match()
          player_enriched['points_on_first'] = player_object.get_points_on_first()
-         player_enriched['points_on_second'] = player_object.get_points_on_second()
+         player_enriched['points_on_first_match'] = player_object.get_points_on_first_by_match()
          player_enriched['games_on_serve'] = player_object.get_games_on_serve()
+         player_enriched['games_on_serve_match'] = player_object.get_games_on_serve_by_match()
          player_enriched['first_in'] = player_object.get_first_in()
+         player_enriched['first_in_match'] = player_object.get_first_in_by_match()
          player_enriched['bp_faced'] = player_object.get_faced_break_points()
-         player_enriched['bp_saved'] = player_object.get_saved_break_points()
+         player_enriched['bp_saved_percentage'] = player_object.get_saved_break_points_percentage()
          
          # Commits changes into database
          if update_flag:

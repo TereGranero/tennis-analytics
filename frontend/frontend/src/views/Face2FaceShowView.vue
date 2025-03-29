@@ -10,24 +10,27 @@
          </div>
       </div>
 
-         <!-- Select Button -->
+      <!-- Select Button -->
+      <div 
+         class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
+         v-if="player1 && player2">
          <div 
-            v-if="player1 & player2"
             class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
                class="btn btn-secondary" 
-               @click="selecPlayers">
-               Seleccionar
+               @click="selectPlayers">
+               Seleccionar jugadores
             </button>
          </div>
+      </div>
 
-      <div class="row justify-content-center align-items-start mb-5 mx-mb-3">
+      <div class="row justify-content-center align-items-start mb-5">
 
          <!-- Player 1 -->
          <div
             v-if="player1"
-            class="col-5 d-flex flex-column">
+            class="col-12 col-md-6 d-flex flex-column">
 
             <!-- Header fullname and flag -->
             <PlayerFullnameFlagHeader
@@ -35,7 +38,7 @@
             
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
-               <PlayerPhoto
+               <PlayerPhotoByWikidataId
                   :playerWikidataId="player1.wikidata_id"
                   :setHeight="true"/>   
             </div>
@@ -52,7 +55,7 @@
          <!-- Player 2 -->
          <div
             v-if="player2"
-            class="col-5 d-flex flex-column">
+            class="col-12 col-md-6  d-flex flex-column">
 
             <!-- Header fullname and flag -->
             <PlayerFullnameFlagHeader
@@ -60,7 +63,7 @@
 
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
-               <PlayerPhoto
+               <PlayerPhotoByWikidataId
                   :playerWikidataId="player2.wikidata_id"
                   :setHeight="true"/>   
             </div>
@@ -75,16 +78,17 @@
       </div>
 
       <!-- KPIs comparison -->
-      <div class="row justify-content-center align-items-start mb-5 mx-mb-3">
-         <div
-            v-if="player1"
-            class="col-5 d-flex flex-column">
+      <div 
+         v-if="player1 && player2"
+         class="row justify-content-center align-items-start mb-5 mx-mb-3">
+         <div class="col-12 col-md-6 d-flex flex-column">
             <Face2FaceDoubleKpi
                v-for="kpi in kpiData" 
                :key="kpi.title" 
                :title="kpi.title"
                :value1="kpi.value1"
                :value2="kpi.value2"
+               :percentage="kpi.percentage"
                class="mb-3"/>
          </div>
       </div>
@@ -94,7 +98,7 @@
  
 <script>
 import HeaderImage from '@/components/HeaderImage.vue'
-import PlayerPhoto from '@/components/players/PlayerPhoto.vue'
+import PlayerPhotoByWikidataId from '@/components/players/PlayerPhotoByWikidataId.vue'
 import PlayerFullnameFlagHeader from '@/components/players/PlayerFullnameFlagHeader.vue'
 import Face2FaceDoubleKpi from '@/components/face2face/Face2FaceDoubleKpi.vue'
 import { getTop10PlayerById } from '@/api/serverConnectionService'
@@ -105,7 +109,7 @@ export default {
 
    components: { 
       HeaderImage,
-      PlayerPhoto,
+      PlayerPhotoByWikidataId,
       PlayerFullnameFlagHeader,
       Face2FaceDoubleKpi
    },
@@ -137,67 +141,104 @@ export default {
             {
                title: 'Mejor Ranking ATP',
                value1: this.player1.best_ranking || '-',
-               value2: this.player2.best_ranking || '-'
+               value2: this.player2.best_ranking || '-',
+               percentage: false
             },
             {
                title: 'Títulos',
                value1: this.player1.total_titles  || '-',
-               value2: this.player2.total_titles  || '-'
+               value2: this.player2.total_titles  || '-',
+               percentage: false
             },
             {
                title: 'Grand Slams',
                value1: this.player1.grand_slams  || '0',
-               value2: this.player2.grand_slams  || '0'
+               value2: this.player2.grand_slams  || '0',
+               percentage: false
             },
             {
                title: 'Masters 1000',
                value1: this.player1.masters1000  || '0',
-               value2: this.player2.masters1000  || '0'
+               value2: this.player2.masters1000  || '0',
+               percentage: false
             },
             {
                title: 'W/L Ratio',
                value1: this.player1.w_l  || '-',
-               value2: this.player2.w_l  || '-'
+               value2: this.player2.w_l  || '-',
+               percentage: false
             },
             {
                title: 'Aces',
                value1: this.player1.aces  || '-',
-               value2: this.player2.aces  || '-'
+               value2: this.player2.aces  || '-',
+               percentage: false
+            },
+            {
+               title: 'Aces por partido',
+               value1: this.player1.aces_match  || '-',
+               value2: this.player2.aces_match  || '-',
+               percentage: false
             },
             {
                title: 'Dobles Faltas',
                value1: this.player1.double_faults  || '-',
-               value2: this.player2.double_faults  || '-'
+               value2: this.player2.double_faults  || '-',
+               percentage: false
+            },
+            {
+               title: 'Dobles Faltas por partido',
+               value1: this.player1.double_faults_match  || '-',
+               value2: this.player2.double_faults_match  || '-',
+               percentage: false
             },
             {
                title: 'Puntos ganados con 1er servicio',
                value1: this.player1.points_on_first  || '-',
-               value2: this.player2.points_on_first  || '-'
+               value2: this.player2.points_on_first  || '-',
+               percentage: false
             },
             {
-               title: 'Puntos ganados con 2º servicio',
-               value1: this.player1.points_on_second  || '-',
-               value2: this.player2.points_on_second  || '-'
+               title: 'Puntos con 1er servicio por partido',
+               value1: this.player1.points_on_first_match  || '-',
+               value2: this.player2.points_on_first_match  || '-',
+               percentage: false
             },
             {
                title: 'Juegos ganados al saque',
                value1: this.player1.games_on_serve  || '-',
-               value2: this.player2.games_on_serve  || '-'
+               value2: this.player2.games_on_serve  || '-',
+               percentage: false
+            },
+            {
+               title: 'Juegos al saque por partido',
+               value1: this.player1.games_on_serve_match  || '-',
+               value2: this.player2.games_on_serve_match  || '-',
+               percentage: false
             },
             {
                title: '1er servicio dentro',
                value1: this.player1.first_in  || '-',
-               value2: this.player2.first_in  || '-'
+               value2: this.player2.first_in  || '-',
+               percentage: false
+            },
+            {
+               title: '1er servicio dentro por partido',
+               value1: this.player1.first_in_match  || '-',
+               value2: this.player2.first_in_match  || '-',
+               percentage: false
             },
             {
                title: 'Puntos de rotura encarados',
                value1: this.player1.bp_faced  || '-',
-               value2: this.player2.bp_faced  || '-'
+               value2: this.player2.bp_faced  || '-',
+               percentage: false
             },
             {
                title: 'Puntos de rotura salvados',
-               value1: this.player1.bp_saved  || '-',
-               value2: this.player2.bp_saved  || '-'
+               value1: this.player1.bp_saved_percentage || '-',
+               value2: this.player2.bp_saved_percentage || '-',
+               percentage: true
             },
          ]
       },

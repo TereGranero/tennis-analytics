@@ -1,10 +1,5 @@
 <template>
    <tr>
-      <!-- Rank -->
-      <td class="text-center">
-         {{ playerRow.rank }}
-      </td>
-
       <!-- Player fullname and flag -->
       <td 
          @click="$emit('view-player', playerRow.player_id)" 
@@ -18,9 +13,9 @@
          <span class="cursor-pointer">{{ playerRow.fullname }}</span>
       </td>
 
-      <!-- Points -->      
+      <!-- Titles -->      
       <td class="text-center">
-         {{ playerRow.points }}
+         {{ playerRow.titles }}
       </td>
    </tr>
 </template>
@@ -28,7 +23,7 @@
 <script>
 export default {
 
-   name: 'RankingItem',
+   name: 'TitleItem',
 
    props: {
       playerRow: {

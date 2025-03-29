@@ -2,16 +2,15 @@
    <table class="table table-hover text-responsive-4">
       <thead>
          <tr class="text-center">
-            <th scope="col-3">Ranking</th>
             <th scope="col-6">Jugador</th>
-            <th scope="col-3">Puntos</th>
+            <th scope="col-3">{{ level }}</th>
          </tr>
       </thead>
       <tbody>
-         <RankingItem
-            v-for="(rk, index) in rankings" 
+         <TitlesItem
+            v-for="(playerRow, index) in playersRanking" 
             :key="index"
-            :playerRow="rk"
+            :playerRow="playerRow"
             class="text-responsive-4"
             @view-player="viewPlayer" />
       </tbody>
@@ -19,17 +18,21 @@
 </template>
  
 <script>
-import RankingItem from './RankingItem.vue'
+import TitlesItem from './TitlesItem.vue'
 
 export default {
    
-   name: 'RankingsTable',
+   name: 'TitlesTable',
 
-   components: { RankingItem },
+   components: { TitlesItem },
 
    props: {
-      rankings: {
+      playersRanking: {
          type: Array,
+         required: true
+      },
+      level: {
+         type: String,
          required: true
       }
    },

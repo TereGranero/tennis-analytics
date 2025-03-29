@@ -132,6 +132,7 @@ export default {
                } else {  // ok
                   this.tournamentName = this.winners[0].tourney_name
                   this.tournamentLevel = this.winners[0].tourney_level
+                  console.log(this.tournamentLevel)
                   this.isLoading = false
                }
             }

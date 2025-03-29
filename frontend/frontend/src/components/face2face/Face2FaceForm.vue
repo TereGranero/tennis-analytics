@@ -4,7 +4,6 @@
       @submit.prevent="sendForm">
 
       <!-- Player1 -->
-      <!--  when input changes, players are filtered and datalist is created -->
       <div class="col-12 col-md-5">
          <label
             for="player1Select"
@@ -17,7 +16,7 @@
             :class="{'is-invalid': processing && invalidPlayer1}"
             v-model="player1"
             @focus="resetState"
-            @input="filterPlayers(1)"
+            @input="handleInput(1)"
             list="player1List"
             autocomplete="off">
          <datalist id="player1List">
@@ -44,7 +43,7 @@
             :class="{'is-invalid': processing && invalidPlayer1}"
             v-model="player2"
             @focus="resetState"
-            @input="filterPlayers(2)"
+            @input="handleInput(2)"
             list="player2List"
             autocomplete="off">
          <!-- Creates a list of options -->
@@ -80,47 +79,59 @@
 </template>
 
 <script>
+import { getNamePlayers } from '@/api/serverConnectionService'
 export default {
 
    name: 'Face2FaceForm',
 
-   props: {
-      top10Players: {
-         type: Array,
-         required: true
-      }
-   },
-
    data() {
       return {
+         namePlayers: [],
          player1: '',
          player2: '',
-         player1Id: '',
-         player2Id: '', 
          filteredPlayers1: [],
          filteredPlayers2: [],
          processing: false,
-         error: false
+         error: false,
+         searchTimeOut: null
       }
    },
 
    computed: {
       invalidPlayer1() {
-         return !this.top10Players.some(
+         return !this.namePlayers.some(
             player => player.fullname == this.player1)
       },
       invalidPlayer2() {
-         return !this.top10Players.some(
+         return !this.namePlayers.some(
             player => player.fullname == this.player2)
       }
    },
 
    methods: {
 
+      async loadNamePlayers(query) {
+         if (query.length < 3) {
+            return
+         }
+
+         try {
+            const data = await getNamePlayers(query)
+
+            if (data.status == 'error') {
+               console.error(`Backend response error: ${data.message}`)
+            } else {
+               this.namePlayers = data.players
+            }
+         } catch (err) {
+            console.error(`Error retrieving players: ${err}`)
+         }
+      },
+
       filterPlayers(playerNum) {
          const fullnameToSearch = playerNum == 1 ? this.player1 : this.player2
 
-         const filteredPlayers = this.top10Players.filter(
+         const filteredPlayers = this.namePlayers.filter(
             player => player.fullname.toLowerCase().includes(fullnameToSearch.toLowerCase())
          )
          if (playerNum == 1) {
@@ -130,9 +141,16 @@ export default {
          }
       },
 
-      resetState() {
-         this.processing = false
-         this.error = false
+      
+      handleInput(playerNum) {
+         clearTimeout(this.searchTimeOut)
+         
+         // Sleeps 500ms and searches again
+         this.searchTimeOut = setTimeout(() => {
+            const query = playerNum == 1 ? this.player1 : this.player2
+            this.loadNamePlayers(query)
+            this.filterPlayers(playerNum)
+         }, 500) 
       },
 
       sendForm() {
@@ -146,8 +164,8 @@ export default {
          }
 
          // Find player IDs
-         const player1Data = this.top10Players.find(player => player.fullname === this.player1)
-         const player2Data = this.top10Players.find(player => player.fullname === this.player2)
+         const player1Data = this.namePlayers.find(player => player.fullname === this.player1)
+         const player2Data = this.namePlayers.find(player => player.fullname === this.player2)
 
          if (player1Data && player2Data) {
             // Sends events with player IDs
@@ -157,13 +175,11 @@ export default {
             // Resets form and variables
             this.player1 = ''
             this.player2 = ''
-            this.player1Id = '',
-            this.player2Id = '', 
             this.resetState()
          
          } else {
             this.error = true
-            console.log('Search fullname is not in the list or Top 10 players.')
+            console.log('Search name not found.')
          }
 
       },

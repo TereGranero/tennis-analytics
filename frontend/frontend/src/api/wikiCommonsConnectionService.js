@@ -1,4 +1,5 @@
 import { httpClientWikiCommons } from './httpClients';
+import { cleanAttribution } from '@/services/attribution_services';
 
 const wikiCommonsEndpoint = '/w/api.php';
 
@@ -8,7 +9,7 @@ export const getWikiCommonsImage = async (query) => {
       params: {
          action: 'query',
          format: 'json',
-         list: 'search',
+         list: 'search', 
          srsearch: `${query} filetype:jpg`,  // only images
          srnamespace: 6,  // only files
          srlimit: 1,       // 1 result
@@ -17,16 +18,25 @@ export const getWikiCommonsImage = async (query) => {
    });
 
    if (res.data.query?.search?.length > 0) {
-      const imageTitle = res.data.query.search[0].title;
+      const filtered = res.data.query.search.filter(img => !img.title.includes('vs'));
+
+      if (filtered.length === 0) {
+         console.log('No results found without "vs".');
+         return null;
+      }
+
+      const imageTitle = filtered[0].title;
       const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(imageTitle)}`;
       console.log(`URL: ${imageUrl}`);
 
       const fileName = imageTitle.replace(/^File:/, '');
-      const imageAttribution = await getImageAttribution(fileName);
+      let imageAttribution = await getImageAttribution(fileName);
+      imageAttribution = cleanAttribution(imageAttribution)
 
       return { imageUrl, imageAttribution };
    }
-   console.log('Image URL no encontrada');
+
+   console.log(`Image URL not found for query: ${query}.`);
    return null;
 };
 

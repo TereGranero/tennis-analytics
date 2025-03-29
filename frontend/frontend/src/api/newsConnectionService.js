@@ -6,6 +6,15 @@ const NEWS_API_KEY = "67f0427492e14efd9231262983d61fe9"; //developer
 const newsEndpoint = '/v2/everything';
 const sourcesEndpoint = '/v2/top-headlines/sources'
 
+// Last month
+const today = new Date();
+const lastMonth = new Date();
+lastMonth.setMonth(today.getMonth() - 1);
+
+// Formats 'YYYY-MM-DD'
+const from = lastMonth.toISOString().split('T')[0];
+const to = today.toISOString().split('T')[0];
+
 export const getTennisNews = async (sources) => {
    const res = await httpClientNews.get(newsEndpoint, {
       params: {
@@ -13,7 +22,9 @@ export const getTennisNews = async (sources) => {
          sources: sources,
          language: 'es',
          sortBy: 'popularity',
-         apiKey: NEWS_API_KEY
+         apiKey: NEWS_API_KEY,
+         from: from, // a month ago
+         to: to // today
       }
    });
 
@@ -31,7 +42,7 @@ export const getSourcesForTennisNews = async () => {
          apiKey: NEWS_API_KEY
       }
    });
-
+   
    return res.data;
 }
 

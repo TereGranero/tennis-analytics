@@ -1,119 +1,223 @@
 <template>
-   <div class="container mt-4">
-      <h2 class="text-center">Últimas noticias de tenis</h2>
-      <div v-if="loading" class="text-center">
-         Cargando noticias...
-      </div>
-      <div v-else>
-         <div class="row">
-            <div v-for="(nw, index) in news" 
-               :key="index" 
-               class="col-md-6 mb-3">
-               <div class="card">
-                  <img 
-                     v-if="nw.urlToImage"
-                     :src="nw.urlToImage" 
-                     alt="Imagen noticia" />
-                  <span v-else class="text-center"> Imagen no disponible</span>
+   <div class="container">
+      
+      <!-- Grand Slams Ranking -->
 
-                  <div class="card-body">
-                     <h4 class="card-title">{{ nw.title }}</h4>
-                     <p class="card-text">{{ nw.description }}</p>
-                     <a 
-                        :href="nw.url" 
-                        class="btn btn-secondary" 
-                        target="_blank">
-                        Leer más
-                     </a>
-                  </div>
-               </div>
-            </div>
+      <!-- Header Image -->
+      <div class="col-12 mb-3">
+         <HeaderImage
+            imgName="grand-slams"
+            alt="Título Ranking Grand Slam" />
+      </div>
+
+      <div 
+         class="d-flex flex-row flex-wrap align-items-start justify-content-center mb-5"
+         v-if="rankings['grand-slam'].length && photoFigcaptionGrandSlam && wikiQueryGrandSlam && player1NameGrandSlam && !isLoading['grand-slam']">
+
+         <!-- Player Image -->
+         <div class="col-12 col-md-5">
+            <PlayerPhotoByName 
+               :wikiQuery="wikiQueryGrandSlam"
+               :playerName="player1NameGrandSlam"
+               :msg="photoFigcaptionGrandSlam"
+               :alt="player1NameGrandSlam"
+               class="playerImage"  /> 
          </div>
+
+         <!-- Grand Slams Table -->
+         <div class="d-flex">
+            <TitlesTable 
+               :playersRanking="rankings['grand-slam']"
+               level="Gran Slams"
+               class="col-12 col-md-6 mt-3 ms-md-5"
+               @view-player="viewPlayer" /> 
+         </div>
+      </div>
+      <!-- Ends Grand Slams Ranking -->
+
+      <!-- Masters 1000 Ranking -->
+      
+      <!-- Header Image -->
+      <div class="col-12 mb-3">
+         <HeaderImage
+            imgName="masters-1000"
+            alt="Título Ranking Masters 1000" />
+      </div>
+
+      <div 
+         class="d-flex flex-row flex-wrap align-items-start justify-content-center mb-3 mb-md-5"
+         v-if="rankings['masters-1000'].length && photoFigcaptionMasters1000 && wikiQueryMasters1000 && player1NameMasters1000 && !isLoading['masters-1000']">
+
+
+         <!-- Masters 1000 Table -->
+         <div class="d-flex flex-column me-md-5">
+
+            <TitlesTable 
+               :playersRanking="rankings['masters-1000']"
+               level="Masters 1000"
+               class="mt-3"
+               @view-player="viewPlayer" /> 
+         </div>
+         
+         <!-- Player Image -->
+         <div class="col-12 col-md-5">
+            <PlayerPhotoByName  
+               :wikiQuery="wikiQueryMasters1000"
+               :playerName="player1NameMasters1000"
+               :msg="photoFigcaptionMasters1000"
+               :alt="player1NameMasters1000"
+               class="playerImage" /> 
+         </div>
+      </div>
+      
+      <!-- Ends Masters 1000 Ranking -->
+
+      <!-- News -->
+      <div class="col-12 mb-3">
+         <HeaderImage
+            imgName="news"
+            alt="Título Noticias" />
+      </div>
+
+      <div 
+         class="row align-items-center justify-content-center mb-5">
+         <TennisNews :totalNews="totalNews" />
       </div>
    </div>
 </template>
 
 <script>
-import { getSourcesForTennisNews, getTennisNews } from '@/api/newsConnectionService.js'
+import { getRankingTitles } from '@/api/serverConnectionService'
+import HeaderImage from '@/components/HeaderImage.vue'
+import PlayerPhotoByName  from '@/components/players/PlayerPhotoByName.vue'
+import TitlesTable from '@/components/home/TitlesTable.vue'
+import TennisNews from '@/components/home/TennisNews.vue'
 
 export default {
 
    name: 'HomeView',
 
+   components: { 
+      PlayerPhotoByName ,
+      HeaderImage,
+      TitlesTable,
+      TennisNews
+    },
+
    data() {
       return {
-         news: [],
-         sources: [],
-         loading: true
+         totalNews: 6,
+         sizeRankings: 5,
+         rankings: {
+            'grand-slam': [],
+            'masters-1000': []
+         },
+         isLoading: { 
+            'grand-slam': true,
+            'masters-1000': true
+         },
+         totalRankings: { 
+            'grand-slam': 0,
+            'masters-1000': 0
+         }
       }
    },
 
-   methods: {
+   computed: {
 
-      async loadSources() {
-         try {
-            const data = await getSourcesForTennisNews()
-
-            if (data.status == 'error') {
-               console.error(`News Api response error: ${data.code}-${data.message}`)
-               alert('Se ha producido un error y no se encontraron fuentes de noticias.')
-            } else {
-               console.log(`${data.sources.length} sports news sources have been retrieved.`)
-               if (data.sources.length == 0) {
-                  alert('No se han encontrado fuentes de noticias.')
-               }
-               
-               this.sources = data.sources
-                  .slice(0, 20)        // Max 20 sources
-                  .map(source => source.id)
-                  .join(',')
-            }
-
-         } catch(err) {
-            console.error(`Error retrieving sources: ${err}`)
-            alert('Se ha producido un error y no se encontraron fuentes de noticias.')
+      wikiQueryGrandSlam() {
+         // PlayerImage prop. Needed to searh player in Commons as first search
+         if (this.rankings['grand-slam'].length) {
+            return `${this.rankings['grand-slam'][0].name_first} ${this.rankings['grand-slam'][0].name_last} Grand Slam}`
          }
+         return null
       },
 
-      async loadNews() {
-         try {
-            const data = await getTennisNews(this.sources)
-
-            if (data.status == 'error') {
-               console.error(`News Api response error: ${data.code}-${data.message}`)
-               alert('Se ha producido un error y las noticias no se han podido cargar.')
-            } else {
-               console.log(`${data.totalResults} news have been retrieved.`)
-               if (data.totalResults == 0) {
-                  alert('No se han encontrado noticias de tenis.')
-               }
-               this.news = data.articles.slice(0, 8)
-            }
-
-         } catch(err) {
-            console.error(`Error retrieving news: ${err}`)
-            alert('Se ha producido un error y las noticias no se han podido cargar.')
+      player1NameGrandSlam() {
+         // PlayerImage prop. Needed to searh player in Commons as second search
+         if (this.rankings['grand-slam'].length) {
+            return `${this.rankings['grand-slam'][0].name_first} ${this.rankings['grand-slam'][0].name_last}`
          }
+         return null
       },
+
+      photoFigcaptionGrandSlam() {
+         // PlayerImage prop
+         if (this.rankings['grand-slam'].length) {
+            return `${this.rankings['grand-slam'][0].name_first} ${this.rankings['grand-slam'][0].name_last} - Top Grand Slams`
+         }
+         return null
+      },
+
+      wikiQueryMasters1000() {
+         // PlayerImage prop. Needed to searh player in Commons as first search
+         if (this.rankings['masters-1000'].length) {
+            return `${this.rankings['masters-1000'][0].name_first} ${this.rankings['masters-1000'][0].name_last} Indian Wells}`
+         }
+         return null
+      },
+
+      player1NameMasters1000() {
+         // PlayerImage prop. Needed to searh player in Commons as second search
+         if (this.rankings['masters-1000'].length) {
+            return `${this.rankings['masters-1000'][0].name_first} ${this.rankings['masters-1000'][0].name_last}`
+         }
+         return null
+      },
+
+      photoFigcaptionMasters1000() {
+         // PlayerImage prop
+         if (this.rankings['masters-1000'].length) {
+            return `${this.rankings['masters-1000'][0].name_first} ${this.rankings['masters-1000'][0].name_last} - Top Masters 1000`
+         }
+         return null
+      },
+
    },
 
-   async created() {
-      await this.loadSources()
-      await this.loadNews()
-      this.loading = false
+   methods: {
+      async loadTitlesRanking(level) {
+         try {
+               this.rankings[level] = []
+               this.isLoading[level] = true
+
+            const data = await getRankingTitles(1, this.sizeRankings, level)  //page 1
+
+            if (data.status == 'error') {
+               console.error(`Backend response error: ${data.message}`)
+               alert(`Se ha producido un error y el ranking ${level} no se ha podido cargar.`)
+
+            } else {
+               this.rankings[level] = data.winners
+               this.totalRankings[level] = data.total_winners
+
+               if (this.totalRankings[level] == 0){
+                  alert(`No se han encontrado datos de ${level}.`)
+
+               } else {  // ok
+                  this.isLoading[level] = false
+                  console.log(`${this.totalRankings[level]} ${level} winners have been retrieved.`)
+               }
+            }
+
+         } catch(err) {
+            console.error(`Error retrieving ${level} ranking: ${err}`)
+            alert(`Se ha producido un error y el ranking ${level} no se ha podido cargar.`)
+         }
+      },
+
+      viewPlayer(id) {
+         console.log(`HomeView sends id ${id} to PlayerView` )
+         this.$router.push({ name: 'Player', params: { id } })
+      }
+   },
+
+   async mounted() {
+      await this.loadTitlesRanking('grand-slam')
+      await this.loadTitlesRanking('masters-1000')
    }
    
 }
 </script>
 
-<style scoped>
-   .card img {
-      width: 100%;
-      height: auto;
-      max-height: 400px;
-      object-fit: contain;
-   }
-   .card-text {
-      font-size: 1.1rem;
-   }
-</style>
+<style></style>

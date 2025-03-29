@@ -13,8 +13,9 @@
             :title="player.country"
             class="flag me-3"> 
          <span class="text-responsive-2 text-center m-0">
-            {{ (player.name_first + ' ' + player.name_last).toUpperCase() }}
+               {{ (player.fullname).toUpperCase() }}
          </span>
+
       </div>
    </div>
 
@@ -36,6 +37,6 @@ export default {
 <style scoped> 
    .flag {
       width: 30px;
-      height: 1.5em; 
+      height: 1.5em;
    }
 </style>

@@ -1,5 +1,5 @@
 <template>
-   <nav aria-label="Page navigation" class="text-center">
+   <nav aria-label="Page navigation" class="text-center mb-5">
       <button 
          type="text" 
          class="btn btn-secondary" 

@@ -6,18 +6,18 @@
       class="d-flex flex-column align-items-center text-center">
       <img 
          :src="urlPlayerImage"
+         :alt="imageAttribution.description"
          class="img-fluid photo"
-         :class="{ 'fixed-height': setHeight }"
-         :alt="imageAttribution.description" />
+         :class="{ 'fixed-height': setHeight }" />
 
       <!-- Attribution -->
       <figcaption 
          v-if="imageAttribution" 
          class="mt-2 text-muted text-break">
          <small>
-            "<span v-html="imageAttribution.title"></span>" por <span v-html="imageAttribution.author"></span>,
-            bajo licencia <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
-            <a :href="imageAttribution.filePageUrl" target="_blank">Ver en Wikimedia Commons</a>
+            "<span v-html="imageAttribution.title" class="fw-bold"></span>" by <span v-html="imageAttribution.author"></span>,
+            licensed <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
+            <a :href="imageAttribution.filePageUrl" target="_blank">Wikimedia Commons</a>
          </small>
       </figcaption>
    </figure>   
@@ -29,14 +29,13 @@ import { getWikiDataImage } from '@/api/wikiDataConnectionService.js'
 
 export default {
    
-   name: 'PlayerPhoto',
+   name: 'PlayerPhotoByWikidataId',
 
    props: {
       playerWikidataId: {
          type: String,
          required: true
       },
-
       setHeight: {
          type: Boolean,
          default: false

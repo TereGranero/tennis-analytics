@@ -126,6 +126,13 @@ class Player(db.Model):
       return [match.to_dict() for match in matches_lost]
    
    
+   def get_total_matches(self):
+      total_matches_won = self.matches_won.count() 
+      total_matches_lost = self.matches_lost.count()
+      
+      return total_matches_lost + total_matches_won
+      
+      
    def get_won_lost_ratio(self):
       """
       Calculates victories versus looses ratio
@@ -139,7 +146,7 @@ class Player(db.Model):
       if (total_matches_lost == 0):  
          return 1 if (total_matches_won > 0) else 0
       
-      return round(total_matches_won / total_matches_lost, 4)
+      return round(total_matches_won / total_matches_lost, 2)
       
    
    def get_titles(self, level=None):
@@ -219,6 +226,31 @@ class Player(db.Model):
 
       return w_aces + l_aces
    
+   
+   def get_aces_by_match(self):
+      """
+      Calculates number of aces by match in career
+      
+      Returns:
+         int: aces ratio
+      """
+      w_aces = db.session.query(
+         func.sum(cast(Match.w_aces, Integer))
+      ).filter(Match.winner_id == self.player_id
+               ).scalar() or 0
+
+      l_aces = db.session.query(
+         func.sum(cast(Match.l_aces, Integer))
+      ).filter(Match.loser_id == self.player_id
+               ).scalar() or 0
+      
+      total_matches = self.get_total_matches()
+      if (total_matches == 0):
+         return 0
+
+      return round((w_aces + l_aces)/total_matches, 2)
+   
+   
    def get_double_faults(self):
       """
       Calculates number of double faults in career
@@ -237,6 +269,31 @@ class Player(db.Model):
                ).scalar() or 0
 
       return w_df + l_df
+   
+   
+   def get_double_faults_by_match(self):
+      """
+      Calculates number of double faults by match in career
+      
+      Returns:
+         int:  double faults ratio
+      """
+      w_df = db.session.query(
+         func.sum(cast(Match.w_df, Integer))
+      ).filter(Match.winner_id == self.player_id
+               ).scalar() or 0
+
+      l_df = db.session.query(
+         func.sum(cast(Match.l_df, Integer))
+      ).filter(Match.loser_id == self.player_id
+               ).scalar() or 0
+      
+      total_matches = self.get_total_matches()
+      if (total_matches == 0):
+         return 0
+      
+      return round((w_df + l_df)/total_matches, 2)
+   
    
    def get_points_on_first(self):
       """
@@ -257,6 +314,31 @@ class Player(db.Model):
 
       return w_1stWon + l_1stWon
    
+   
+   def get_points_on_first_by_match(self):
+      """
+      Calculates number of won points on first service by match in career
+      
+      Returns:
+         int: won points on first ratio
+      """
+      w_1stWon = db.session.query(
+         func.sum(cast(Match.w_1stWon, Integer))
+      ).filter(Match.winner_id == self.player_id
+               ).scalar() or 0
+
+      l_1stWon = db.session.query(
+         func.sum(cast(Match.l_1stWon, Integer))
+      ).filter(Match.loser_id == self.player_id
+               ).scalar() or 0
+
+      total_matches = self.get_total_matches()
+      if (total_matches == 0):
+         return 0
+      
+      return round((w_1stWon + l_1stWon)/total_matches, 2)
+   
+   
    def get_points_on_second(self):
       """
       Calculates number of won points on second service in career
@@ -276,12 +358,37 @@ class Player(db.Model):
 
       return w_2ndWon + l_2ndWon
    
+   
+   def get_points_on_second_by_match(self):
+      """
+      Calculates number of won points on second service by match in career
+      
+      Returns:
+         int: won points on second serve ratio
+      """
+      w_2ndWon = db.session.query(
+         func.sum(cast(Match.w_2ndWon, Integer))
+      ).filter(Match.winner_id == self.player_id
+               ).scalar() or 0
+
+      l_2ndWon = db.session.query(
+         func.sum(cast(Match.l_2ndWon, Integer))
+      ).filter(Match.loser_id == self.player_id
+               ).scalar() or 0
+
+      total_matches = self.get_total_matches()
+      if (total_matches == 0):
+         return 0
+      
+      return round((w_2ndWon + l_2ndWon)/total_matches, 2)
+
+   
    def get_games_on_serve(self):
       """
       Calculates number of won games on service in career
       
       Returns:
-         int: total won points
+         int: total won games on serve
       """
       w_SvGms = db.session.query(
          func.sum(cast(Match.w_SvGms, Integer))
@@ -295,12 +402,38 @@ class Player(db.Model):
 
       return w_SvGms + l_SvGms
    
+      
+   def get_games_on_serve_by_match(self):
+      """
+      Calculates number of won games on service by match in career
+      
+      Returns:
+         int: won games on serve ratio
+      """
+      w_SvGms = db.session.query(
+         func.sum(cast(Match.w_SvGms, Integer))
+      ).filter(Match.winner_id == self.player_id
+               ).scalar() or 0
+
+      l_SvGms = db.session.query(
+         func.sum(cast(Match.l_SvGms, Integer))
+      ).filter(Match.loser_id == self.player_id
+               ).scalar() or 0
+
+      total_matches = self.get_total_matches()
+      if (total_matches == 0):
+         return 0
+      
+      return round((w_SvGms + l_SvGms)/total_matches, 2)
+   
+   
+   
    def get_first_in(self):
       """
       Calculates number of first service in in career
       
       Returns:
-         int: total services
+         int: total first services in
       """
       w_1stIn = db.session.query(
          func.sum(cast(Match.w_1stIn, Integer))
@@ -313,6 +446,33 @@ class Player(db.Model):
                ).scalar() or 0
 
       return w_1stIn + l_1stIn
+   
+      
+   def get_first_in_by_match(self):
+      """
+      Calculates number of first service by match in in career
+      
+      Returns:
+         int: first services in ratio
+      """
+      w_1stIn = db.session.query(
+         func.sum(cast(Match.w_1stIn, Integer))
+      ).filter(Match.winner_id == self.player_id
+               ).scalar() or 0
+
+      l_1stIn = db.session.query(
+         func.sum(cast(Match.l_1stIn, Integer))
+      ).filter(Match.loser_id == self.player_id
+               ).scalar() or 0
+
+      total_matches = self.get_total_matches()
+      if (total_matches == 0):
+         return 0
+      
+      
+      return round((w_1stIn + l_1stIn)/total_matches, 2)
+
+   
 
    def get_faced_break_points(self):
       """
@@ -335,7 +495,7 @@ class Player(db.Model):
    
    def get_saved_break_points(self):
       """
-      Calculates number of saved break points in in career
+      Calculates number of saved break points in career
       
       Returns:
          int: total break points
@@ -351,3 +511,17 @@ class Player(db.Model):
                ).scalar() or 0
 
       return w_bpSaved + l_bpSaved
+   
+   def get_saved_break_points_percentage(self):
+      """
+      Calculates percentage of saved break points in career
+      
+      Returns:
+         int: total break points
+      """
+      bpSaved = self.get_saved_break_points()
+      bpFaced = self.get_faced_break_points()
+      if (bpFaced == 0):
+         return 0
+      
+      return round((100 * bpSaved / bpFaced), 2)

@@ -8,5 +8,6 @@ api = Api(tournaments_bp)
 api.add_resource(
    TournamentsAPI, 
    '/level/<string:search_level_slug>',
-   '/winners/<string:search_tournament_slug>'
+   '/winners/<string:search_tournament_slug>',
+   '/titles/level/<string:search_level_slug>'  
 )

@@ -11,11 +11,11 @@
          <figcaption 
             v-if="logoFound"
             class="mt-2 text-muted text-break w-40">
-            {{ tournament }} <br>
+            <span class="fw-bold">{{ tournament }}</span> <br>
             <small>
-               "<span v-html="imageAttribution.title"></span>" por <span v-html="imageAttribution.author"></span>,
-               bajo licencia <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
-               <a :href="imageAttribution.filePageUrl" target="_blank">Ver en Wikimedia Commons</a>
+               "<span v-html="imageAttribution.title"></span>" by <span v-html="imageAttribution.author"></span>,
+               licensed <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
+               <a :href="imageAttribution.filePageUrl" target="_blank">Wikimedia Commons</a>
             </small>
          </figcaption>
       </figure>
@@ -68,8 +68,12 @@ export default {
                   this.urlTournamentLogo = res.logoUrl
                   this.imageAttribution = res.imageAttribution
                   this.logoFound = true
+                  console.log(`Logo: ${this.urlTournamentLogo}`)
+               } else {
+                  console.log(`Logo not found in WikiData`)
+                  this.getGenericLogo()
                }
-               console.log(`Logo: ${this.urlTournamentLogo}`)
+               
             } else {
                console.log(`Logo not found in WikiData`)
                this.getGenericLogo()

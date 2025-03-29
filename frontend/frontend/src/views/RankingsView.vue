@@ -10,7 +10,6 @@
          </div>
       </div>
 
-
       <!-- Alert Messages -->
       <div 
          class="row" 
@@ -34,7 +33,7 @@
                id="yearToSelect"
                class="form-select "
                v-model="yearToShow"
-               @change="loadRankings">
+               @change="changeYear">
                <option 
                   v-for="year in years"
                   :key="year"
@@ -46,17 +45,20 @@
       </div>
      
       <div 
-         class="row align-items-center justify-content-center mb-3 mb-md-4"
-         v-if="rankings.length && !isLoading">
+         class="d-flex flex-row flex-wrap align-items-center justify-content-center mb-3 mb-md-4"
+         v-if="rankings.length && photoFigcaption && wikiQuery && player1Name && !isLoading">
 
          <!-- Player No.1 Image -->
-         <div class="col-12 col-md-3">
-            <Ranking1Image 
-               :player="player1" /> 
+         <div class="col-12 col-md-4 mt-3">
+            <PlayerPhotoByName 
+               :wikiQuery="wikiQuery"
+               :playerName="player1Name"
+               :msg="photoFigcaption"
+               :alt="player1Name" /> 
          </div>
 
-         <!-- Ranking Table Component -->
-         <div class="col-12 col-md-8">
+         <!-- Ranking Table -->
+         <div class="d-flex ms-md-5">
             <RankingsTable 
                :rankings="rankings"
                @view-player="viewPlayer" /> 
@@ -82,7 +84,7 @@
 
 <script>
 import HeaderImage from '@/components/HeaderImage.vue'
-import Ranking1Image from '@/components/rankings/Ranking1Image.vue'
+import PlayerPhotoByName  from '@/components/players/PlayerPhotoByName.vue'
 import RankingsTable from '@/components/rankings/RankingsTable.vue'
 import Pagination from '@/components/Pagination.vue'
 import { getEndYearRankings } from '@/api/serverConnectionService.js'
@@ -93,7 +95,7 @@ export default {
 
    components: {
       HeaderImage,
-      Ranking1Image,
+      PlayerPhotoByName ,
       RankingsTable, 
       Pagination
    },
@@ -107,17 +109,33 @@ export default {
          totalPages: 0,
          years: Array.from({ length: 2023 - 1973 + 1 }, (_, index) => 1973 + index),
          yearToShow: 2023,
+         numberOne: null,
          isLoading: false,
       }
    },
 
    computed: {
-      player1() {
-         if (this.rankings.length) {
-            return {
-               name : `${this.rankings[0].name_first} ${this.rankings[0].name_last}`,
-               year: this.yearToShow.toString()
-            }
+
+      wikiQuery() {
+         // PlayerImage prop. Needed to searh player in Commons as first search
+         if (this.numberOne) {
+            return `${this.numberOne.name_first} ${this.numberOne.name_last} ${this.yearToShow.toString()}`
+         }
+         return null
+      },
+
+      player1Name() {
+         // PlayerImage prop. Needed to searh player in Commons as second search
+         if (this.numberOne) {
+            return `${this.numberOne.name_first} ${this.numberOne.name_last}`
+         }
+         return null
+      },
+
+      photoFigcaption() {
+         // PlayerImage prop
+         if (this.numberOne) {
+            return `${this.numberOne.name_first} ${this.numberOne.name_last} - ATP No.1 en ${this.yearToShow.toString()}`
          }
          return null
       }
@@ -148,7 +166,6 @@ export default {
                this.rankings = data.rankings
                this.totalRankings = data.total_rankings
                this.totalPages = data.pages
-               console.log(`${this.totalRankings} rankings have been retrieved. Page ${this.page} of ${this.totalPages} is shown.`)
 
                if (this.totalRankings == 0){
                   alert('No se ha encontrado ningún ranking.')
@@ -157,7 +174,15 @@ export default {
                   await this.loadRankings()
 
                } else {  // ok
+                  
+                  // Updates No.1
+                  if (this.page == 1) {
+                     this.numberOne = this.rankings.find(
+                        player => player.rank == 1
+                     )
+                  }
                   this.isLoading = false
+                  console.log(`${this.totalRankings} rankings have been retrieved. Page ${this.page} of ${this.totalPages} is shown.`)
                }
             }
 
@@ -168,6 +193,12 @@ export default {
             this.page = 1
             await this.loadRankings()
          }
+      },
+
+      async changeYear() {
+         this.page = 1
+         this.numberOne = null
+         await this.loadRankings()
       },
 
       async goToPage(page) {

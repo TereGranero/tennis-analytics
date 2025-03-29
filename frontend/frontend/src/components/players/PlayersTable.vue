@@ -14,7 +14,7 @@
          <PlayerItem 
             v-for="player in players" 
             :key="player.id"
-            :player="player"
+            :playerRow="player"
             :isAdmin="isAdmin"
             class="text-responsive-4"
             @view-player="viewPlayer"

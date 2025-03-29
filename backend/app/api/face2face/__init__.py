@@ -8,5 +8,5 @@ api = Api(face2face_bp)
 api.add_resource(
    Face2FaceAPI, 
    '/<string:player_id>',
-   '/top10-players'
+   '/name-players'
 )

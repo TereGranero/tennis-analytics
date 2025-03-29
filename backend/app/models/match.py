@@ -7,6 +7,9 @@ from app.services.normalization_services import normalize_to_frontend
 # Model for table matches
 class Match(db.Model):
    __tablename__ = 'matches'
+   
+   # -------------------------  Database columns ------------------------------
+   
    winner_id = db.Column(db.String(7), db.ForeignKey('players.player_id'), primary_key=True)
    loser_id = db.Column(db.String(7), db.ForeignKey('players.player_id'), primary_key=True)
    tourney_date = db.Column(db.Date, primary_key=True)
@@ -36,10 +39,32 @@ class Match(db.Model):
    l_bpFaced = db.Column(db.String(8), nullable=False)
    year = db.Column(db.String(4), nullable=False)
    court = db.Column(db.String(8), nullable=False)
+   
+   
+   # --------------------------  Relationships  -----------------------------
      
    winner = db.relationship('Player', foreign_keys=[winner_id], back_populates='matches_won')
    loser = db.relationship('Player', foreign_keys=[loser_id], back_populates='matches_lost')
    
+   
+   # -------------------------  Added Properties ------------------------------
+   
+   @property
+   def winner_name_first(self):
+      return self.winner.name_first if self.winner else 'unknown'
+   
+   @property
+   def winner_name_last(self):
+      return self.winner.name_last if self.winner else 'unknown'
+
+   @property
+   def winner_country(self):
+      return self.winner.country if self.winner else 'unknown'
+   
+   @property
+   def winner_fullname(self):
+      return self.winner.fullname if self.winner else 'unknown'
+
    @hybrid_property
    def tourney_slug(self):
       # Converts tourney_name into a slug to use in Python
@@ -62,6 +87,9 @@ class Match(db.Model):
    def tourney_level_slug(cls):
       # Converts tourney_level into a slug in SQL
       return func.lower(func.replace(cls.tourney_level, ' ', '-'))
+   
+   
+   # ----------------------------  Methods ------------------------------------
     
    def to_dict(self):
    # Converts registers to dict and normalizes some values according to frontend
@@ -69,10 +97,10 @@ class Match(db.Model):
       matches_dict = {
          'winner_id': self.winner_id,
          'loser_id': self.loser_id,
-         'winner_fullname': self.winner.fullname if self.winner else 'unknown',
-         'loser_fullname': self.loser.fullname if self.loser else 'unknown',
-         'winner_country': self.winner.country if self.winner else 'unknown',
-         'loser_country': self.loser.country if self.loser else 'unknown',
+         'winner_name_first': self.winner_name_first,
+         'winner_name_last': self.winner_name_last,
+         'winner_country': self.winner_country,
+         'winner_fullname': self.winner_fullname,
          'tourney_date': self.tourney_date,
          'tourney_name': self.tourney_name,
          'tourney_slug': self.tourney_slug,
