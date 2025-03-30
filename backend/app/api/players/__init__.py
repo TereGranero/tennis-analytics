@@ -10,5 +10,6 @@ api.add_resource(
    '',
    '/', 
    '/<string:player_id>',
-   '/edit/<string:player_id>'
+   '/edit/<string:player_id>',
+   '/names',
 )

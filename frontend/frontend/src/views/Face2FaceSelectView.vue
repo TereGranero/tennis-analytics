@@ -10,18 +10,6 @@
          </div>
       </div>
 
-      <!-- Alert Messages 
-      <div 
-         class="row" 
-         v-if="!namePlayers.length" >
-
-         <div class="col-12">
-            <div class="alert alert-info text-responsive-3 text-center" role="alert">
-               Cargando jugadores...
-            </div>
-         </div>
-      </div>-->
-
       <!-- Players Form -->
      <Face2FaceForm 
          @send-form="showPlayers"/>
@@ -37,7 +25,10 @@ export default {
 
    name: 'Face2FaceSelectView',
 
-   components: { HeaderImage, Face2FaceForm },
+   components: { 
+      HeaderImage, 
+      Face2FaceForm 
+   },
 
    methods: {
 

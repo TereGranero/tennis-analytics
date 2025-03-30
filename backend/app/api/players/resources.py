@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import current_app, request
 from sqlalchemy import desc
 from marshmallow import Schema, fields, validates, ValidationError
+import re
 
 from app.extensions import db
 from app.models.player import Player
@@ -119,12 +120,99 @@ class PlayersAPI(Resource):
       
    def get(self, player_id=None):
       if not player_id:
-         return self.get_all_players()
+         if '/names' in request.path:
+            # Extracts argument
+            search_fullname = request.args.get('search_fullname', '').strip()
+            return self.get_names(search_fullname)
+         else:
+            return self.get_all_players()
       elif request.path.endswith('/edit/' + player_id):
          return self.get_for_editing(player_id)
       else:
          return self.get_single_player(player_id)
+      
 
+   def get_names(self, search_fullname=''):
+      print('Entra en get_names')
+      
+      # --------------- Parameters validation -------------------
+      
+      # Validates search_fullname
+      try:
+
+         if not search_fullname:
+            error_msg = f'Error retrieving players: search_fullname is empty.'
+            print(error_msg)
+            response_object = {
+               'status': 'error', 
+               'message': error_msg
+            }
+            return response_object, 400
+            
+         # only alphanumerics
+         if search_fullname and not re.match(r'^[a-zA-Z.\s]+$', search_fullname):
+            error_msg = f'Error retrieving players: search_fullname only accepts letters, spaces and dots characters.'
+            print(error_msg)
+            response_object = {
+               'status': 'error', 
+               'message': error_msg
+            }
+            return response_object, 400
+         
+         # if exists en database
+         if not db.session.query(Player).filter(Player.fullname.ilike(f'{search_fullname}%')).first():
+            error_msg = f'Error retrieving players: Fullname starting with {search_fullname} not found in database.'
+            print(error_msg)
+            response_object = {
+               'status': 'error', 
+               'message': error_msg
+            }
+            return response_object, 400
+      
+      except Exception as e:
+         error_msg = f'Error retrieving players with Fullname starting with {search_fullname}: {str(e)}'
+         current_app.logger.error(error_msg, exc_info=True)
+         response_object = {
+            'status': 'error', 
+            'message': error_msg
+         }
+         return response_object, 500
+      
+      # Ends validation -----------------------------------------------
+      
+      try:
+         # Searches names starting with search_fullname
+         query = (db.session
+            .query(Player)
+            .filter(Player.fullname.ilike(f'{search_fullname}%'))
+            .all()
+         )
+         print(search_fullname)
+         players = [
+            {
+               'player_id': player.player_id,
+               'fullname': player.fullname
+            }
+            for player in query
+         ]
+         print(players[0])
+         
+         response_object = {
+            'status': 'success',
+            'message': 'Players names have been retrieved successfully!',
+            'players': players
+         }
+         return response_object, 200
+         
+      except Exception as e:
+         error_msg = f'Error retrieving players names: {str(e)}'
+         current_app.logger.error(error_msg, exc_info=True)
+         response_object = {
+            'status': 'error',
+            'message': error_msg
+         }
+         return response_object, 500
+      
       
    def get_all_players(self):   
       # GET all players
@@ -151,7 +239,7 @@ class PlayersAPI(Resource):
             return response_object, 400
          
          # if exists en database
-         if not db.session.query(Player).filter(Player.name_last.ilike(f'%{search_name_last}%')).first():
+         if not db.session.query(Player).filter(Player.name_last.ilike(f'{search_name_last}%')).first():
             error_msg = f'Error retrieving players: Last name {search_name_last} not found in database.'
             print(error_msg)
             response_object = {
@@ -195,8 +283,9 @@ class PlayersAPI(Resource):
          # Retrieves all players in database
          base_query = db.session.query(Player)
          
+         # Searches last names starting with search_name_last
          if search_name_last:
-            base_query = base_query.filter(Player.name_last.ilike(f'%{search_name_last}%'))
+            base_query = base_query.filter(Player.name_last.ilike(f'{search_name_last}%'))
 
          # Calculates number of filtered players
          total_players = base_query.count()
@@ -298,12 +387,28 @@ class PlayersAPI(Resource):
          # Enriches missing data with Wikidata
          update_flag, player_enriched = get_wikidata_enrichment(player_dict)
          
-         # Retrieves ranks, best rank, number of titles won, W/L ratio and titles
+         # Retrieves ranks by year and list of titles
          player_enriched['ranks_by_year'] = player_object.get_rank_by_year()  
+         player_enriched['titles'] = player_object.get_titles()
+         
+         # Retrieves statistics
          player_enriched['best_ranking'] = player_object.get_best_ranking()
          player_enriched['total_titles'] = player_object.get_number_of_titles()
+         player_enriched['grand_slams'] = player_object.get_number_of_titles('Grand Slam')
+         player_enriched['masters1000'] = player_object.get_number_of_titles('Masters 1000')
          player_enriched['w_l'] = player_object.get_won_lost_ratio()
-         player_enriched['titles'] = player_object.get_titles()
+         player_enriched['aces'] = player_object.get_aces()
+         player_enriched['aces_match'] = player_object.get_aces_by_match()
+         player_enriched['double_faults'] = player_object.get_double_faults()
+         player_enriched['double_faults_match'] = player_object.get_double_faults_by_match()
+         player_enriched['points_on_first'] = player_object.get_points_on_first()
+         player_enriched['points_on_first_match'] = player_object.get_points_on_first_by_match()
+         player_enriched['games_on_serve'] = player_object.get_games_on_serve()
+         player_enriched['games_on_serve_match'] = player_object.get_games_on_serve_by_match()
+         player_enriched['first_in'] = player_object.get_first_in()
+         player_enriched['first_in_match'] = player_object.get_first_in_by_match()
+         player_enriched['bp_faced'] = player_object.get_faced_break_points()
+         player_enriched['bp_saved_percentage'] = player_object.get_saved_break_points_percentage()
          
          # Commits changes into database
          if update_flag:

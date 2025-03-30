@@ -75,7 +75,7 @@ const routes = [
 
    {
       path: '/face2face/select',
-      name: 'FaceToFaceSelect',
+      name: 'Face2FaceSelect',
       component: Face2FaceSelectView,
    },
 

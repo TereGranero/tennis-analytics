@@ -38,9 +38,13 @@
             
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
-               <PlayerPhotoByWikidataId
-                  :playerWikidataId="player1.wikidata_id"
-                  :setHeight="true"/>   
+               <div 
+                  class="cursor-pointer"
+                  @click="viewPlayer(player1.player_id)">
+                  <PlayerPhotoByWikidataId
+                     :playerWikidataId="player1.wikidata_id"
+                     :setHeight="true"/>
+               </div>
             </div>
             
          </div>
@@ -63,9 +67,13 @@
 
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
-               <PlayerPhotoByWikidataId
-                  :playerWikidataId="player2.wikidata_id"
-                  :setHeight="true"/>   
+               <div 
+                  class="cursor-pointer"
+                  @click="viewPlayer(player2.player_id)">
+                  <PlayerPhotoByWikidataId
+                     :playerWikidataId="player2.wikidata_id"
+                     :setHeight="true"/>   
+               </div>
             </div>
          </div>
          <div v-else class="row">
@@ -101,7 +109,7 @@ import HeaderImage from '@/components/HeaderImage.vue'
 import PlayerPhotoByWikidataId from '@/components/players/PlayerPhotoByWikidataId.vue'
 import PlayerFullnameFlagHeader from '@/components/players/PlayerFullnameFlagHeader.vue'
 import Face2FaceDoubleKpi from '@/components/face2face/Face2FaceDoubleKpi.vue'
-import { getTop10PlayerById } from '@/api/serverConnectionService'
+import { getPlayerById } from '@/api/serverConnectionService.js'
 
 export default {
 
@@ -248,7 +256,7 @@ export default {
 
       async loadPlayer(playerId, playerNum) {
          try {
-            const data = await getTop10PlayerById(playerId)
+            const data = await getPlayerById(playerId)
 
             if (data.status == 'error') {
                console.error(`Backend response error for player id ${playerId}: ${data.message}`)
@@ -273,6 +281,11 @@ export default {
 
       selectPlayers() {
          this.$router.push({ name: 'Face2FaceSelect'} ) 
+      },
+
+      viewPlayer(id) {
+         console.log(`Face2faceShowView sends id ${id} to PlayerView` )
+         this.$router.push({ name: 'Player', params: { id } })
       },
    },
 

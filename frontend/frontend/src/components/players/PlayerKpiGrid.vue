@@ -1,5 +1,7 @@
 <template>
-     <div class="d-flex flex-column align items-start mb-5"> 
+     <div 
+      v-if="hasAnyKpi"
+      class="d-flex flex-column align items-start mb-5"> 
          <h2 
             v-if="titleGrid"
             class="text-responsive-3 fw-bold m-0">
@@ -11,7 +13,8 @@
                v-for="kpi in kpis" 
                :key="kpi.title" 
                :title="kpi.title"
-               :value="kpi.value"/>
+               :value="kpi.value"
+               :percentage="kpi.percentage"/>
          </div>
       </div>
  </template>
@@ -35,6 +38,13 @@
          default: null
       }
    },
+
+   computed: {
+    hasAnyKpi() {
+      // If any kpi has not value  '-'
+      return this.kpis.some(kpi => kpi.value !== '-');
+    }
+  }
 
  }
  </script>

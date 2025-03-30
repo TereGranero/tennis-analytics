@@ -109,16 +109,89 @@ export default {
          return [
             {
                title: 'Mejor Ranking ATP',
-               value: this.player.best_ranking || '-'
+               value: this.player.best_ranking || '-',
+               percentage: false
             },
             {
-               title: 'Nº Títulos',
-               value: this.player.total_titles  || '-'
+               title: 'Títulos',
+               value: this.player.total_titles  || '-',
+               percentage: false
+            },
+            {
+               title: 'Grand Slams',
+               value: this.player.grand_slams  || '0',
+               percentage: false
+            },
+            {
+               title: 'Masters 1000',
+               value: this.player.masters1000  || '0',
+               percentage: false
             },
             {
                title: 'W/L Ratio',
-               value: this.player.w_l  || '-'
-            }
+               value: this.player.w_l  || '-',
+               percentage: false
+            },
+            {
+               title: 'Aces',
+               value: this.player.aces  || '-',
+               percentage: false
+            },
+            {
+               title: 'Aces por partido',
+               value: this.player.aces_match  || '-',
+               percentage: false
+            },
+            {
+               title: 'Dobles Faltas',
+               value: this.player.double_faults  || '-',
+               percentage: false
+            },
+            {
+               title: 'Dobles Faltas por partido',
+               value: this.player.double_faults_match  || '-',
+               percentage: false
+            },
+            {
+               title: 'Puntos ganados con 1er servicio',
+               value: this.player.points_on_first  || '-',
+               percentage: false
+            },
+            {
+               title: 'Puntos con 1er servicio por partido',
+               value: this.player.points_on_first_match  || '-',
+               percentage: false
+            },
+            {
+               title: 'Juegos ganados al saque',
+               value: this.player.games_on_serve  || '-',
+               percentage: false
+            },
+            {
+               title: 'Juegos al saque por partido',
+               value: this.player.games_on_serve_match  || '-',
+               percentage: false
+            },
+            {
+               title: '1er servicio dentro',
+               value: this.player.first_in  || '-',
+               percentage: false
+            },
+            {
+               title: '1er servicio dentro por partido',
+               value: this.player.first_in_match  || '-',
+               percentage: false
+            },
+            {
+               title: 'Puntos de rotura encarados',
+               value: this.player.bp_faced  || '-',
+               percentage: false
+            },
+            {
+               title: 'Puntos de rotura salvados',
+               value: this.player.bp_saved_percentage || '-',
+               percentage: true
+            },
          ]
       },
    },

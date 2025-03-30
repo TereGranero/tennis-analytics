@@ -23,7 +23,9 @@
             <option 
                v-for="player in filteredPlayers1" 
                :key="player.player_id" 
-               :value="player.fullname"/>
+               :value="player.fullname">
+               {{ player.fullname }}
+            </option>
          </datalist>
          <div v-if="processing && invalidPlayer1" class="invalid-feedback">
             Debes seleccionar un jugador
@@ -51,7 +53,9 @@
             <option 
                v-for="player in filteredPlayers2" 
                :key="player.player_id" 
-               :value="player.fullname"/>
+               :value="player.fullname">
+               {{ player.fullname }}
+            </option>
          </datalist>
          <div v-if="processing && invalidPlayer2" class="invalid-feedback">
             Debes seleccionar un jugador
@@ -99,57 +103,58 @@ export default {
 
    computed: {
       invalidPlayer1() {
-         return !this.namePlayers.some(
+         return !this.filteredPlayers1.some(
             player => player.fullname == this.player1)
       },
       invalidPlayer2() {
-         return !this.namePlayers.some(
+         return !this.filteredPlayers2.some(
             player => player.fullname == this.player2)
       }
    },
 
    methods: {
 
-      async loadNamePlayers(query) {
-         if (query.length < 3) {
+      async loadNamePlayers(fullnameToSearch, playerNum) {
+
+         // User did'nt write at least 3 chars. No requesto to backend
+         if (fullnameToSearch.length < 3) {
+            if (playerNum === 1) {
+               this.filteredPlayers1 = []
+            } else {
+               this.filteredPlayers2 = []
+            }
             return
          }
 
          try {
-            const data = await getNamePlayers(query)
+            const data = await getNamePlayers(fullnameToSearch)
 
-            if (data.status == 'error') {
-               console.error(`Backend response error: ${data.message}`)
-            } else {
+            if (data.status === 'error') {
+               console.error(`Backend response error: ${data.message}`);
+
+            } else { // ok
                this.namePlayers = data.players
+
+               // Sends backend names to create datalist
+               if (playerNum == 1) {
+                  this.filteredPlayers1 = this.namePlayers
+               } else {
+                  this.filteredPlayers2 = this.namePlayers
+               }
+
             }
          } catch (err) {
             console.error(`Error retrieving players: ${err}`)
          }
       },
 
-      filterPlayers(playerNum) {
-         const fullnameToSearch = playerNum == 1 ? this.player1 : this.player2
-
-         const filteredPlayers = this.namePlayers.filter(
-            player => player.fullname.toLowerCase().includes(fullnameToSearch.toLowerCase())
-         )
-         if (playerNum == 1) {
-            this.filteredPlayers1 = filteredPlayers
-         } else {
-            this.filteredPlayers2 = filteredPlayers
-         }
-      },
-
-      
       handleInput(playerNum) {
          clearTimeout(this.searchTimeOut)
          
          // Sleeps 500ms and searches again
          this.searchTimeOut = setTimeout(() => {
-            const query = playerNum == 1 ? this.player1 : this.player2
-            this.loadNamePlayers(query)
-            this.filterPlayers(playerNum)
+            const fullnameToSearch = playerNum == 1 ? this.player1 : this.player2
+            this.loadNamePlayers(fullnameToSearch, playerNum)
          }, 500) 
       },
 
@@ -164,8 +169,8 @@ export default {
          }
 
          // Find player IDs
-         const player1Data = this.namePlayers.find(player => player.fullname === this.player1)
-         const player2Data = this.namePlayers.find(player => player.fullname === this.player2)
+         const player1Data = this.filteredPlayers1.find(player => player.fullname == this.player1)
+         const player2Data = this.filteredPlayers2.find(player => player.fullname == this.player2)
 
          if (player1Data && player2Data) {
             // Sends events with player IDs

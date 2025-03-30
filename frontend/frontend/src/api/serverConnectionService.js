@@ -24,6 +24,15 @@ export const getPlayerByIdForEditing = async (id) => {
    return res.data;
 };
 
+export const getNamePlayers = async (fullnameToSearch = '') => {
+   const res = await httpClient.get(`${playersEndpoint}/names`, {
+      params: {
+         search_fullname: fullnameToSearch, 
+      }
+   });
+   return res.data;
+};
+
 export const createPlayer = async (player) => {
    const res = await httpAuthClient.post(playersEndpoint, player);
    return res.data;
@@ -86,18 +95,3 @@ export const getRankingTitles = async (page, perPage, levelSlug = 'grand-slam') 
 return res.data;
 };
 
-const face2faceEndpoint = '/face2face';
-
-export const getNamePlayers = async (lastNameToSearch = '') => {
-   const res = await httpClient.get(`${face2faceEndpoint}/name-players`, {
-      params: {
-         search_name_last: lastNameToSearch, 
-      }
-   });
-   return res.data;
-};
-
-export const getTop10PlayerById = async (player_id) => {
-   const res = await httpClient.get(`${face2faceEndpoint}/${player_id}`);
-   return res.data;
-};
