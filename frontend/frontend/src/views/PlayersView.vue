@@ -1,79 +1,98 @@
 <template>
-   <div class="container">
+   <main class="container">
 
       <!-- Header Image -->
-      <div class="row mb-3">
+      <header class="row mb-3">
+         <h1 id="playersTitle" class="visually-hidden">{{ alt }}</h1>
          <div class="col-12">
             <HeaderImage
                imgName="players-banner"
-               alt="Título Jugadores" />
+               :alt="alt" />
          </div>
-      </div>
+      </header>
 
-      <!-- Alert Messages -->
-      <div 
-         class="row" 
-         v-if="!players.length && isSearching" >
+      <section aria-labelledby="playersTitle">
 
-         <div class="col-12">
-            <div class="alert alert-info text-responsive-3 text-center" role="alert">
-               Cargando jugadores...
+         <!-- Loading Message -->
+         <div 
+            class="row" 
+            v-if="!players.length && isSearching" 
+            aria-live="polite">
+
+            <div class="col-12">
+               <div 
+                  class="alert alert-info text-responsive-3 text-center" 
+                  role="status">
+                  Cargando jugadores...
+               </div>
             </div>
          </div>
-      </div>
 
-      <div 
-         class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
-         v-if="players.length  && !isSearching">
+         <!-- Controls -->
+         <section 
+            class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
+            v-if="players.length  && !isSearching"
+            role="group"
+            aria-label="Controles para jugadores">
 
-         <!-- Add Player Button -->
-         <div 
-            v-if="isAdmin"
-            class="col-12 mb-3 col-md-auto mb-md-0">
-            <button 
-               type="button" 
-               class="btn btn-secondary" 
-               @click="addPlayer">
-               Añadir Jugador
-            </button>
-         </div>
+            <!-- Add Player Button -->
+            <div 
+               v-if="isAdmin"
+               class="col-12 mb-3 col-md-auto mb-md-0">
+               <button 
+                  type="button" 
+                  class="btn btn-secondary" 
+                  @click="addPlayer"
+                  aria-label="Añadir nuevo jugador">
+                  Añadir Jugador
+               </button>
+            </div>
 
-         <!-- Search by Last Name -->
-         <div class="col-12 col-md-auto me-md-5">
-            <PlayerSearch @search-player="searchPlayer" />
-         </div>
-      </div>
+            <!-- Search by Last Name -->
+            <div class="col-12 col-md-auto me-md-5">
+               <PlayerSearch 
+                  @search-player="searchPlayer"
+                  aria-label="Buscar jugadores por apellido" />
+            </div>
+         </section>
 
-      <!-- PlayersTable Component -->
-      <div 
-         class="row justify-content-center mb-3 mb-md-4"
-         v-if="players.length && !isSearching">
+         <!-- Players Table -->
+         <article
+            class="row justify-content-center mb-3 mb-md-4"
+            v-if="players.length && !isSearching"
+            aria-labelledby="playersTableHeading">
 
-         <div class="col-12 col-lg-12">
-            <PlayersTable 
-               :players="players"
-               :isAdmin="isAdmin"
-               @view-player="viewPlayer"
-               @edit-player="editPlayer"
-               @delete-player="deleteOnePlayer" /> 
-         </div>
-      </div>
+            <h2 
+               id="playersTableHeading" 
+               class="visually-hidden">
+               Tabla de jugadores
+            </h2>
+            <div class="col-12 col-lg-12">
+               <PlayersTable 
+                  :players="players"
+                  :isAdmin="isAdmin"
+                  @view-player="viewPlayer"
+                  @edit-player="editPlayer"
+                  @delete-player="deleteOnePlayer" /> 
+            </div>
+         </article>
 
-      <!-- Players pages navigation -->
-      <div 
-         class="row justify-content-center"
-         v-if="players.length && !isSearching">
+         <!-- Players pages navigation -->
+         <nav
+            class="row justify-content-center"
+            v-if="players.length && !isSearching"
+            aria-label="Navegar por las páginas">
 
-         <div class="col-12">
-            <Pagination 
-               :page="page" 
-               :totalPages="totalPages"
-               class="text-responsive-4"
-               @goToPage="goToPage" />
-         </div>
-      </div>
-
-   </div>
+            <div class="col-12">
+               <Pagination 
+                  :page="page" 
+                  :totalPages="totalPages"
+                  class="text-responsive-4"
+                  @goToPage="goToPage" />
+            </div>
+         </nav>
+      </section>
+   </main>
 </template>
 
 <script>
@@ -106,6 +125,7 @@ export default {
    data() {
       return {
          pageName: 'players',
+         alt: 'Título Jugadores',
          players: [],
          totalPlayers: 0,
          page: 1,
@@ -122,6 +142,15 @@ export default {
          console.log(`Checking if there is a lastname: ${this.lastname}`)
          return this.lastname !== null
       },
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
+      }
    },
 
    methods: {

@@ -1,13 +1,16 @@
 <template>
    <table class="table table-hover text-responsive-4">
+      <caption class="visually-hidden">
+         Tabla de ranking ATP con el jugador, su ranking y puntos conseguidos en el año seleccionado.
+      </caption>
       <thead>
          <tr class="text-center">
-            <th scope="col-3">Ranking</th>
-            <th scope="col-6">Jugador</th>
-            <th scope="col-3">Puntos</th>
+            <th scope="col" class="col-3">Ranking</th>
+            <th scope="col" class="col-6">Jugador</th>
+            <th scope="col" class="col-3">Puntos</th>
          </tr>
       </thead>
-      <tbody>
+      <tbody aria-live="polite">
          <RankingItem
             v-for="(rk, index) in rankings" 
             :key="index"

@@ -1,6 +1,9 @@
 <template>
    <table class="table table-hover text-responsive-4">
-      <tbody>
+      <caption class="visually-hidden">
+         Tabla de torneos ATP del nivel seleccionado.
+      </caption>
+      <tbody aria-live="polite">
          <TournamentItem
             v-for="(tourneyName, index) in tournaments" 
             :key="index"

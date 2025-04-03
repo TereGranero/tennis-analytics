@@ -1,11 +1,15 @@
 <template>
-   <div class="d-flex flex-column align items-start mb-5"> 
-
-      <h2 class="text-responsive-3 fw-bold m-0">
-         TITULOS TOUR ATP
-      </h2>
+   <section class="d-flex flex-column align items-start mb-5">
+      <header>
+         <h2 class="text-responsive-3 fw-bold m-0">
+            TITULOS TOUR ATP
+         </h2>
+      </header>
 
       <table class="table table-hover mt-3">
+         <caption class="visually-hidden">
+            Tabla de títulos ATP ganados con el año, superficie y nivel del torneo.
+         </caption>
          <thead>
             <tr class="text-responsive-4 text-center">
                <th scope="col">Torneo</th>
@@ -14,14 +18,17 @@
                <th scope="col">Nivel</th>
             </tr>
          </thead>
-         <tbody>
+         <tbody aria-live="polite">
             <tr 
                v-for="(title, index) in titles" 
                :key="index"
                class="text-responsive-4 text-center">
                <td 
                   class="text-start ms-5 cursor-pointer"
-                  @click="$emit('view-tournament', title.tourney_name)">
+                  role="button"
+                  tabindex="0"
+                  @click="$emit('view-tournament', title.tourney_name)"
+                  @keydown.enter="$emit('view-tournament', title.tourney_name)">
                   {{ title.tourney_name }}
                </td>
                <td>
@@ -36,7 +43,7 @@
             </tr>
          </tbody>
       </table>
-   </div>
+   </section>
 </template>
  
 <script>

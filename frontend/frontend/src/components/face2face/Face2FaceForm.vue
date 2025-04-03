@@ -1,10 +1,14 @@
 <template>
+
    <form 
       class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-4"
       @submit.prevent="sendForm">
 
       <!-- Player1 -->
       <div class="col-12 col-md-5">
+         <small id="player1Help" class="form-text text-muted">
+            Escribe o selecciona el apellido del primer jugador.
+         </small>
          <label
             for="player1Select"
             class="form-label text-responsive-4">
@@ -18,22 +22,29 @@
             @focus="resetState"
             @input="handleInput(1)"
             list="player1List"
-            autocomplete="off">
+            autocomplete="off"
+            aria-describedby="player1Help player1Error">
          <datalist id="player1List">
             <option 
                v-for="player in filteredPlayers1" 
                :key="player.player_id" 
                :value="player.fullname">
-               {{ player.fullname }}
             </option>
          </datalist>
-         <div v-if="processing && invalidPlayer1" class="invalid-feedback">
-            Debes seleccionar un jugador
+         <div 
+            v-if="processing && invalidPlayer1" 
+            id="player1Error"
+            class="invalid-feedback"
+            role="alert">
+            Por favor, selecciona un jugador válido del listado.
          </div>
       </div>
 
       <!-- Player2 -->
       <div class="col-12 col-md-5">
+         <small id="player2Help" class="form-text text-muted">
+            Escribe o selecciona el apellido del segundo jugador.
+         </small>
          <label
             for="player2Select"
             class="form-label text-responsive-4">
@@ -42,28 +53,32 @@
          <input
             id="player2Select"
             class="form-control text-responsive-4"
-            :class="{'is-invalid': processing && invalidPlayer1}"
+            :class="{'is-invalid': processing && invalidPlayer2}"
             v-model="player2"
             @focus="resetState"
             @input="handleInput(2)"
             list="player2List"
-            autocomplete="off">
+            autocomplete="off"
+            aria-describedby="player2Help player2Error">
          <!-- Creates a list of options -->
          <datalist id="player2List">
             <option 
                v-for="player in filteredPlayers2" 
                :key="player.player_id" 
                :value="player.fullname">
-               {{ player.fullname }}
             </option>
          </datalist>
-         <div v-if="processing && invalidPlayer2" class="invalid-feedback">
-            Debes seleccionar un jugador
+         <div 
+            v-if="processing && invalidPlayer2" 
+            id="player2Error"
+            class="invalid-feedback"
+            role="alert">
+            Por favor, selecciona un jugador válido del listado.
          </div>
       </div>
 
 
-      <!-- Buttons -->
+      <!-- Buttons btn-outline-dark-->
       <div class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5">
          <div class="form-group">
             <button 

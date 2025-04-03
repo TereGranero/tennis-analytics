@@ -1,16 +1,19 @@
 <template>
    <table class="table table-hover text-responsive-4">
-      <thead>
+      <caption class="visually-hidden">
+         Tabla de tenistas con su país de origen y fecha de nacimiento.
+      </caption>
+      <thead class="table-light">
          <tr>
-            <th scope="col-4">Jugador</th>
-            <th scope="col-2">País</th>
-            <th scope="col-4">Nacimiento</th>
+            <th scope="col" class="col-4">Jugador</th>
+            <th scope="col" class="col-2">País</th>
+            <th scope="col" class="col-4">Nacimiento</th>
             <th 
                v-if="isAdmin"
-               scope="col-2"></th>
+               scope="col" class="col-2"></th>
          </tr>
       </thead>
-      <tbody>
+      <tbody aria-live="polite">
          <PlayerItem 
             v-for="player in players" 
             :key="player.id"

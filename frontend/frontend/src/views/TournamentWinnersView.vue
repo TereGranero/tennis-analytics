@@ -2,11 +2,12 @@
    <div class="container">
 
       <!-- Header Image -->
+      <h1 id="#tournaments-title" class="visually-hidden" tabindex="0">{{ alt }}</h1>
       <div class="row mb-3">
          <div class="col-12">
             <HeaderImage
                imgName="tournaments-banner"
-               alt="Titulo Tournaments" />
+               :alt="alt" />
          </div>
       </div>
 
@@ -96,6 +97,16 @@ export default {
          isLoading: false,
          tournamentName: null,
          tournamentLevel: null,
+         alt: 'Título torneos'
+      }
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
       }
    },
 

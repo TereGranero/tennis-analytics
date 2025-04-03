@@ -15,9 +15,19 @@
          v-if="imageAttribution" 
          class="mt-2 text-muted text-break">
          <small>
-            "<span v-html="imageAttribution.title" class="fw-bold"></span>" by <span v-html="imageAttribution.author"></span>,
-            licensed <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
-            <a :href="imageAttribution.filePageUrl" target="_blank">Wikimedia Commons</a>
+            "<span v-html="imageAttribution.title" class="fw-bold"></span>" por <span v-html="imageAttribution.author"></span>,
+            licencia <a 
+               :href="imageAttribution.licenseUrl" 
+               target="_blank"
+               aria-label="Ver licencia {{ imageAttribution.license }} (se abre en nueva ventana)">
+               {{ imageAttribution.license }}
+            </a>.
+            <a 
+               :href="imageAttribution.filePageUrl" 
+               target="_blank"
+               aria-label="Ver imagen original en Wikimedia Commons (se abre en nueva ventana)"> 
+               Ver Wikimedia Commons
+            </a>
          </small>
       </figcaption>
    </figure>   

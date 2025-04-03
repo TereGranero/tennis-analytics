@@ -1,85 +1,121 @@
 <template>
-   <div class="container">
+   <main class="container">
 
       <!-- Header Image -->
-      <div class="row mb-3">
+      <header class="row mb-3">
+         <h1 id="rankingsTitle" class="visually-hidden">{{ alt }}</h1>
          <div class="col-12">
             <HeaderImage
                imgName="rankings-banner"
-               alt="Titulo Rankings" />
+               :alt="alt" />
          </div>
-      </div>
+      </header>
 
-      <!-- Alert Messages -->
-      <div 
-         class="row" 
-         v-if="!rankings.length && isLoading" >
+      <section 
+         aria-labelledby="rankingsTitle" 
+         aria-busy="isLoading">
 
-         <div class="col-12">
-            <div class="alert alert-info text-responsive-3 text-center" role="alert">
-               Cargando rankings...
+         <!-- Loading Message -->
+         <div
+            class="row" 
+            v-if="!rankings.length && isLoading" 
+            aria-live="polite">
+
+            <div class="col-12">
+               <div 
+                  class="alert alert-info text-responsive-3 text-center"         
+                  role="status">
+                  Cargando rankings...
+               </div>
             </div>
          </div>
-      </div>
 
-      <!-- Select year -->
-      <div 
-         class="row justify-content-center align-items-center mb-3 mb-sm-4 mb-md-5" 
-         v-if="rankings.length && !isLoading">
+         <!-- Select year -->
+         <div v-if="rankings.length && !isLoading">
+            <section aria-labelledby="selectTitle">
+               <h2 
+                  id="selectTitle" 
+                  class="visually-hidden">
+                  Filtros de rankings
+               </h2>
+               
+               <form 
+                  class="row justify-content-center align-items-center mb-3 mb-sm-4 mb-md-5"
+                  @submit.prevent>
 
-         <div class="col-auto">
-            <label for="yearToSelect" class="form-label me-2 text-responsive-4">Año:</label>
-            <select
-               id="yearToSelect"
-               class="form-select "
-               v-model="yearToShow"
-               @change="changeYear">
-               <option 
-                  v-for="year in years"
-                  :key="year"
-                  :value="year">
-                  {{ year }}
-               </option>
-            </select>
+                  <div class="col-auto">
+                     <label 
+                        id="yearLabel" 
+                        for="yearToSelect" 
+                        class="form-label me-2 text-responsive-4">
+                        Año:
+                     </label>
+                     <select
+                        id="yearToSelect"
+                        class="form-select "
+                        v-model="yearToShow"
+                        @change="changeYear"
+                        aria-labelledby="yearLabel">
+                        <option 
+                           v-for="year in years"
+                           :key="year"
+                           :value="year">
+                           {{ year }}
+                        </option>
+                     </select>
+                  </div>
+               </form>
+            </section>
+
+            <section 
+               v-if="photoFigcaption && wikiQuery && player1Name"
+               aria-labelledby="rankingsContentTitle">
+
+               <h2 id="rankingsContentTitle" class="visually-hidden">Contenido de rankings</h2>
+               <div class="d-flex flex-row flex-wrap align-items-center justify-content-center mb-3 mb-md-4">
+
+                  <!-- Player No.1 Image -->
+                  <div class="col-12 col-md-4 mt-3">
+                     <PlayerPhotoByName 
+                        :wikiQuery="wikiQuery"
+                        :playerName="player1Name"
+                        :msg="photoFigcaption"
+                        :alt="`Foto de ${player1Name}`" /> 
+                  </div>
+
+                  <!-- Ranking Table -->
+                  <article 
+                     class="d-flex ms-md-5"
+                     aria-labelledby="rankingsTableTitle">
+                     <h3
+                        id="rankingsTableTitle"
+                        class="visually-hidden">
+                        Tabla de rankings
+                     </h3>
+                     <RankingsTable 
+                        :rankings="rankings"
+                        @view-player="viewPlayer" /> 
+                  </article>
+               </div>
+            </section>
+
+            <!-- Rankings pages navigation -->
+            <nav 
+               class="row justify-content-center"
+               v-if="rankings.length && !isLoading"
+               aria-label="Paginación de rankings">
+
+               <div class="col-12">
+                  <Pagination 
+                     :page="page" 
+                     :totalPages="totalPages"
+                     class="text-responsive-4"
+                     @goToPage="goToPage" />
+               </div>
+            </nav>
          </div>
-      </div>
-     
-      <div 
-         class="d-flex flex-row flex-wrap align-items-center justify-content-center mb-3 mb-md-4"
-         v-if="rankings.length && photoFigcaption && wikiQuery && player1Name && !isLoading">
-
-         <!-- Player No.1 Image -->
-         <div class="col-12 col-md-4 mt-3">
-            <PlayerPhotoByName 
-               :wikiQuery="wikiQuery"
-               :playerName="player1Name"
-               :msg="photoFigcaption"
-               :alt="player1Name" /> 
-         </div>
-
-         <!-- Ranking Table -->
-         <div class="d-flex ms-md-5">
-            <RankingsTable 
-               :rankings="rankings"
-               @view-player="viewPlayer" /> 
-         </div>
-      </div>
-
-      <!-- Rankings pages navigation -->
-      <div 
-         class="row justify-content-center"
-         v-if="rankings.length && !isLoading">
-
-         <div class="col-12">
-            <Pagination 
-               :page="page" 
-               :totalPages="totalPages"
-               class="text-responsive-4"
-               @goToPage="goToPage" />
-         </div>
-      </div>
-
-   </div>
+      </section>
+   </main>
 </template>
 
 <script>
@@ -111,6 +147,7 @@ export default {
          yearToShow: 2023,
          numberOne: null,
          isLoading: false,
+         alt: 'Título Rankings'
       }
    },
 
@@ -138,6 +175,15 @@ export default {
             return `${this.numberOne.name_first} ${this.numberOne.name_last} - ATP No.1 en ${this.yearToShow.toString()}`
          }
          return null
+      }
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
       }
    },
 

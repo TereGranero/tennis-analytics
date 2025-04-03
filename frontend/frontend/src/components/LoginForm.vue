@@ -1,11 +1,22 @@
 <template>
    <form 
       class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-4"
-      @submit.prevent="sendForm">
+      @submit.prevent="sendForm"
+      aria-describedby="login-instructions">
+
+      <h2 class="visually-hidden">Formulario de inicio de sesión para administradores</h2>
+      
+      <p id="login-instructions" class="visually-hidden">
+         Rellena los campos de usuario y contraseña para acceder a tu cuenta de administrador.
+      </p>
 
       <!-- Username -->
-      <div class="col-12 col-md-5">
+      <div 
+         class="col-12 col-md-5"
+         role="group" 
+         aria-labelledby="username-label">
          <label
+            id="username-label"
             for="usernameInput"
             class="form-label">
             Usuario: 
@@ -16,15 +27,26 @@
             class="form-control"
             :class="{'is-invalid': processing && invalidUsername}"
             @focus="resetState"
-            v-model="user.username">
-         <div v-if="processing && invalidUsername" class="invalid-feedback">
-            Debes rellenar el campo Usuario
+            v-model="user.username"
+            aria-required="true"   
+            aria-invalid="processing && invalidUsername"
+            aria-describedby="usernameError">
+         <div 
+            v-if="processing && invalidUsername" 
+            id="usernameError"
+            class="invalid-feedback"
+            role="alert">
+            Por favor, rellena el campo Usuario.
          </div>
       </div>
 
       <!-- Password -->
-      <div class="col-12  col-md-5">
-         <label 
+      <div 
+         class="col-12 col-md-5"
+         role="group" 
+         aria-labelledby="password-label">
+         <label
+            id="password-label"
             for="passwordInput" 
             class="form-label">
             Contraseña: 
@@ -35,17 +57,24 @@
             class="form-control"
             :class="{'is-invalid': processing && invalidPassword}"
             @focus="resetState"
-            v-model="user.password">
+            v-model="user.password"
+            aria-required="true"
+            aria-invalid="processing && invalidPassword"
+            aria-describedby="passwordError">
          <div 
-            v-if="processing && invalidPassword" 
-            class="invalid-feedback">
-            Debes rellenar el campo Contraseña
+            v-if="processing && invalidPassword"
+            id="passwordError"
+            class="invalid-feedback"
+            role="alert">
+            Por favor, rellena el campo Contraseña.
          </div>
       </div>
 
 
-      <!-- Buttons -->
-      <div class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5">
+      <!-- Buttons btn-outline-dark-->
+      <div 
+         class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5"
+         role="group">
          <div class="form-group">
             <button 
                type="submit"
@@ -54,7 +83,7 @@
             </button>
             <button 
                type="button"
-               class="btn btn-outline-secondary" 
+               class="btn btn-outline-secondary"
                @click="cancelForm">
                Cancelar
             </button>

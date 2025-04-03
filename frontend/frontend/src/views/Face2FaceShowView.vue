@@ -1,107 +1,135 @@
 <template>
-   <div class="container">
+   <main class="container">
 
-      <!-- Conditional Header Image -->
-      <div class="row mb-3">
+      <!-- Header Image -->
+      <header class="row mb-3">
          <div class="col-12">
+            <h1 id="face2faceShowTitle" class="visually-hidden">{{ alt }}</h1>
             <HeaderImage
                imgName="face2face-banner"
-               alt="Título face2face" />
+               :alt="alt" />
          </div>
-      </div>
+      </header>
 
       <!-- Select Button -->
-      <div 
+      <section   
          class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
+         aria-labelledby="selectHeading"
          v-if="player1 && player2">
-         <div 
-            class="col-12 mb-3 col-md-auto mb-md-0">
+
+         <h2 id="selectHeading" class="visually-hidden">Seleccionar otros jugadores para comparar</h2>
+         <div class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
                class="btn btn-secondary" 
-               @click="selectPlayers">
+               @click="selectPlayers"
+               aria-label="Seleccionar otros jugadores para comparar.">
                Seleccionar jugadores
             </button>
          </div>
-      </div>
+      </section>
 
-      <div class="row justify-content-center align-items-start mb-5">
+      <!-- Players Headers -->
+      <section 
+         class="row justify-content-center align-items-start mb-5"
+         aria-labelledby="playersHeading">
+
+         <h2 id="playersHeading" class="visually-hidden">Comparación de jugadores</h2>
 
          <!-- Player 1 -->
-         <div
+         <article
             v-if="player1"
-            class="col-12 col-md-6 d-flex flex-column">
+            class="col-12 col-md-6 d-flex flex-column"
+            aria-labelledby="player1Heading">
 
             <!-- Header fullname and flag -->
             <PlayerFullnameFlagHeader
-               :player="player1"/>
+               :player="player1"
+               id="player1Heading"/>
             
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
-               <div 
-                  class="cursor-pointer"
-                  @click="viewPlayer(player1.player_id)">
+               <button 
+                  class="btn btn-link p-0 border-0"
+                  @click="viewPlayer(player1.player_id)"
+                  :aria-label="`Ver ficha de ${player1.fullname}`">
                   <PlayerPhotoByWikidataId
                      :playerWikidataId="player1.wikidata_id"
                      :setHeight="true"/>
-               </div>
+               </button>
             </div>
-            
-         </div>
-         <div v-else class="row">
-            <div class="col-12">
-               <div class="alert alert-info text-responsive-3 text-center" role="alert">
-                  Cargando jugador...
-               </div>
+         </article>
+
+         <div v-else 
+            class="col-12 col-md-6"
+            role="status"
+            aria-live="polite">
+            <div 
+               class="alert alert-info text-responsive-3 text-center">
+               Cargando jugador 1...
             </div>
          </div>
 
+
          <!-- Player 2 -->
-         <div
+         <article
             v-if="player2"
-            class="col-12 col-md-6  d-flex flex-column">
+            class="col-12 col-md-6 d-flex flex-column"
+            aria-labelledby="player2Heading">
 
             <!-- Header fullname and flag -->
             <PlayerFullnameFlagHeader
-               :player="player2"/>
+               :player="player2"
+               id="player2Heading"/>
 
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
-               <div 
-                  class="cursor-pointer"
-                  @click="viewPlayer(player2.player_id)">
+               <button 
+                  class="btn btn-link p-0 border-0"
+                  @click="viewPlayer(player2.player_id)"
+                  :aria-label="`Ver ficha de ${player2.fullname}`">
                   <PlayerPhotoByWikidataId
                      :playerWikidataId="player2.wikidata_id"
-                     :setHeight="true"/>   
-               </div>
+                     :setHeight="true"/>
+               </button>
             </div>
-         </div>
-         <div v-else class="row">
-            <div class="col-12">
-               <div class="alert alert-info text-responsive-3 text-center" role="alert">
-                  Cargando jugador...
-               </div>
+         </article>
+
+         <div v-else 
+            class="col-12 col-md-6"
+            role="status"
+            aria-live="polite">
+            <div 
+               class="alert alert-info text-responsive-3 text-center">
+               Cargando jugador 2...
             </div>
          </div>         
-      </div>
+      </section>
 
       <!-- KPIs comparison -->
-      <div 
+      <section
          v-if="player1 && player2"
+         aria-labelledby="comparisonHeading"
          class="row justify-content-center align-items-start mb-5 mx-mb-3">
-         <div class="col-12 col-md-6 d-flex flex-column">
-            <Face2FaceDoubleKpi
-               v-for="kpi in kpiData" 
-               :key="kpi.title" 
-               :title="kpi.title"
-               :value1="kpi.value1"
-               :value2="kpi.value2"
-               :percentage="kpi.percentage"
-               class="mb-3"/>
-         </div>
-      </div>
 
-   </div>
+         <h2 id="comparisonHeading" class="visually-hidden">Comparación de estadísticas</h2>
+         <div class="col-12 col-md-6 d-flex flex-column">
+            <div 
+               role="group"
+               aria-labelledby="comparisonHeading">
+               
+               <Face2FaceDoubleKpi
+                  v-for="kpi in kpiData" 
+                  :key="kpi.title" 
+                  :title="kpi.title"
+                  :value1="kpi.value1"
+                  :value2="kpi.value2"
+                  :percentage="kpi.percentage"
+                  class="mb-3"/>
+            </div>
+         </div>
+      </section>
+   </main>
  </template>
  
 <script>
@@ -137,6 +165,7 @@ export default {
       return {
          player1: null,
          player2: null,
+         alt: 'Título Face2Face'
       }
    },
 
@@ -250,6 +279,15 @@ export default {
             },
          ]
       },
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
+      }
    },
 
    methods: {

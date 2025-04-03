@@ -1,7 +1,16 @@
 <template>
    <div class="container">
 
+      <!-- Skip Link -->
+      <a 
+         href="#form-title" 
+         class="visually-hidden-focusable">
+         Ir al formulario
+      </a>
+
       <!-- Conditional Header Image -->
+      <h1 id="form-title" class="visually-hidden" tabindex="0">{{ alt }}</h1>
+
       <div class="row mb-3">
          <div class="col-12">
             <HeaderImage
@@ -15,8 +24,12 @@
          @submit.prevent="sendForm">
 
          <!-- First Name -->
-         <div class="col-md-5">
+         <div 
+            class="col-md-5"
+            role="group" 
+            aria-labelledby="nameFirstLabel">
             <label
+               id="nameFirstLabel"
                for="nameFirstInput"
                class="form-label">
                Nombre: 
@@ -29,15 +42,26 @@
                :class="{'is-invalid': processing && invalidFirstName}"
                @focus="resetState"
                @keypress="resetState"
-               v-model="player.name_first">
-            <div v-if="processing && invalidFirstName" class="invalid-feedback">
-               Debes rellenar el campo Nombre
+               v-model="player.name_first"
+               aria-required="true"   
+               aria-invalid="processing && invalidFirstName"
+               aria-describedby="nameFirstError">
+            <div 
+               v-if="processing && invalidFirstName" 
+               id="nameFirstError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, rellena el campo Nombre
             </div>
          </div>
 
          <!-- Last Name -->
-         <div class="col-md-5">
+         <div 
+            class="col-md-5"
+            role="group" 
+            aria-labelledby="nameLastLabel">
             <label 
+               id="nameLastLabel"
                for="nameLastInput" 
                class="form-label">
                Apellido: 
@@ -48,17 +72,26 @@
                class="form-control"
                :class="{'is-invalid': processing && invalidLastName}"
                @focus="resetState"
-               v-model="player.name_last">
+               v-model="player.name_last"
+               aria-required="true"   
+               aria-invalid="processing && invalidLastName"
+               aria-describedby="nameLastError">
             <div 
-               v-if="processing && invalidLastName" 
-               class="invalid-feedback">
-               Debes rellenar el campo Apellido
+               v-if="processing && invalidLastName"
+               id="nameLastError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, rellena el campo Apellido.
             </div>
          </div>
 
          <!-- Birth Date -->
-         <div class="col-md-5 col-lg-3">
+         <div 
+            class="col-md-5 col-lg-3"
+            role="group" 
+            aria-labelledby="birthDateLabel">
             <label
+               id="birthDateLabel"
                for="birthInput"
                class="form-label">
                Fecha de nacimiento:
@@ -69,15 +102,25 @@
                class="form-control"
                :class="{'is-invalid': processing && invalidBirthDate}" 
                @focus="resetState"
-               v-model="player.birth_date">
-            <div v-if="processing && invalidBirthDate" class="invalid-feedback">
-               Debes seleccionar una fecha válida
+               v-model="player.birth_date"
+               aria-invalid="processing && invalidBirthDate"
+               aria-describedby="birthDateError">
+            <div 
+               v-if="processing && invalidBirthDate" 
+               id="birthDateError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, selecciona una fecha válida.
             </div>
          </div>
 
          <!-- Country -->
-         <div class="col-md-5">
+         <div 
+            class="col-md-5"
+            role="group" 
+            aria-labelledby="countryLabel">
             <label
+               id="countryLabel"
                for="countrySelect"
                class="form-label">
                País:
@@ -87,7 +130,9 @@
                class="form-select"
                :class="{'is-invalid': processing && invalidCountry}"
                @focus="resetState"
-               v-model="player.country">
+               v-model="player.country"
+               aria-invalid="processing && invalidCountry"
+               aria-describedby="countryError">
                <option 
                   v-for="country in allCountries"
                   :key="country.code"
@@ -98,14 +143,20 @@
             </select>
             <div 
                v-if="processing && invalidCountry"
-               class="invalid-feedback">
-               Debes seleccionar un país
+               id="countryError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, selecciona un país del listado.
             </div>
          </div>
 
          <!-- Pro Since -->
-         <div class="col-md-5 col-lg-3">
+         <div 
+            class="col-md-5 col-lg-3"
+            role="group" 
+            aria-labelledby="proSinceLabel">
             <label
+               id="proSinceLabel"
                for="proSinceInput"
                class="form-label text-responsive-4">
                Profesional desde: 
@@ -118,17 +169,25 @@
                class="form-control"
                :class="{'is-invalid': processing && invalidProSince}"
                @focus="resetState"
-               v-model="player.pro_since">
+               v-model="player.pro_since"
+               aria-invalid="processing && invalidProSince"
+               aria-describedby="proSinceError">
             <div 
                v-if="processing && invalidProSince" 
-               class="invalid-feedback">
-               Debes proporcionar un año válido
+               id="proSinceError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, escribe un año válido.
             </div>
          </div>
       
          <!-- Height -->
-         <div class="col-md-5 col-lg-3">
+         <div 
+            class="col-md-5 col-lg-3"
+            role="group" 
+            aria-labelledby="heightLabel">
             <label
+               id="heightLabel"
                for="heightInput"
                class="form-label text-responsive-4">
                Altura (cm): 
@@ -141,17 +200,25 @@
                class="form-control"
                :class="{'is-invalid': processing && invalidHeight}"
                @focus="resetState"
-               v-model="player.height">
+               v-model="player.height"
+               aria-invalid="processing && invalidHeight"
+               aria-describedby="heightError">
             <div 
                v-if="processing && invalidHeight" 
-               class="invalid-feedback">
-               Debes proporcionar una altura válida en centímetros
+               id="heightError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, escribe una altura válida en centímetros. Valores permitidos: [100-270]
             </div>
          </div>
 
          <!-- Weight -->
-         <div class="col-md-5 col-lg-3">
+         <div 
+            class="col-md-5 col-lg-3"
+            role="group" 
+            aria-labelledby="weightLabel">
             <label
+               id="weightLabel"
                for="weightInput"
                class="form-label text-responsive-4">
                Peso (Kg): 
@@ -164,17 +231,25 @@
                class="form-control"
                :class="{'is-invalid': processing && invalidWeight}"
                @focus="resetState"
-               v-model="player.weight">
+               v-model="player.weight"
+               aria-invalid="processing && invalidWeight"
+               aria-describedby="weightError">
             <div 
-               v-if="processing && invalidWeight" 
-               class="invalid-feedback">
-               Debes proporcionar un peso válido en kilogramos
+               v-if="processing && invalidWeight"
+               id="weightError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, escribe un peso válido en kilogramos. Valores permitidos: [45-150]
             </div>
          </div>
 
          <!-- Hand -->
-         <div class="col-md-5 col-lg-3">
+         <div 
+            class="col-md-5 col-lg-3"
+            role="group" 
+            aria-labelledby="handLabel">
             <label
+               id="handLabel"
                for="handSelect"
                class="form-label text-responsive-4">
                Mano:
@@ -184,7 +259,9 @@
                class="form-select text-responsive-4"
                :class="{'is-invalid': processing && invalidHand}"
                @focus="resetState"
-               v-model="player.hand">
+               v-model="player.hand"
+               aria-invalid="processing && invalidHand"
+               aria-describedby="handError">
                <option 
                   v-for="hand in allHands"
                   :key="hand"
@@ -194,14 +271,20 @@
             </select>
             <div 
                v-if="processing && invalidHand" 
-               class="invalid-feedback">
-               Debes seleccionar la mano con la que juega 
+               id="handError"
+               class="invalid-feedback"
+               role="alert">
+               Por favor, selecciona en la lista la mano con la que juega 
             </div>
          </div>
 
          <!-- Wikidata ID -->
-         <div class="col-md-5 col-lg-2">
+         <div 
+            class="col-md-5 col-lg-2"
+            role="group" 
+            aria-labelledby="wikidataLabel">
             <label
+               id="wikidataLabel"
                for="wikidataInput"
                class="form-label">
                Wikidata Id: 
@@ -213,8 +296,12 @@
          </div>
 
          <!-- Instagram Username -->
-         <div class="col-md-5 col-lg-4">
+         <div 
+            class="col-md-5 col-lg-4"
+            role="group" 
+            aria-labelledby="instagramLabel">
             <label
+               id="instagramLabel"
                for="instagramInput"
                class="form-label text-responsive-4">
                Instagram: 
@@ -228,8 +315,12 @@
          </div>
 
          <!-- Facebook Username -->
-         <div class="col-md-5 col-lg-4">
+         <div 
+            class="col-md-5 col-lg-4"
+            role="group" 
+            aria-labelledby="facebookLabel">
             <label
+               id="facebookLabel"
                for="facebookInput"
                class="form-label text-responsive-4">
                Facebook:
@@ -243,8 +334,12 @@
          </div>
 
          <!-- X-Twitter Username -->
-         <div class="col-md-5 col-lg-4">
+         <div 
+            class="col-md-5 col-lg-4"
+            role="group" 
+            aria-labelledby="twitterLabel">
             <label
+               id="twitterLabel"
                for="xInput"
                class="form-label text-responsive-4">
                X-Twitter: 
@@ -257,8 +352,10 @@
                v-model="player.x_twitter">
          </div>
 
-         <!-- Buttons -->
-         <div class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5">
+         <!-- Buttons  btn-outline-dark -->
+         <div 
+            class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5"
+            role="group">
             <div class="form-group">
                <button 
                   type="submit"

@@ -1,30 +1,51 @@
 <template>
-   <div class="container">
+   <main class="container">
 
-      <!-- Conditional Header Image -->
-      <div class="row mb-3">
+      <!-- Header Image -->
+      <header class="row mb-3">
+         <h1 id="loginTitle" class="visually-hidden">{{ alt }}</h1>
          <div class="col-12">
             <HeaderImage
                imgName="login-banner"
-               alt="Título login" />
+               :alt="alt" />
          </div>
-      </div>
+      </header>
 
       <!-- Login Form -->
-     <LoginForm @send-login="sendLogin"/>
-   </div>
- </template>
+      <section aria-labelledby="loginTitle">
+         <LoginForm 
+            @send-login="sendLogin"
+            aria-labelledby="loginTitle"/>
+      </section>
+
+   </main>
+</template>
  
- <script>
+<script>
 import HeaderImage from '@/components/HeaderImage.vue'
 import LoginForm from '@/components/LoginForm.vue'
 import { tokenService } from '@/api/authConnectionService'
 
- export default {
+export default {
 
    name: 'LoginView',
 
    components: { HeaderImage, LoginForm },
+
+   data(){
+      return{
+         alt: 'Título Login'
+      }
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
+      }
+   },
 
    methods: {
       async sendLogin(user){
@@ -50,7 +71,7 @@ import { tokenService } from '@/api/authConnectionService'
          }
       }
    }
- }
- </script>
+}
+</script>
 
 <style></style>

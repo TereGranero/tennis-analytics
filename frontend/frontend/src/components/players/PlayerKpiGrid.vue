@@ -1,22 +1,31 @@
 <template>
-     <div 
+   <section
       v-if="hasAnyKpi"
-      class="d-flex flex-column align items-start mb-5"> 
+      class="d-flex flex-column align items-start mb-5"
+      aria-live="polite"
+      :aria-labelledby="titleGrid ? 'kpi-title' : null"> 
+
+      <header>
          <h2 
             v-if="titleGrid"
+            id="kpi-title"
             class="text-responsive-3 fw-bold m-0">
             {{titleGrid}}
          </h2>
+      </header>
 
-         <div class="d-flex flex-wrap gap-5 justify-content-center align-items-center mt-3">
+      <ul class="d-flex flex-wrap gap-5 justify-content-center align-items-center mt-3 list-unstyled">
+         <li 
+            v-for="kpi in kpis" 
+            :key="kpi.title" 
+            role="listitem">
             <PlayerKpi
-               v-for="kpi in kpis" 
-               :key="kpi.title" 
                :title="kpi.title"
                :value="kpi.value"
                :percentage="kpi.percentage"/>
-         </div>
-      </div>
+         </li>
+      </ul>
+   </section>
  </template>
  
  <script>

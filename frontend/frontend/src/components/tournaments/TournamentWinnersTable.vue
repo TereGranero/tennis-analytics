@@ -1,12 +1,15 @@
 <template>
    <table class="table table-hover text-responsive-4">
+      <caption class="visually-hidden">
+         Tabla de ganadores del torneo seleccionado por años.
+      </caption>
       <thead>
          <tr>
-            <th scope="col-3" class="text-center">Año</th>
-            <th scope="col-3">Ganador - {{ winners[0].tourney_name.toUpperCase() }}</th>
+            <th scope="col" class="col-3 text-center">Año</th>
+            <th scope="col" class="col-3">Ganador - {{ winners[0].tourney_name.toUpperCase() }}</th>
          </tr>
       </thead>
-      <tbody>
+      <tbody aria-live="polite">
          <TournamentWinnerItem
             v-for="(winner, index) in winners" 
             :key="index"

@@ -117,6 +117,15 @@ export default {
       }
    },
 
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
+      }
+   },
+
    methods: {
       async loadTournaments() {
          // Retrieve all tournaments for selected level, with pagination

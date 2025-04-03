@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <main>
       <PlayerForm
          :id="id"
          @edit-player="editPlayer"
       />
-  </div>
+  </main>
 </template>
 
 <script>
@@ -21,6 +21,15 @@ export default {
       id: {
          type: String,
          required: true,
+      }
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
       }
    },
 

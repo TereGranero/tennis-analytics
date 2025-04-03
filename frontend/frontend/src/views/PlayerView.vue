@@ -1,29 +1,33 @@
 <template>
-   <div class="container">
+   <main class="container">
       
-      <div 
+      <!-- Controls -->
+      <section
          class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5"
-         v-if="player">
+         v-if="player"
+         role="group"
+         aria-label="Controles para jugador">
             
          <!-- Edit Player Button -->
          <div 
-            v-if="player && isAdmin"
+            v-if="isAdmin"
             class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
                class="btn btn-secondary" 
-               @click="editPlayer">
+               @click="editPlayer"
+               aria-label="Editar jugador">
                Editar Jugador
             </button>
          </div>
 
          <!-- Search by Last Name -->
-         <div
-            v-if="player"
-            class="col-12 col-md-auto me-md-5">
-            <PlayerSearch @search-player="searchPlayer" />
+         <div class="col-12 col-md-auto me-md-5">
+            <PlayerSearch 
+               @search-player="searchPlayer" 
+               aria-label="Buscar jugadores por apellido"/>
          </div>
-      </div>
+      </section>
 
       <!-- Header fullname and flag -->
       <PlayerFullnameFlagHeader
@@ -60,7 +64,7 @@
          @view-tournament="viewTournament"
          :titles="player.titles" />
 
-   </div>
+   </main>
 </template>
 
 <script>
@@ -194,6 +198,15 @@ export default {
             },
          ]
       },
+   },
+
+   /* https://vuejs.org/guide/best-practices/accessibility
+   following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
+   */
+   watch: {
+      $route() {
+         this.$refs.backToTop.focus()
+      }
    },
 
    methods: {

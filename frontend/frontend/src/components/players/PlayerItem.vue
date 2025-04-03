@@ -2,8 +2,11 @@
    <tr>
       <!-- Full Name -->
       <td 
-         @click="$emit('view-player', playerRow.player_id)" 
-         class="cursor-pointer">
+         @click="$emit('view-player', playerRow.player_id)"
+         @keydown.enter="$emit('view-player', playerRow.player_id)"
+         class="cursor-pointer"
+         tabindex="0"
+         role="button">
          {{ playerRow.fullname }}
       </td>
 
@@ -25,15 +28,21 @@
 
       <!-- Font Awesome Buttons -->
       <td v-if="isAdmin">
-         <i class="fas fa-eye text-secondary cursor-pointer me-2" 
+         <button class="fas fa-eye text-secondary cursor-pointer me-2" 
             @click="$emit('view-player', playerRow.player_id)" 
-            title="Ver"></i>
-         <i class="fas fa-edit text-secondary cursor-pointer me-2" 
+            aria-label="Ver jugador {{ playerRow.fullname }}">
+            <i class="fas fa-eye"></i>
+         </button>
+         <button class="fas fa-edit text-secondary cursor-pointer me-2" 
             @click="$emit('edit-player', playerRow.player_id)" 
-            title="Editar"></i>
-         <i class="fas fa-trash text-secondary cursor-pointer" 
+            aria-label="Editar jugador {{ playerRow.fullname }}">
+            <i class="fas fa-edit"></i>
+         </button>
+         <button class="fas fa-trash text-secondary cursor-pointer" 
             @click="$emit('delete-player', playerRow.player_id)" 
-            title="Borrar"></i>
+            aria-label="Eliminar jugador {{ playerRow.fullname }}">
+            <i class="fas fa-edit"></i>
+         </button>
       </td>
    </tr>
 </template>

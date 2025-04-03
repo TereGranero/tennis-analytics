@@ -1,68 +1,142 @@
 <template>
-   <div class="d-flex flex-row flex-wrap gap-5 justify-content-center align-items-center mb-5">
+   <section
+      v-if="player"
+      class="d-flex flex-row flex-wrap gap-5 justify-content-center align-items-center mb-5"
+      aria-labelledby="bioTitle">
 
       <!-- Player photo -->
       <PlayerPhotoByWikidataId
-         v-if="player" 
          :playerWikidataId="player.wikidata_id"/>   
 
       <!-- Personal details -->
       <div class="d-flex flex-column align items-start">
-         <h2 class="text-responsive-3 fw-bold m-0">
+         <h2 
+            id="bioTitle"
+            class="text-responsive-3 fw-bold m-0">
             DETALLES PERSONALES
          </h2>
          <table class="table table-hover mt-3">
+            <caption class="visually-hidden">
+               Detalles personales del jugador {{ player.fullname }}.
+            </caption>
             <tbody>
                <tr 
                   v-if="player.country !== 'unknown' && player.country !== '-'"
                   class="text-responsive-4">
-                  <th scope="row">País:</th>
-                  <td class="text-center"> {{ countryName }}</td>
+                  <th 
+                     scope="row"
+                     id="countryLabel">
+                     País:
+                  </th>
+                  <td 
+                     aria-labelledby="countryLabel"
+                     class="text-center"> 
+                     {{ countryName }}
+                  </td>
                </tr>
+
                <tr class="text-responsive-4">
-                  <th scope="row">Nacimiento:</th>
-                  <td class="text-center">{{ player.birth_date }}</td>
+                  <th 
+                     scope="row"
+                     id="birthLable">
+                     Nacimiento:
+                  </th>
+                  <td
+                     aria-labelledby="birthLabel"
+                     class="text-center">
+                     {{ player.birth_date }}
+                  </td>
                </tr>
-               <tr class="text-responsive-4">
-                  <th scope="row">Mano:</th>
-                  <td class="text-center">{{ player.hand }}</td>
+
+               <tr 
+                  class="text-responsive-4">
+                  <th 
+                     scope="row"
+                     id="handLabel">
+                     Mano:
+                  </th>
+                  <td
+                     aria-labelledby="handLabel"
+                     class="text-center">
+                     {{ player.hand }}
+                  </td>
                </tr>
+
                <tr class="text-responsive-4">
-                  <th scope="row">Altura en cm:</th>
-                  <td class="text-center">{{ player.height }}</td>
+                  <th 
+                     scope="row"
+                     id="heightLabel">
+                     Altura en cm:
+                  </th>
+                  <td 
+                     class="text-center"
+                     aria-labelledby="handLabel">
+                     {{ player.height }}
+                  </td>
                </tr>
+
                <tr class="text-responsive-4">
-                  <th scope="row">Peso en kg:</th>
-                  <td class="text-center"> {{ player.weight }} </td>
+                  <th 
+                     scope="row"
+                     id="weightLabel">
+                     Peso en kg:
+                  </th>
+                  <td 
+                     class="text-center"
+                     aria-labelledby="weightLabel"> 
+                     {{ player.weight }} 
+                  </td>
                </tr>
+
                <tr class="text-responsive-4">
-                  <th scope="row">Profesional desde: </th>
-                  <td class="text-center"> {{ player.pro_since }} </td>
+                  <th 
+                     scope="row"
+                     id="proSinceLabel">
+                     Profesional desde: 
+                  </th>
+                  <td 
+                     class="text-center"
+                     aria-labelledby="proSinceLabel"> 
+                     {{ player.pro_since }} 
+                  </td>
                </tr>
+
                <tr class="text-responsive-4">
-                  <th scope="row">Síguelo en:</th>
-                  <td class="text-center">  
-                     <i 
+                  <th 
+                     scope="row"
+                     id="mediaLabel">
+                     Síguelo en:
+                  </th>
+                  <td 
+                     class="text-center"
+                     aria-labelledby="mediaLabel">  
+                     <button 
                         v-if="player.instagram !== '-'"
-                        class="fa-brands fa-instagram text-secondary cursor-pointer me-2"
-                        @click="goToNetwork('instagram', player.instagram)">
-                     </i>
-                     <i 
+                        class="btn btn-link p-0 cursor-pointer"
+                        @click="goToNetwork('instagram', player.instagram)"
+                        aria-label="Ir al Instagram de {{ player.fullname }}">
+                        <i class="fa-brands fa-instagram text-secondary me-2"></i>
+                     </button>
+                     <button 
                         v-if="player.facebook !== '-'"
-                        class="fa-brands fa-facebook text-secondary cursor-pointer me-2"
-                        @click="goToNetwork('facebook', player.facebook)">
-                     </i>
-                     <i 
+                        class="btn btn-link p-0 cursor-pointer"
+                        @click="goToNetwork('facebook', player.facebook)"
+                        aria-label="Ir al Facebook de {{ player.fullname }}">
+                        <i class="fa-brands fa-facebook text-secondary me-2"></i>
+                     </button>
+                     <button 
                         v-if="player.x_twitter !== '-'"
-                        class="fa-brands fa-x-twitter text-secondary cursor-pointer"
-                        @click="goToNetwork('twitter', player.x_twitter)">
-                     </i>
+                        class="btn btn-link p-0 cursor-pointer"
+                        @click="goToNetwork('twitter', player.x_twitter)"
+                        aria-label="Ir al Twitter de {{ player.fullname }}">
+                        <i class="fa-brands fa-x-twitter text-secondary"></i>
+                     </button>
                   </td>
                </tr>
             </tbody>
          </table>
       </div>
-   </div>
+   </section>
 </template>
 
 <script>

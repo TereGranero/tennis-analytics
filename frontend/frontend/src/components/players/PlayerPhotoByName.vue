@@ -6,7 +6,7 @@
          class="text-center">
          <img
             :src="urlImage" 
-            :alt="alt"
+            :alt="`Foto de ${alt}`"
             class="img-fluid photo" 
             :class="{ 'fixed-height': setHeight }"/>
          
@@ -16,9 +16,19 @@
             class="mt-2 text-muted text-break ">
             <span class="fw-bold">{{ msg }} </span><br>
             <small>
-               "<span v-html="imageAttribution.title"></span>" by <span v-html="imageAttribution.author"></span>,
-               licensed <a :href="imageAttribution.licenseUrl" target="_blank">{{ imageAttribution.license }}</a>.
-               <a :href="imageAttribution.filePageUrl" target="_blank">Wikimedia Commons</a>
+               "<span v-html="imageAttribution.title"></span>" por <span v-html="imageAttribution.author"></span>,
+               licencia <a 
+                  :href="imageAttribution.licenseUrl"
+                  target="_blank"
+                  aria-label="Ver licencia {{ imageAttribution.license }} (se abre en nueva ventana)">
+                  {{ imageAttribution.license }}
+               </a>.
+               <a 
+                  :href="imageAttribution.filePageUrl" 
+                  target="_blank"
+                  aria-label="Ver imagen original en Wikimedia Commons (se abre en nueva ventana)">
+                  Ver en Wikimedia Commons
+               </a>
             </small>
          </figcaption>
       </figure>
