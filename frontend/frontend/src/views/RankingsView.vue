@@ -1,125 +1,121 @@
 <template>
    <main class="container">
 
-      <!-- Header Image -->
-      <header class="row mb-3">
-         <h1 id="rankingsTitle" class="visually-hidden">{{ alt }}</h1>
+      <!-- Heading -->
+      <h1 
+         id="rankingsHeading" 
+         class="text-center text-green text-responsive-1 mb-5">
+         ranking ATP
+      </h1>
+
+      <!-- Loading Message -->
+      <section
+         class="row" 
+         v-if="!rankings.length && isLoading" 
+         aria-live="polite">
+
          <div class="col-12">
-            <HeaderImage
-               imgName="rankings-banner"
-               :alt="alt" />
-         </div>
-      </header>
-
-      <section 
-         aria-labelledby="rankingsTitle" 
-         aria-busy="isLoading">
-
-         <!-- Loading Message -->
-         <div
-            class="row" 
-            v-if="!rankings.length && isLoading" 
-            aria-live="polite">
-
-            <div class="col-12">
-               <div 
-                  class="alert alert-info text-responsive-3 text-center"         
-                  role="status">
-                  Cargando rankings...
-               </div>
+            <div 
+               class="alert alert-info text-responsive-3 text-center"         
+               role="status">
+               Cargando rankings...
             </div>
          </div>
+      </section>
 
-         <!-- Select year -->
-         <div v-if="rankings.length && !isLoading">
-            <section aria-labelledby="selectTitle">
-               <h2 
-                  id="selectTitle" 
+      <!-- Select year -->
+      <section 
+         v-if="rankings.length && !isLoading"
+         aria-labelledby="selectHeading">
+         <h2 
+            id="selectHeading" 
+            class="visually-hidden">
+            Filtro de año para obtener los rankings
+         </h2>
+            
+         <form 
+            class="row justify-content-center align-items-center mb-3 mb-sm-4 mb-md-5"
+            @submit.prevent>
+
+            <div class="col-auto">
+               <label 
+                  id="yearLabel" 
+                  for="yearToSelect" 
+                  class="form-label me-2 text-responsive-4">
+                  Año:
+               </label>
+               <select
+                  id="yearToSelect"
+                  class="form-select border-dark bg-transparent tex-dark"
+                  v-model="yearToShow"
+                  @change="changeYear"
+                  aria-labelledby="yearLabel">
+                  <option 
+                     v-for="year in years"
+                     :key="year"
+                     :value="year">
+                     {{ year }}
+                  </option>
+               </select>
+            </div>
+         </form>
+      </section>
+
+      <section 
+         v-if="photoFigcaption && wikiQuery && player1Name"
+         aria-labelledby="rankingsContentTitle">
+
+         <h2 
+            id="rankingsContentTitle" 
+            class="visually-hidden">
+            Contenido de rankings
+         </h2>
+         <div class="d-flex flex-row flex-wrap align-items-center justify-content-center mb-3 mb-md-4">
+
+            <!-- Player No.1 Image -->
+            <div class="col-12 col-md-5 mt-3">
+               <PlayerPhotoByName 
+                  :wikiQuery="wikiQuery"
+                  :playerName="player1Name"
+                  :msg="photoFigcaption"
+                  :alt="`Foto de ${player1Name}`" /> 
+            </div>
+
+            <!-- Ranking Table -->
+            <div
+               class="col-12 col-md-6"
+               aria-labelledby="rankingsTableHeading">
+               <h3
+                  id="rankingsTableHeading"
                   class="visually-hidden">
-                  Filtros de rankings
-               </h2>
-               
-               <form 
-                  class="row justify-content-center align-items-center mb-3 mb-sm-4 mb-md-5"
-                  @submit.prevent>
-
-                  <div class="col-auto">
-                     <label 
-                        id="yearLabel" 
-                        for="yearToSelect" 
-                        class="form-label me-2 text-responsive-4">
-                        Año:
-                     </label>
-                     <select
-                        id="yearToSelect"
-                        class="form-select "
-                        v-model="yearToShow"
-                        @change="changeYear"
-                        aria-labelledby="yearLabel">
-                        <option 
-                           v-for="year in years"
-                           :key="year"
-                           :value="year">
-                           {{ year }}
-                        </option>
-                     </select>
-                  </div>
-               </form>
-            </section>
-
-            <section 
-               v-if="photoFigcaption && wikiQuery && player1Name"
-               aria-labelledby="rankingsContentTitle">
-
-               <h2 id="rankingsContentTitle" class="visually-hidden">Contenido de rankings</h2>
-               <div class="d-flex flex-row flex-wrap align-items-center justify-content-center mb-3 mb-md-4">
-
-                  <!-- Player No.1 Image -->
-                  <div class="col-12 col-md-4 mt-3">
-                     <PlayerPhotoByName 
-                        :wikiQuery="wikiQuery"
-                        :playerName="player1Name"
-                        :msg="photoFigcaption"
-                        :alt="`Foto de ${player1Name}`" /> 
-                  </div>
-
-                  <!-- Ranking Table -->
-                  <article 
-                     class="d-flex ms-md-5"
-                     aria-labelledby="rankingsTableTitle">
-                     <h3
-                        id="rankingsTableTitle"
-                        class="visually-hidden">
-                        Tabla de rankings
-                     </h3>
-                     <RankingsTable 
-                        :rankings="rankings"
-                        @view-player="viewPlayer" /> 
-                  </article>
-               </div>
-            </section>
-
-            <!-- Rankings pages navigation -->
-            <nav 
-               class="row justify-content-center"
-               v-if="rankings.length && !isLoading"
-               aria-label="Paginación de rankings">
-
-               <div class="col-12">
-                  <Pagination 
-                     :page="page" 
-                     :totalPages="totalPages"
-                     class="text-responsive-4"
-                     @goToPage="goToPage" />
-               </div>
-            </nav>
+                  Tabla de rankings ATP del año seleccionado
+               </h3>
+               <RankingsTable 
+                  :rankings="rankings"
+                  @view-player="viewPlayer" /> 
+            </div>
          </div>
       </section>
+
+      <!-- Rankings pages navigation -->
+      <nav 
+         class="row justify-content-center"
+         v-if="rankings.length && !isLoading"
+         aria-label="Paginación de rankings">
+
+         <div class="col-12">
+            <Pagination 
+               :page="page" 
+               :totalPages="totalPages"
+               class="text-responsive-4"
+               @goToPage="goToPage" />
+         </div>
+      </nav>
+
    </main>
 </template>
 
 <script>
-import HeaderImage from '@/components/HeaderImage.vue'
 import PlayerPhotoByName  from '@/components/players/PlayerPhotoByName.vue'
 import RankingsTable from '@/components/rankings/RankingsTable.vue'
 import Pagination from '@/components/Pagination.vue'
@@ -130,7 +126,6 @@ export default {
    name: 'RankingsView',
 
    components: {
-      HeaderImage,
       PlayerPhotoByName ,
       RankingsTable, 
       Pagination
@@ -147,7 +142,6 @@ export default {
          yearToShow: 2023,
          numberOne: null,
          isLoading: false,
-         alt: 'Título Rankings'
       }
    },
 

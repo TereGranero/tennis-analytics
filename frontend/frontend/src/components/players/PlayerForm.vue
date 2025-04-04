@@ -1,26 +1,24 @@
 <template>
-   <div class="container">
+   <main class="container mb-5">
 
       <!-- Skip Link -->
       <a 
-         href="#form-title" 
+         href="#formHeading" 
          class="visually-hidden-focusable">
          Ir al formulario
       </a>
 
-      <!-- Conditional Header Image -->
-      <h1 id="form-title" class="visually-hidden" tabindex="0">{{ alt }}</h1>
+      <!-- Conditional Heading -->
+      <h1 
+         id="formHeading" 
+         class="text-center text-green text-responsive-1 mb-5">
+         {{ title }}
+      </h1>
 
-      <div class="row mb-3">
-         <div class="col-12">
-            <HeaderImage
-               :imgName="imgName"
-               :alt="alt" />
-         </div>
-      </div>
 
+      <!-- Player Form -->
       <form 
-         class="row g-3 g-md-5 text-responsive-4"
+         class="row g-3 g-md-5 mb-5 text-responsive-5"
          @submit.prevent="sendForm">
 
          <!-- First Name -->
@@ -38,7 +36,7 @@
                id="nameFirstInput"
                ref="reference"
                type="text" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidFirstName}"
                @focus="resetState"
                @keypress="resetState"
@@ -69,7 +67,7 @@
             <input 
                id="nameLastInput"
                type="text" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidLastName}"
                @focus="resetState"
                v-model="player.name_last"
@@ -99,7 +97,7 @@
             <input
                id="birthInput"
                type="date" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidBirthDate}" 
                @focus="resetState"
                v-model="player.birth_date"
@@ -127,7 +125,7 @@
             </label>
             <select
                id="countrySelect"
-               class="form-select"
+               class="form-select border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidCountry}"
                @focus="resetState"
                v-model="player.country"
@@ -136,8 +134,7 @@
                <option 
                   v-for="country in allCountries"
                   :key="country.code"
-                  :value="country.code"
-                  class="text-responsive-5">
+                  :value="country.code">
                   {{ country.name }}
                </option>
             </select>
@@ -158,7 +155,7 @@
             <label
                id="proSinceLabel"
                for="proSinceInput"
-               class="form-label text-responsive-4">
+               class="form-label">
                Profesional desde: 
             </label>
             <input 
@@ -166,7 +163,7 @@
                type="number"
                step="1"
                pattern="\d{1,4}"
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidProSince}"
                @focus="resetState"
                v-model="player.pro_since"
@@ -189,7 +186,7 @@
             <label
                id="heightLabel"
                for="heightInput"
-               class="form-label text-responsive-4">
+               class="form-label">
                Altura (cm): 
             </label>
             <input
@@ -197,7 +194,7 @@
                type="number"
                step="1"
                pattern="\d{1,3}"
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidHeight}"
                @focus="resetState"
                v-model="player.height"
@@ -220,7 +217,7 @@
             <label
                id="weightLabel"
                for="weightInput"
-               class="form-label text-responsive-4">
+               class="form-label">
                Peso (Kg): 
             </label>
             <input
@@ -228,7 +225,7 @@
                type="number"
                step="1"
                pattern="\d{1,3}"
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidWeight}"
                @focus="resetState"
                v-model="player.weight"
@@ -251,12 +248,12 @@
             <label
                id="handLabel"
                for="handSelect"
-               class="form-label text-responsive-4">
+               class="form-label">
                Mano:
             </label>
             <select
                id="handSelect"
-               class="form-select text-responsive-4"
+               class="form-select border-dark bg-transparent text-dark text-responsive-4"
                :class="{'is-invalid': processing && invalidHand}"
                @focus="resetState"
                v-model="player.hand"
@@ -291,7 +288,7 @@
             </label>
             <input 
                type="text" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                @focus="resetState">
          </div>
 
@@ -303,13 +300,13 @@
             <label
                id="instagramLabel"
                for="instagramInput"
-               class="form-label text-responsive-4">
+               class="form-label">
                Instagram: 
             </label>
             <input
                id="instagramInput"
                type="text" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                @focus="resetState"
                v-model="player.instagram">
          </div>
@@ -322,13 +319,13 @@
             <label
                id="facebookLabel"
                for="facebookInput"
-               class="form-label text-responsive-4">
+               class="form-label">
                Facebook:
             </label>
             <input
                id="facebookInput"
                type="text" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                @focus="resetState"
                v-model="player.facebook">
          </div>
@@ -341,37 +338,37 @@
             <label
                id="twitterLabel"
                for="xInput"
-               class="form-label text-responsive-4">
+               class="form-label">
                X-Twitter: 
             </label>
             <input
                id="xInput"
                type="text" 
-               class="form-control"
+               class="form-control border-dark bg-transparent text-dark text-responsive-4"
                @focus="resetState"
                v-model="player.x_twitter">
          </div>
 
-         <!-- Buttons  btn-outline-dark -->
+         <!-- Buttons -->
          <div 
             class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5"
             role="group">
             <div class="form-group">
                <button 
                   type="submit"
-                  class="btn btn-secondary me-3">
+                  class="btn btn-submit btn-lg me-3">
                   Aceptar
                </button>
                <button 
                   type="button"
-                  class="btn btn-outline-secondary" 
+                  class="btn btn-cancel btn-lg " 
                   @click="cancelForm">
                   Cancelar
                </button>
             </div>
          </div>
       </form>
-   </div>
+   </main>
 </template>
 
 <script>
@@ -379,13 +376,10 @@ import countries from 'i18n-iso-countries'
 import es from 'i18n-iso-countries/langs/es.json'
 import { getPlayerByIdForEditing } from '@/api/serverConnectionService.js'
 import { normalizeIntoBackend, normalizeIntoForm } from '@/services/normalization_services'
-import HeaderImage from '../HeaderImage.vue'
 
 export default {
 
    name: 'PlayerForm',
-
-   components: { HeaderImage },
 
    props: {
       id: {
@@ -416,8 +410,7 @@ export default {
          allHands: ['-', 'Derecha', 'Izquierda'],
          processing: false,
          error: false,
-         imgName: '',
-         alt: ''
+         title: ''
       }
    },
 
@@ -601,8 +594,7 @@ export default {
    async mounted() {
       if (this.isEditing) {
 
-         this.imgName = 'editplayer-banner'
-         this.alt = 'Título editar jugador'
+         this.title = 'editar jugador'
          
          console.log(`Editing player id: ${this.id}`)
          const data = await getPlayerByIdForEditing(this.id)
@@ -618,8 +610,7 @@ export default {
             this.player = normalizeIntoForm(player_retrieved )
          }
       } else {
-         this.imgName = 'addplayer-banner'
-         this.alt = 'Título añadir jugador'
+         this.title = 'añadir jugador'
       }
 
       this.initCountries()
@@ -627,8 +618,4 @@ export default {
 }
 </script>
 
-<style scoped>
-   form {
-      margin-bottom: 2rem;
-   }
-</style>
+<style></style>

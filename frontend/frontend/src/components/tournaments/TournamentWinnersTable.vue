@@ -1,12 +1,12 @@
 <template>
    <table class="table table-hover text-responsive-4">
       <caption class="visually-hidden">
-         Tabla de ganadores del torneo seleccionado por años.
+         Tabla de ganadores del torneo seleccionado.
       </caption>
-      <thead>
-         <tr>
-            <th scope="col" class="col-3 text-center">Año</th>
-            <th scope="col" class="col-3">Ganador - {{ winners[0].tourney_name.toUpperCase() }}</th>
+      <thead class="table-light">
+         <tr class="text-center">
+            <th scope="col" class="col-3">Año</th>
+            <th scope="col" class="col-3">Ganador</th>
          </tr>
       </thead>
       <tbody aria-live="polite">

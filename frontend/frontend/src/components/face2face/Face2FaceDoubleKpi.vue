@@ -1,10 +1,10 @@
 <template>
-   <div class="card h-100">
+   <article class="card h-100 border-dark">
      <div class="card-body text-center">
-       <h5 class="card-title text-muted mb-2">{{ title }}</h5>
-       <h2 class="text-responsive-1 mb-0 fw-bold">{{ value1 }}{{ percentage ? '%' : '' }} - {{ value2 }}{{ percentage ? '%' : '' }}</h2>
+       <p class="card-title text-reponsive-4 mb-2">{{ title }}</p>
+       <p class="text-responsive-1 text-green mb-0 fw-bold">{{ value1 }}{{ percentage ? '%' : '' }} - {{ value2 }}{{ percentage ? '%' : '' }}</p>
      </div>
-   </div>
+   </article>
 </template>
 
 <script>

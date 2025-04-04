@@ -30,7 +30,7 @@
                   </th>
                   <td 
                      aria-labelledby="countryLabel"
-                     class="text-center"> 
+                     class="text-center text-green"> 
                      {{ countryName }}
                   </td>
                </tr>
@@ -43,7 +43,7 @@
                   </th>
                   <td
                      aria-labelledby="birthLabel"
-                     class="text-center">
+                     class="text-center text-green">
                      {{ player.birth_date }}
                   </td>
                </tr>
@@ -57,7 +57,7 @@
                   </th>
                   <td
                      aria-labelledby="handLabel"
-                     class="text-center">
+                     class="text-center text-green">
                      {{ player.hand }}
                   </td>
                </tr>
@@ -69,7 +69,7 @@
                      Altura en cm:
                   </th>
                   <td 
-                     class="text-center"
+                     class="text-center text-green"
                      aria-labelledby="handLabel">
                      {{ player.height }}
                   </td>
@@ -82,7 +82,7 @@
                      Peso en kg:
                   </th>
                   <td 
-                     class="text-center"
+                     class="text-center text-green"
                      aria-labelledby="weightLabel"> 
                      {{ player.weight }} 
                   </td>
@@ -95,7 +95,7 @@
                      Profesional desde: 
                   </th>
                   <td 
-                     class="text-center"
+                     class="text-center text-green"
                      aria-labelledby="proSinceLabel"> 
                      {{ player.pro_since }} 
                   </td>
@@ -108,28 +108,28 @@
                      Síguelo en:
                   </th>
                   <td 
-                     class="text-center"
+                     class="text-center text-green"
                      aria-labelledby="mediaLabel">  
                      <button 
                         v-if="player.instagram !== '-'"
                         class="btn btn-link p-0 cursor-pointer"
                         @click="goToNetwork('instagram', player.instagram)"
-                        aria-label="Ir al Instagram de {{ player.fullname }}">
-                        <i class="fa-brands fa-instagram text-secondary me-2"></i>
+                        :aria-label="`Ir al Instagram de ${ player.fullname }`">
+                        <i class="fa-brands fa-instagram me-2 text-green"></i>
                      </button>
                      <button 
                         v-if="player.facebook !== '-'"
                         class="btn btn-link p-0 cursor-pointer"
                         @click="goToNetwork('facebook', player.facebook)"
-                        aria-label="Ir al Facebook de {{ player.fullname }}">
-                        <i class="fa-brands fa-facebook text-secondary me-2"></i>
+                        :aria-label="`Ir al Facebook de ${ player.fullname }`">
+                        <i class="fa-brands fa-facebook me-2 text-green"></i>
                      </button>
                      <button 
                         v-if="player.x_twitter !== '-'"
                         class="btn btn-link p-0 cursor-pointer"
                         @click="goToNetwork('twitter', player.x_twitter)"
-                        aria-label="Ir al Twitter de {{ player.fullname }}">
-                        <i class="fa-brands fa-x-twitter text-secondary"></i>
+                        :aria-label="`Ir al Twitter de ${ player.fullname }`">
+                        <i class="fa-brands fa-x-twitter text-green"></i>
                      </button>
                   </td>
                </tr>

@@ -14,7 +14,7 @@
             class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
-               class="btn btn-secondary" 
+               class="btn btn-outline-dark btn-lg" 
                @click="editPlayer"
                aria-label="Editar jugador">
                Editar Jugador
@@ -35,8 +35,12 @@
          :player="player"/>
          
       <div v-else class="row">
-         <div class="col-12">
-            <div class="alert alert-info text-responsive-3 text-center" role="alert">
+         <div 
+         class="col-12"
+         role="status"
+         aria-live="polite">
+            <div class="alert alert-info text-responsive-3 text-center" 
+            >
                Cargando jugador...
             </div>
          </div>

@@ -3,13 +3,13 @@
       v-if="hasAnyKpi"
       class="d-flex flex-column align items-start mb-5"
       aria-live="polite"
-      :aria-labelledby="titleGrid ? 'kpi-title' : null"> 
+      :aria-labelledby="titleGrid ? 'kpiTitle' : null"> 
 
       <header>
          <h2 
             v-if="titleGrid"
-            id="kpi-title"
-            class="text-responsive-3 fw-bold m-0">
+            id="kpiTitle"
+            class="text-responsive-3 fw-bold m-0 mb-5">
             {{titleGrid}}
          </h2>
       </header>

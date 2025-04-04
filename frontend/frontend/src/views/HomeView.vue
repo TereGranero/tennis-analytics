@@ -1,17 +1,16 @@
 <template>
    <main class="container">
-      <h1 class="visually-hidden">Home de Tennis Analytics</h1>
+       <h1 class="visually-hidden">Home de Tennis Analytics</h1> 
 
       <!-- Grand Slams Ranking -->
       <section aria-labelledby="grandSlamsHeading">
          
-         <!-- Header Image -->
-         <h2 id="grandSlamsHeading" class="visually-hidden">Ranking Grand Slams</h2> 
-         <div class="col-12 mb-3">
-            <HeaderImage
-               imgName="grand-slams"
-               alt="Título Ranking Grand Slam" />
-         </div>
+         <!-- Heading -->
+         <h2
+            id="grandSlamsHeading" 
+            class="text-green text-responsive-1 text-center mb-5">
+            Grand Slams top-5
+         </h2>
 
          <!-- Loading Message -->
          <div 
@@ -27,11 +26,11 @@
             </div>
          </div>
 
+         <!-- Content -->
          <article
             class="d-flex flex-row flex-wrap align-items-start justify-content-center mb-5"
             v-else-if="rankings['grand-slam'].length && photoFigcaptionGrandSlam && wikiQueryGrandSlam && player1NameGrandSlam && !isLoading['grand-slam']"
-            aria-labelledby="grandSlamsHeading"
-            >
+            aria-labelledby="grandSlamsHeading">
 
             <!-- Player Image -->
             <div class="col-12 col-md-5">
@@ -66,13 +65,12 @@
       <!-- Masters 1000 Ranking -->
       <section aria-labelledby="masters1000Heading">
       
-         <!-- Header Image -->
-         <header class="col-12 mb-3">
-            <h2 id="masters1000Heading" class="visually-hidden">Ranking Masters 1000</h2> 
-            <HeaderImage
-               imgName="masters-1000"
-               alt="Título Ranking Masters 1000" />
-         </header>
+         <!-- Heading -->
+         <h2
+            id="masters1000Heading" 
+            class="text-green text-responsive-1 text-center mt-5 mb-5">
+           Masters 1000 top-5
+         </h2>
 
          <!-- Loading Message -->
          <div 
@@ -88,6 +86,7 @@
             </div>
          </div>
 
+         <!-- Content -->
          <article
             class="d-flex flex-row flex-wrap align-items-start justify-content-center mb-3 mb-md-5"
             v-if="rankings['masters-1000'].length && photoFigcaptionMasters1000 && wikiQueryMasters1000 && player1NameMasters1000 && !isLoading['masters-1000']"
@@ -126,14 +125,14 @@
       <!-- News -->
       <section aria-labelledby="newsHeading">
 
-         <!-- Header Image -->
-         <header class="mb-3">
-            <h2 id="newsHeading" class="visually-hidden">Noticias de Tenis</h2> 
-            <HeaderImage
-               imgName="news"
-               alt="Título Noticias de Tenis" />
-         </header>
+         <!-- Heading -->
+         <h2
+            id="newsHeading" 
+            class="text-green text-responsive-1 text-center mb-5">
+           Noticias de Tenis
+         </h2>
 
+         <!-- News Grid -->
          <article 
             class="row align-items-center justify-content-center mb-5">
             <TennisNews :totalNews="totalNews" />
@@ -144,7 +143,6 @@
 
 <script>
 import { getRankingTitles } from '@/api/serverConnectionService'
-import HeaderImage from '@/components/HeaderImage.vue'
 import PlayerPhotoByName  from '@/components/players/PlayerPhotoByName.vue'
 import TitlesTable from '@/components/home/TitlesTable.vue'
 import TennisNews from '@/components/home/TennisNews.vue'
@@ -155,7 +153,6 @@ export default {
 
    components: { 
       PlayerPhotoByName,
-      HeaderImage,
       TitlesTable,
       TennisNews
     },

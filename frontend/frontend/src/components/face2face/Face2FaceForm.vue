@@ -1,22 +1,19 @@
 <template>
 
    <form 
-      class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-4"
+      class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-5 text-green mb-5"
       @submit.prevent="sendForm">
 
       <!-- Player1 -->
       <div class="col-12 col-md-5">
-         <small id="player1Help" class="form-text text-muted">
-            Escribe o selecciona el apellido del primer jugador.
-         </small>
          <label
             for="player1Select"
-            class="form-label text-responsive-4">
-            Jugador 1: 
+            class="form-label">
+            Escribe o selecciona el apellido del primer jugador: 
          </label>
          <input
             id="player1Select"
-            class="form-control text-responsive-4"
+            class="form-control border-dark bg-transparent text-dark text-responsive-4"
             :class="{'is-invalid': processing && invalidPlayer1}"
             v-model="player1"
             @focus="resetState"
@@ -42,17 +39,14 @@
 
       <!-- Player2 -->
       <div class="col-12 col-md-5">
-         <small id="player2Help" class="form-text text-muted">
-            Escribe o selecciona el apellido del segundo jugador.
-         </small>
          <label
             for="player2Select"
-            class="form-label text-responsive-4">
-            Jugador 2: 
+            class="form-label">
+            Escribe o selecciona el apellido del segundo jugador: 
          </label>
          <input
             id="player2Select"
-            class="form-control text-responsive-4"
+            class="form-control border-dark bg-transparent text-dark text-responsive-4"
             :class="{'is-invalid': processing && invalidPlayer2}"
             v-model="player2"
             @focus="resetState"
@@ -78,17 +72,17 @@
       </div>
 
 
-      <!-- Buttons btn-outline-dark-->
-      <div class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5">
+      <!-- Buttons -->
+      <div class="d-flex flex-wrap gap-5 justify-content-center mt-3">
          <div class="form-group">
             <button 
                type="submit"
-               class="btn btn-secondary me-3">
+               class="btn btn-submit btn-lg me-3">
                Aceptar
             </button>
             <button 
                type="button"
-               class="btn btn-outline-secondary" 
+               class="btn btn-cancel btn-lg" 
                @click="cancelForm">
                Cancelar
             </button>

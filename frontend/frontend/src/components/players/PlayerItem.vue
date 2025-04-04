@@ -4,9 +4,10 @@
       <td 
          @click="$emit('view-player', playerRow.player_id)"
          @keydown.enter="$emit('view-player', playerRow.player_id)"
-         class="cursor-pointer"
+         class="cursor-pointer text-green"
          tabindex="0"
-         role="button">
+         role="button"
+         :aria-label="`Ir a la ficha de ${playerRow.fullname}`">
          {{ playerRow.fullname }}
       </td>
 
@@ -28,20 +29,17 @@
 
       <!-- Font Awesome Buttons -->
       <td v-if="isAdmin">
-         <button class="fas fa-eye text-secondary cursor-pointer me-2" 
+         <button class="fas fa-eye text-green cursor-pointer me-2" 
             @click="$emit('view-player', playerRow.player_id)" 
-            aria-label="Ver jugador {{ playerRow.fullname }}">
-            <i class="fas fa-eye"></i>
+            :aria-label="`Ver jugador ${ playerRow.fullname }`">
          </button>
-         <button class="fas fa-edit text-secondary cursor-pointer me-2" 
+         <button class="fas fa-edit text-green cursor-pointer me-2" 
             @click="$emit('edit-player', playerRow.player_id)" 
-            aria-label="Editar jugador {{ playerRow.fullname }}">
-            <i class="fas fa-edit"></i>
+            :aria-label="`Editar jugador ${ playerRow.fullname }`">
          </button>
-         <button class="fas fa-trash text-secondary cursor-pointer" 
+         <button class="fas fa-trash text-green cursor-pointer" 
             @click="$emit('delete-player', playerRow.player_id)" 
-            aria-label="Eliminar jugador {{ playerRow.fullname }}">
-            <i class="fas fa-edit"></i>
+            :aria-label="`Eliminar jugador ${ playerRow.fullname }`">
          </button>
       </td>
    </tr>

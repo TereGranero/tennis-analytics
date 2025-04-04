@@ -1,54 +1,69 @@
 <template>
-   <div class="container">
+   <main class="container">
 
-      <!-- Header Image -->
-      <h1 id="#tournaments-title" class="visually-hidden" tabindex="0">{{ alt }}</h1>
-      <div class="row mb-3">
-         <div class="col-12">
-            <HeaderImage
-               imgName="tournaments-banner"
-               :alt="alt" />
-         </div>
-      </div>
+      <!-- Heading -->
+      <h1 
+         id="winnersHeading" 
+         class="text-center text-green text-responsive-1 mb-5">
+         torneo {{tournamentName}}
+      </h1>
 
 
       <!-- Alert Messages -->
-      <div 
+      <section
          class="row" 
-         v-if="!winners.length && isLoading" >
+         v-if="!winners.length && isLoading" 
+         aria-live="polite">
 
          <div class="col-12">
-            <div class="alert alert-info text-responsive-3 text-center" role="alert">
+            <div 
+               class="alert alert-info text-responsive-3 text-center" role="status">
                Cargando torneos...
             </div>
          </div>
-      </div>
+      </section>
 
-
-      <div 
+      <section
          class="row align-items-center justify-content-center mb-3 mb-md-4"
-         v-if="tournamentName && !isLoading">
+         v-if="tournamentName && !isLoading"
+         aria-labelledby="tournamentsContentTitle">
 
-         <!-- Tournament Logo -->
-         <div class="col-12 col-md-5">
-            <TournamentLogo 
-               :tournament="tournamentName"
-               :level="tournamentLevel"
-               /> 
-         </div>
+         <h2 
+            id="rankingsContentTitle" 
+            class="visually-hidden">
+            Contenido de ganadores del torneo seleccionado
+         </h2>
+         <div class="d-flex flex-row flex-wrap align-items-center justify-content-center mb-3 mb-md-4">
 
-         <!-- Winners Table Component -->
-         <div class="col-12 col-md-6">
-            <TournamentWinnersTable 
-               :winners="winners"
-               @view-player="viewPlayer" /> 
+            <!-- Tournament Logo -->
+            <div class="col-12 col-md-5 mt-3">
+               <TournamentLogo 
+                  :tournament="tournamentName"
+                  :level="tournamentLevel"
+                  /> 
+            </div>
+
+            <!-- Winners Table  -->
+            <div 
+               class="col-12 col-md-6"
+               aria-labelledby="tournamentTableHeading">
+               <h3
+                  id="tournamentTableHeading"
+                  class="visually-hidden">
+                  Tabla de ganadores del torneo seleccionado
+               </h3>
+               <TournamentWinnersTable 
+                  :winners="winners"
+                  @view-player="viewPlayer" /> 
+            </div>
          </div>
-      </div>
+      </section>
 
       <!-- Winners pages navigation -->
-      <div 
+      <nav
          class="row justify-content-center"
-         v-if="winners.length && !isLoading">
+         v-if="winners.length && !isLoading"
+         aria-label="Paginación de rankings">
 
          <div class="col-12">
             <Pagination 
@@ -57,13 +72,12 @@
                class="text-responsive-4"
                @goToPage="goToPage" />
          </div>
-      </div>
+      </nav>
 
-   </div>
+   </main>
 </template>
 
 <script>
-import HeaderImage from '@/components/HeaderImage.vue'
 import TournamentLogo from '@/components/tournaments/TournamentLogo.vue'
 import TournamentWinnersTable from '@/components/tournaments/TournamentWinnersTable.vue'
 import Pagination from '@/components/Pagination.vue'
@@ -81,7 +95,6 @@ export default {
    },
 
    components: {
-      HeaderImage,
       TournamentLogo,
       TournamentWinnersTable,
       Pagination
@@ -97,7 +110,6 @@ export default {
          isLoading: false,
          tournamentName: null,
          tournamentLevel: null,
-         alt: 'Título torneos'
       }
    },
 

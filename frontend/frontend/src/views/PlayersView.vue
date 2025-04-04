@@ -1,102 +1,95 @@
 <template>
    <main class="container">
 
-      <!-- Header Image -->
-      <header class="row mb-3">
-         <h1 id="playersTitle" class="visually-hidden">{{ alt }}</h1>
+      <!-- Heading -->
+      <h1 
+         id="playersHeading" 
+         class="text-center text-green text-responsive-1 mb-5">
+         jugadores
+      </h1>
+
+      <!-- Loading Message -->
+      <section
+         class="row" 
+         v-if="!players.length && isSearching" 
+         aria-live="polite">
+
          <div class="col-12">
-            <HeaderImage
-               imgName="players-banner"
-               :alt="alt" />
-         </div>
-      </header>
-
-      <section aria-labelledby="playersTitle">
-
-         <!-- Loading Message -->
-         <div 
-            class="row" 
-            v-if="!players.length && isSearching" 
-            aria-live="polite">
-
-            <div class="col-12">
-               <div 
-                  class="alert alert-info text-responsive-3 text-center" 
-                  role="status">
-                  Cargando jugadores...
-               </div>
-            </div>
-         </div>
-
-         <!-- Controls -->
-         <section 
-            class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
-            v-if="players.length  && !isSearching"
-            role="group"
-            aria-label="Controles para jugadores">
-
-            <!-- Add Player Button -->
             <div 
-               v-if="isAdmin"
-               class="col-12 mb-3 col-md-auto mb-md-0">
-               <button 
-                  type="button" 
-                  class="btn btn-secondary" 
-                  @click="addPlayer"
-                  aria-label="Añadir nuevo jugador">
-                  Añadir Jugador
-               </button>
+               class="alert alert-info text-responsive-3 text-center" 
+               role="status">
+               Cargando jugadores...
             </div>
-
-            <!-- Search by Last Name -->
-            <div class="col-12 col-md-auto me-md-5">
-               <PlayerSearch 
-                  @search-player="searchPlayer"
-                  aria-label="Buscar jugadores por apellido" />
-            </div>
-         </section>
-
-         <!-- Players Table -->
-         <article
-            class="row justify-content-center mb-3 mb-md-4"
-            v-if="players.length && !isSearching"
-            aria-labelledby="playersTableHeading">
-
-            <h2 
-               id="playersTableHeading" 
-               class="visually-hidden">
-               Tabla de jugadores
-            </h2>
-            <div class="col-12 col-lg-12">
-               <PlayersTable 
-                  :players="players"
-                  :isAdmin="isAdmin"
-                  @view-player="viewPlayer"
-                  @edit-player="editPlayer"
-                  @delete-player="deleteOnePlayer" /> 
-            </div>
-         </article>
-
-         <!-- Players pages navigation -->
-         <nav
-            class="row justify-content-center"
-            v-if="players.length && !isSearching"
-            aria-label="Navegar por las páginas">
-
-            <div class="col-12">
-               <Pagination 
-                  :page="page" 
-                  :totalPages="totalPages"
-                  class="text-responsive-4"
-                  @goToPage="goToPage" />
-            </div>
-         </nav>
+         </div>
       </section>
+
+      <!-- Controls -->
+      <section
+         class="row text-center text-md-end align-items-center mb-3 mb-sm-4 mb-md-5" 
+         v-if="players.length  && !isSearching"
+         role="group"
+         aria-label="Controles para jugadores">
+
+         <!-- Add Player Button -->
+         <div 
+            v-if="isAdmin"
+            class="col-12 mb-3 col-md-auto mb-md-0">
+            <button 
+               type="button" 
+               class="btn btn-outline-dark btn-lg" 
+               @click="addPlayer"
+               aria-label="Añadir nuevo jugador">
+               Añadir Jugador
+            </button>
+         </div>
+
+         <!-- Search by Last Name -->
+         <div class="col-12 col-md-auto me-md-5">
+            <PlayerSearch 
+               @search-player="searchPlayer"
+               aria-label="Buscar jugadores por apellido" />
+         </div>
+      </section>
+
+      <!-- Players Table -->
+      <section
+         class="row justify-content-center mb-3 mb-md-4"
+         v-if="players.length && !isSearching"
+         aria-labelledby="playersTableHeading">
+
+         <h2 
+            id="playersTableHeading" 
+            class="visually-hidden">
+            Tabla de jugadores
+         </h2>
+         <div class="col-12 col-lg-12">
+            <PlayersTable 
+               :players="players"
+               :isAdmin="isAdmin"
+               @view-player="viewPlayer"
+               @edit-player="editPlayer"
+               @delete-player="deleteOnePlayer" /> 
+         </div>
+      </section>
+
+      <!-- Players pages navigation -->
+      <nav
+         class="row justify-content-center"
+         v-if="players.length && !isSearching"
+         aria-label="Navegar por las páginas">
+
+         <div class="col-12">
+            <Pagination 
+               :page="page" 
+               :totalPages="totalPages"
+               class="text-responsive-4"
+               @goToPage="goToPage" />
+         </div>
+      </nav>
    </main>
 </template>
 
 <script>
-import HeaderImage from '@/components/HeaderImage.vue'
 import PlayerSearch from '@/components/players/PlayerSearch.vue'
 import PlayersTable from '@/components/players/PlayersTable.vue'
 import Pagination from '@/components/Pagination.vue'
@@ -108,7 +101,6 @@ export default {
    name: 'PlayersView',
 
    components: {
-      HeaderImage,
       PlayerSearch,
       PlayersTable, 
       Pagination 
@@ -121,11 +113,8 @@ export default {
       }
    },
 
-
    data() {
       return {
-         pageName: 'players',
-         alt: 'Título Jugadores',
          players: [],
          totalPlayers: 0,
          page: 1,
@@ -157,7 +146,7 @@ export default {
       async loadPlayers() {
          // Retrieve all players or filtered players by last name, with pagination
          try {
-
+            this.isSearching = true
             this.players = []
             
             const data = await getAllPlayers(

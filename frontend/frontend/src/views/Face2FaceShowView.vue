@@ -1,15 +1,12 @@
 <template>
    <main class="container">
 
-      <!-- Header Image -->
-      <header class="row mb-3">
-         <div class="col-12">
-            <h1 id="face2faceShowTitle" class="visually-hidden">{{ alt }}</h1>
-            <HeaderImage
-               imgName="face2face-banner"
-               :alt="alt" />
-         </div>
-      </header>
+      <!-- Heading -->
+      <h1 
+         id="face2faceShowHeading" 
+         class="text-green text-center text-responsive-1 mb-5">
+         Face2Face
+      </h1>
 
       <!-- Select Button -->
       <section   
@@ -17,13 +14,17 @@
          aria-labelledby="selectHeading"
          v-if="player1 && player2">
 
-         <h2 id="selectHeading" class="visually-hidden">Seleccionar otros jugadores para comparar</h2>
+         <h2 
+            id="selectHeading" 
+            class="visually-hidden">
+            Seleccionar otros jugadores para comparar
+         </h2>
          <div class="col-12 mb-3 col-md-auto mb-md-0">
             <button 
                type="button" 
-               class="btn btn-secondary" 
+               class="btn btn-outline-dark btn-lg" 
                @click="selectPlayers"
-               aria-label="Seleccionar otros jugadores para comparar.">
+               aria-labelledby="selectHeading">
                Seleccionar jugadores
             </button>
          </div>
@@ -34,7 +35,11 @@
          class="row justify-content-center align-items-start mb-5"
          aria-labelledby="playersHeading">
 
-         <h2 id="playersHeading" class="visually-hidden">Comparación de jugadores</h2>
+         <h2 
+            id="playersHeading" 
+            class="visually-hidden">
+            Comparación de jugadores
+         </h2>
 
          <!-- Player 1 -->
          <article
@@ -50,7 +55,7 @@
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
                <button 
-                  class="btn btn-link p-0 border-0"
+                  class="btn btn-link text-decoration-none p-0 border-0"
                   @click="viewPlayer(player1.player_id)"
                   :aria-label="`Ver ficha de ${player1.fullname}`">
                   <PlayerPhotoByWikidataId
@@ -85,7 +90,7 @@
             <!-- Player photo -->
             <div class="d-flex justify-content-center">
                <button 
-                  class="btn btn-link p-0 border-0"
+                  class="btn btn-link text-decoration-none p-0 border-0"
                   @click="viewPlayer(player2.player_id)"
                   :aria-label="`Ver ficha de ${player2.fullname}`">
                   <PlayerPhotoByWikidataId
@@ -112,7 +117,11 @@
          aria-labelledby="comparisonHeading"
          class="row justify-content-center align-items-start mb-5 mx-mb-3">
 
-         <h2 id="comparisonHeading" class="visually-hidden">Comparación de estadísticas</h2>
+         <h2 
+            id="comparisonHeading" 
+            class="visually-hidden">
+            Comparación de estadísticas
+         </h2>
          <div class="col-12 col-md-6 d-flex flex-column">
             <div 
                role="group"
@@ -133,7 +142,6 @@
  </template>
  
 <script>
-import HeaderImage from '@/components/HeaderImage.vue'
 import PlayerPhotoByWikidataId from '@/components/players/PlayerPhotoByWikidataId.vue'
 import PlayerFullnameFlagHeader from '@/components/players/PlayerFullnameFlagHeader.vue'
 import Face2FaceDoubleKpi from '@/components/face2face/Face2FaceDoubleKpi.vue'
@@ -144,7 +152,6 @@ export default {
    name: 'Face2FaceShowView',
 
    components: { 
-      HeaderImage,
       PlayerPhotoByWikidataId,
       PlayerFullnameFlagHeader,
       Face2FaceDoubleKpi

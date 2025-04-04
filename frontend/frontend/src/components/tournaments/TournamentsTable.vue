@@ -1,14 +1,13 @@
 <template>
    <table class="table table-hover text-responsive-4">
       <caption class="visually-hidden">
-         Tabla de torneos ATP del nivel seleccionado.
+         Tabla de torneos del nivel seleccionado.
       </caption>
       <tbody aria-live="polite">
          <TournamentItem
             v-for="(tourneyName, index) in tournaments" 
             :key="index"
             :tournamentName="tourneyName"
-            class="text-responsive-4"
             @view-winners="viewWinners" />
       </tbody>
    </table>

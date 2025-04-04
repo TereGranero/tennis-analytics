@@ -3,7 +3,11 @@
       <!-- Tournament Name -->
       <td
          @click="$emit('view-winners', tournamentName)" 
-         class="text-center cursor-pointer">
+         @keydown.enter="$emit('view-winners', tournamentName)"
+         class="text-center text-responsive-4 text-green cursor-pointer"
+         tabindex="0"
+         role="button"
+         :aria-label="`Ver los ganadores del torneo ${tournamentName}`">
          {{ tournamentName }}
       </td>
    </tr>

@@ -1,12 +1,14 @@
 <template>
    <form 
-      class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-4"
+      class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-5 mb-5"
       @submit.prevent="sendForm"
-      aria-describedby="login-instructions">
+      aria-describedby="loginInstructions">
 
       <h2 class="visually-hidden">Formulario de inicio de sesión para administradores</h2>
       
-      <p id="login-instructions" class="visually-hidden">
+      <p 
+         id="loginInstructions" 
+         class="visually-hidden">
          Rellena los campos de usuario y contraseña para acceder a tu cuenta de administrador.
       </p>
 
@@ -14,9 +16,9 @@
       <div 
          class="col-12 col-md-5"
          role="group" 
-         aria-labelledby="username-label">
+         aria-labelledby="usernameLabel">
          <label
-            id="username-label"
+            id="usernameLabel"
             for="usernameInput"
             class="form-label">
             Usuario: 
@@ -24,7 +26,7 @@
          <input
             id="usernameInput"
             type="text" 
-            class="form-control"
+            class="form-control border-dark bg-transparent text-dark text-responsive-4"
             :class="{'is-invalid': processing && invalidUsername}"
             @focus="resetState"
             v-model="user.username"
@@ -44,9 +46,9 @@
       <div 
          class="col-12 col-md-5"
          role="group" 
-         aria-labelledby="password-label">
+         aria-labelledby="passwordLabel">
          <label
-            id="password-label"
+            id="passwordLabel"
             for="passwordInput" 
             class="form-label">
             Contraseña: 
@@ -54,7 +56,7 @@
          <input 
             id="passwordInput"
             type="password" 
-            class="form-control"
+            class="form-control border-dark bg-transparent text-dark text-responsive-4"
             :class="{'is-invalid': processing && invalidPassword}"
             @focus="resetState"
             v-model="user.password"
@@ -70,20 +72,19 @@
          </div>
       </div>
 
-
-      <!-- Buttons btn-outline-dark-->
+      <!-- Buttons -->
       <div 
          class="d-flex flex-wrap gap-5 justify-content-center mt-3 mt-md-5"
          role="group">
          <div class="form-group">
             <button 
                type="submit"
-               class="btn btn-secondary me-3">
+               class="btn btn-lg btn-submit me-3">
                Aceptar
             </button>
             <button 
                type="button"
-               class="btn btn-outline-secondary"
+               class="btn btn-lg btn-cancel"
                @click="cancelForm">
                Cancelar
             </button>
@@ -109,13 +110,14 @@ export default {
    },
 
    computed: {
-      // --------------------------- Validates Form ---------------------------
       invalidUsername() {
-         return this.user.username < 1
+         return this.user.username.trim().length < 1
+
       },
 
       invalidPassword() {
-         return this.user.password < 1
+         return this.user.password.trim().length < 1
+
       },
    },
 
@@ -125,7 +127,7 @@ export default {
          this.resetState()
 
          // Validates fields
-         if(this.invaliduserName || 
+         if(this.invalidUsername || 
             this.invalidPassword ) {
                this.error = true
                return
@@ -142,11 +144,11 @@ export default {
             password: '',
          },
          this.resetState()
+         this.processing = false
       },
       
       resetState(){
          this.error = false
-         this.processing = false
       },
 
       cancelForm(){
@@ -155,13 +157,10 @@ export default {
             password: '',
          },
          this.resetState()
+         this.processing = false
       }
    }
 }
 </script>
 
-<style scoped>
-   form {
-      margin-bottom: 2rem;
-   }
-</style>
+<style></style>

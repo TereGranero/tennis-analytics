@@ -1,7 +1,7 @@
 <template>
-   <main>
-     <PlayerForm @add-player="addPlayer"/>
-   </main>
+     <PlayerForm
+         class="mb-5"
+         @add-player="addPlayer"/>
  </template>
  
  <script>

@@ -1,15 +1,15 @@
 <template>
-   <article
+   <div
       v-if="value != '-'"
-      class="card h-100"
+      class="card h-100 border-dark"
       role="region"
       :aria-label="`${title}: ${value}${percentage ? '%' : ''}`">
 
       <div class="card-body text-center">
-         <h5 class="card-title text-muted mb-2">{{ title }}</h5>
-         <p class="text-responsive-1 mb-0 fw-bold">{{ value }}{{ percentage ? '%' : '' }}</p>
+         <p class="card-title text-reponsive-4 mb-2">{{ title }}</p>
+         <p class="text-responsive-1 text-green mb-0 fw-bold">{{ value }}{{ percentage ? '%' : '' }}</p>
       </div>
-   </article>
+   </div>
 </template>
 
 <script>

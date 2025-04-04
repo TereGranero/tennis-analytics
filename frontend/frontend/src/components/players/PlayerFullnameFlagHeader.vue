@@ -4,17 +4,18 @@
    <div 
       v-if="player" 
       class="row bg-dark text-white mb-3 mb-md-5"
-      aria-labelledby="player-fullname-header">
+      aria-labelledby="playerFullnameHeading">
 
       <div class="d-flex align-items-center justify-content-center w-100">
          <img
             v-if="player.country !== 'unknown' && player.country!== '-'"
             :src="'https://flagcdn.com/w40/' + player.country + '.png'"
             :alt="'Bandera de ' + player.country"
-            :title="'Bandera de ' + player.country"
             class="flag me-3"
             aria-hidden="true"> 
-            <h1 id="player-fullname-header" class="text-responsive-2 text-center m-0">
+            <h1 
+               id="playerFullnameHeading" 
+               class="text-responsive-2 text-center m-0">
                {{ player.fullname.toUpperCase() }}
             </h1>
       </div>

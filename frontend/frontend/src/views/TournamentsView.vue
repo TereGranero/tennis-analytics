@@ -1,53 +1,70 @@
 <template>
-   <div class="container">
+   <main class="container">
 
-      <!-- Header Image -->
-      <div class="row mb-3">
-         <div class="col-12">
-            <HeaderImage
-               imgName="tournaments-banner"
-               alt="Titulo Tournaments" />
-         </div>
-      </div>
-
+      <!-- Heading -->
+      <h1 
+         id="tournamentHeading" 
+         class="text-center text-green text-responsive-1 mb-5">
+         torneos
+      </h1>
 
       <!-- Alert Messages -->
-      <div 
+      <section
          class="row" 
-         v-if="!tournaments.length && isLoading" >
+         v-if="!tournaments.length && isLoading" 
+         aria-live="polite">
 
          <div class="col-12">
-            <div class="alert alert-info text-responsive-3 text-center" role="alert">
+            <div 
+               class="alert alert-info text-responsive-3 text-center" 
+               role="status">
                Cargando torneos...
             </div>
          </div>
-      </div>
+      </section>
 
       <!-- Select level -->
-      <div 
-         class="row justify-content-center align-items-center mb-3 mb-sm-4 mb-md-5" 
-         v-if="tournaments.length && !isLoading">
+      <section aria-labelledby="formHeading">
+         <h2 id="formHeading" class="visually-hidden">Selección del nivel de los torneos</h2>
+         <p 
+            id="formInstructions" 
+            class="text-responsive-4 text-center mb-5">
+            Selecciona el nivel de los torneos:
+         </p>
 
-         <div class="col-auto">
-            <label for="levelToSelect" class="form-label text-responsive-4 me-2">Nivel:</label>
-            <select
-               id="levelToSelect"
-               class="form-select text-responsive-4"
-               v-model="levelToShow"
-               @change="loadTournaments">
-               <option value="">Todos</option>
-               <option 
-                  v-for="level in levels"
-                  :key="level"
-                  :value="level">
-                  {{ level }}
-               </option>
-            </select>
-         </div>
-      </div>
+         <form
+            class="row justify-content-center align-items-center text-responsive-5 mb-3 mb-sm-4 mb-md-5" 
+            v-if="tournaments.length && !isLoading"
+            aria-describedby="formInstructions">
+
+            <div 
+               class="col-auto"
+               role="group" 
+               aria-labelledby="levelLabel">
+               <label
+                  id="levelLabel"
+                  for="levelToSelect" 
+                  class="form-label me-2">
+                  Nivel:
+               </label>
+               <select
+                  id="levelToSelect"
+                  class="form-select border-dark bg-transparent text-dark text-responsive-4"
+                  v-model="levelToShow"
+                  @change="loadTournaments">
+                  <option 
+                     v-for="level in levels"
+                     :key="level"
+                     :value="level">
+                     {{ level }}
+                  </option>
+               </select>
+            </div>
+         </form>
+      </section>
 
       <!-- Tournaments Table Component -->
-      <div 
+      <section
          class="row justify-content-center mb-3 mb-md-4"
          v-if="tournaments.length && !isLoading">
 
@@ -56,12 +73,13 @@
                :tournaments="tournaments"
                @view-winners="viewWinners" /> 
          </div>
-      </div>
+      </section>
 
       <!-- Tournaments pages navigation -->
-      <div 
+      <nav
          class="row justify-content-center"
-         v-if="tournaments.length && !isLoading">
+         v-if="tournaments.length && !isLoading"
+         aria-label="Navegar por las páginas">
 
          <div class="col-12">
             <Pagination 
@@ -70,9 +88,9 @@
                class="text-responsive-4"
                @goToPage="goToPage" />
          </div>
-      </div>
+      </nav>
 
-   </div>
+   </main>
 </template>
 
 <script>

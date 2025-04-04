@@ -1,28 +1,24 @@
 <template>
    <main class="container">
 
-      <!-- Header Image -->
-      <header class="row mb-3">
-         <h1 id="loginTitle" class="visually-hidden">{{ alt }}</h1>
-         <div class="col-12">
-            <HeaderImage
-               imgName="login-banner"
-               :alt="alt" />
-         </div>
-      </header>
+      <!-- Heading -->
+      <h1 
+         id="loginHeading" 
+         class="text-center text-green text-responsive-1 mb-5">
+         área privada
+      </h1>
 
       <!-- Login Form -->
-      <section aria-labelledby="loginTitle">
+      <section aria-labelledby="loginHeading">
          <LoginForm 
             @send-login="sendLogin"
-            aria-labelledby="loginTitle"/>
+            aria-labelledby="loginHeading"/>
       </section>
 
    </main>
 </template>
  
 <script>
-import HeaderImage from '@/components/HeaderImage.vue'
 import LoginForm from '@/components/LoginForm.vue'
 import { tokenService } from '@/api/authConnectionService'
 
@@ -30,13 +26,7 @@ export default {
 
    name: 'LoginView',
 
-   components: { HeaderImage, LoginForm },
-
-   data(){
-      return{
-         alt: 'Título Login'
-      }
-   },
+   components: { LoginForm },
 
    /* https://vuejs.org/guide/best-practices/accessibility
    following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html

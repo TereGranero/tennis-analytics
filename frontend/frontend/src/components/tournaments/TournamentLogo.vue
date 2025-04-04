@@ -15,11 +15,11 @@
             class="mt-2 text-muted text-break w-40">
             <span class="fw-bold">{{ tournament }}</span> <br>
             <small>
-               "<span v-html="imageAttribution.title"></span>" por <span v-html="imageAttribution.author"></span>,
+               "<span v-html="imageAttribution.title" ></span>" por <span v-html="imageAttribution.author"></span>,
                licencia <a 
                   :href="imageAttribution.licenseUrl" 
                   target="_blank"
-                  aria-label="Ver licencia {{ imageAttribution.license }} (se abre en nueva ventana)">
+                  :aria-label="`Ver licencia ${ imageAttribution.license } (se abre en nueva ventana)`">
                   {{ imageAttribution.license }}
                </a>.
                <a 

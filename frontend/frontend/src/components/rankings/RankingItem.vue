@@ -6,19 +6,20 @@
       </td>
 
       <!-- Player fullname and flag -->
-      <td class="ps-sm-5">
-         <button
-            @click="$emit('view-player', playerRow.player_id)"
-            class="btn btn-link p-0 d-flex align-items-center text-decoration-none"
-            :aria-label="`Ir a la ficha de ${playerRow.fullname}`">
-            
-            <img
-               v-if="playerRow.country !== 'unknown'"
-               :src="'https://flagcdn.com/w40/' + playerRow.country + '.png'"
-               :alt="`Bandera de ${playerRow.country}`"
-               class="flag me-2"> 
-            <span class="cursor-pointer">{{ playerRow.fullname }}</span>
-         </button>
+      <td
+         @click="$emit('view-player', playerRow.player_id)"
+         @keydown.enter="$emit('view-player', playerRow.player_id)"
+         class="d-flex align-items-center text-decoration-none ps-sm-5"
+         tabindex="0"
+         role="button"
+         :aria-label="`Ir a la ficha de ${playerRow.fullname}`">
+         <img
+            v-if="playerRow.country !== 'unknown'"
+            :src="'https://flagcdn.com/w40/' + playerRow.country + '.png'"
+            :alt="`Bandera de ${playerRow.country}`"
+            class="flag me-2"> 
+         {{ playerRow.fullname }}
+
       </td>
 
       <!-- Points -->      

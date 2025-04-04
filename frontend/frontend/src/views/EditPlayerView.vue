@@ -1,10 +1,8 @@
 <template>
-  <main>
       <PlayerForm
          :id="id"
-         @edit-player="editPlayer"
-      />
-  </main>
+         class="mb-5"
+         @edit-player="editPlayer"/>
 </template>
 
 <script>

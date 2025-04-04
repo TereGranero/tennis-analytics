@@ -1,7 +1,7 @@
 <template>
    <section class="d-flex flex-column align items-start mb-5">
       <header>
-         <h2 class="text-responsive-3 fw-bold m-0">
+         <h2 class="text-responsive-3 fw-bold m-0 mb-5">
             TITULOS TOUR ATP
          </h2>
       </header>

@@ -1,27 +1,27 @@
 <template>
-   <div 
-      class="input-group"
+   <form
+      class="input-group input-group-lg"
       role="search">
+
       <label 
-         for="player-search" 
+         for="playerSearch" 
          class="visually-hidden">
          Buscar jugador
       </label>
       <input 
-         id="player-search"
+         id="playerSearch"
          type="search" 
-         class="form-control" 
+         class="form-control border-dark bg-transparent text-dark" 
          :class="{'is-invalid': invalidLastName}" 
          v-model="lastNameToSearch" 
          @focus="resetState" 
          @input="resetState"
          @keydown.enter="search"
          placeholder="Buscar por apellido"
-         aria-required="true"
          aria-invalid="invalidLastName"
-         aria-describedby="search-error" />
+         aria-describedby="searchError" />
       <button 
-         class="btn btn-secondary" 
+         class="btn btn-outline-dark btn-lg" 
          @click="search"
          aria-label="Buscar jugador">
          Buscar
@@ -30,12 +30,12 @@
       <!-- Error message -->
       <div 
          v-if="invalidLastName" 
-         id="search-error"
+         id="searchError"
          class="invalid-feedback"
          role="alert">
          Debes escribir el apellido del tenista que buscas
       </div>
-   </div>
+   </form>
 </template>
 
 <script>
