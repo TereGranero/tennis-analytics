@@ -190,6 +190,7 @@ export default {
             this.player1 = ''
             this.player2 = ''
             this.resetState()
+            this.processing = false
          
          } else {
             this.error = true
@@ -200,13 +201,13 @@ export default {
       
       resetState(){
          this.error = false
-         this.processing = false
       },
 
       cancelForm(){
          this.player1 = ''
          this.player2 = ''
          this.resetState()
+         thi.processing = false
       }
    }
 }

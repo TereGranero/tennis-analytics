@@ -4,7 +4,7 @@ import router from './router'
 
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import BootstrapVue3 from 'bootstrap-vue-3'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
@@ -40,7 +40,6 @@ use([
 const app= createApp(App)
 
 app.use(router)
-app.use(BootstrapVue3);
 
 // Adds v-chart component
 app.component('v-chart', ECharts)

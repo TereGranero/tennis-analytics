@@ -227,6 +227,19 @@ export default {
             )
             this.totalPlayers--
             console.log(`Player ${id} has been removed successfully`)
+
+            // Checks if there is any player with the selected lastNameToSearh to avoid error 400
+            const checkData = await getAllPlayers(
+               1, 
+               this.perPage,
+               this.lastNameToSearch
+            )
+            
+            // If not, empties lastNameToSearch and load all players
+            if (checkData.total_players == 0) {
+               console.log("No more players with this last name filter. Resetting filter.")
+               this.lastNameToSearch = ''
+            }
             
             if (this.players.length == 0 && this.page > 1) {
                this.page--

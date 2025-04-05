@@ -5,7 +5,7 @@
          <a 
             href="#mainContent" 
             ref="skipLink" 
-            class="visually-hidden-focusable">
+            class="visually-hidden">
             Saltar al contenido principal
          </a> 
 
@@ -20,16 +20,18 @@
 
          <!-- Main menu -->
          <div class="col-12 mb-3 mb-xl-5">
-            <nav class="navbar navbar-expand-lg navbar-light bg-transparent text-responsive-4 ms-3 me-5 mb-3">
+            <nav 
+               class="navbar navbar-expand-lg navbar-light bg-transparent text-responsive-4 ms-3 me-5 mb-3"
+               role="navigation">
 
                <button
                   class="navbar-toggler ms-sm-5"
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#navBarMenu"
-                  aria-controls="navbarMenu"
+                  aria-controls="navBarMenu"
                   aria-expanded="false"
-                  aria-label="Toggle para navegar">
+                  aria-label="Abrir y cerrar el menú principal">
                   <span class="navbar-toggler-icon"></span>
                </button>
 
@@ -39,42 +41,47 @@
                         <router-link 
                            to="/" 
                            class="nav-link p-1 p-lg-3"
-                           aria-current="page">
+                           active-class="active">
                            Inicio
                         </router-link>
                      </li>
                      <li class="nav-item">
                         <router-link 
                            to="/players" 
-                           class="nav-link p-1 p-lg-3">
+                           class="nav-link p-1 p-lg-3"
+                           active-class="active">
                            Jugadores
                         </router-link>
                      </li>
                      <li class="nav-item">
                         <router-link 
                            to="/rankings" 
-                           class="nav-link p-1 p-lg-3">
+                           class="nav-link p-1 p-lg-3"
+                           active-class="active">
                            Rankings
                         </router-link>
                      </li>
                      <li class="nav-item">
                         <router-link 
                            to="/tournaments" 
-                           class="nav-link p-1 p-lg-3">
+                           class="nav-link p-1 p-lg-3"
+                           active-class="active">
                            Torneos
                         </router-link>
                      </li>
                      <li class="nav-item">
                         <router-link 
                            to="/face2face/select" 
-                           class="nav-link p-1 p-lg-3">
+                           class="nav-link p-1 p-lg-3"
+                           active-class="active">
                            Face2Face
                         </router-link>
                      </li>
                      <li class="nav-item me-5">
                         <router-link 
                            to="/login" 
-                           class="nav-link p-1 p-lg-3">
+                           class="nav-link p-1 p-lg-3"
+                           active-class="active">
                            Login
                         </router-link>
                      </li>
@@ -118,8 +125,11 @@
 <script>
 import HeaderImage2 from './components/HeaderImage2.vue'
 export default {
+
    name: 'App',
+
    components: { HeaderImage2 }
+
 }
 </script>
 

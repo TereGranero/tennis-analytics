@@ -21,6 +21,12 @@ export const normalizeIntoBackend = (player) => {
       ].includes(field)) && (value === '')){
          player[field] = '-'
       }
+
+      if (field === 'birth_date') {
+         if (!value) { 
+            player[field] = '1800-01-01'
+         }
+      }
    }
    return player
 };
