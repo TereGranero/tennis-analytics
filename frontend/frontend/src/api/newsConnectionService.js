@@ -1,8 +1,10 @@
 import { httpClientNews } from './httpClients';
 
-// GET https://newsapi.org/v2/everything?q=bitcoin&apiKey=67f0427492e14efd9231262983d61fe9
+// GET https://newsapi.org/v2/everything?q=bitcoin&apiKey=APIKEY
 
-const NEWS_API_KEY = "67f0427492e14efd9231262983d61fe9"; //developer 
+const NEWS_API_KEY = process.env.VUE_APP_NEWS_API_KEY;
+// THIS KEY IS NOT SAFE. REQUESTS SHOULD BE DONE FROM BACKEND
+
 const newsEndpoint = '/v2/everything';
 const sourcesEndpoint = '/v2/top-headlines/sources'
 
@@ -32,7 +34,7 @@ export const getTennisNews = async (sources) => {
 }
 
 
-//GET https://newsapi.org/v2/top-headlines/sources?country=usapiKey=API_KEY
+//GET https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=API_KEY
 
 export const getSourcesForTennisNews = async () => {
    const res = await httpClientNews.get(sourcesEndpoint, {

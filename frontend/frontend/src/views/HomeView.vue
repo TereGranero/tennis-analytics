@@ -128,8 +128,17 @@
          <!-- Heading -->
          <h2
             id="newsHeading" 
-            class="text-green text-responsive-1 text-center mb-5">
+            class="text-green text-responsive-1 text-center mb-3">
            Noticias de Tenis
+         </h2>
+         <h2
+            id="newsAttribution" 
+            class="text-responsive-3 text-center mb-5">
+            fuente: 
+            <a 
+            href="https://www.apinews.org">
+            News API
+            </a>
          </h2>
 
          <!-- News Grid -->

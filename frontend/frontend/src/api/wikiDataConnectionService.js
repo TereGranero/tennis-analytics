@@ -32,39 +32,67 @@ export const getWikiDataImage = async (wikidata_id) => {
    return null;
 };
 
+// Searches entities by tournament name. Returns wikidata_id
+// In the future, try to query Wikimedia Commons too
 export const getWikiDataId = async (name) => {
    console.log(`Requesting to WikiData for ${name} Id...`);
+   const nameLow = name.toLowerCase();
+   const query = ( nameLow.includes('open') || nameLow.includes('masters') || nameLow.includes('roland') || nameLow.includes('wimbledon') )? name : `${name} open`;
    const res = await httpClientWikiData.get(wikiDataEndpoint, {
       params: {
          action: 'wbsearchentities',
          format: 'json',
          language: 'en',
-         search: name,
+         search: query,
          type: 'item',
          limit: 5,
-         props: 'claims|descriptions',
          origin: '*'
       },
    });
 
+
+   // // Get claims for each result    NOT USED IT IS SLOW
+   // const resultsWithClaims = await Promise.all(
+   //    res.data.search.map(async (item) => {
+   //       const entityRes = await httpClientWikiData.get(wikiDataEndpoint, {
+   //          params: {
+   //             action: 'wbgetentities',
+   //             ids: item.id,
+   //             format: 'json',
+   //             origin: '*'
+   //          }
+   //       });
+   //       return {
+   //          ...item,
+   //          claims: entityRes.data.entities[item.id]?.claims || {}
+   //       };
+   //    })
+   // );
+
+   // const tournament = resultsWithClaims.find(item => {
+   //    const tennisInstance = item.claims.P31?.some(claim => 
+   //       ['Q300007', 'Q13219666'].includes(claim.mainsnak.datavalue?.value.id)
+   //    );
+   //    const tennisDescription = item.description?.toLowerCase().includes('tennis');
+   //    return tennisInstance || tennisDescription;
+   // });
+
    const tournament = res.data.search.find(item => {
-      const isTennisTournamentInstance = item.claims?.P31?.some(claim => 
-         ['Q300007', 'Q13219666'].includes(claim.mainsnak.datavalue?.value.id)
-      );
       const isTennisDescription = item.description?.toLowerCase().includes('tennis');
-
-      return isTennisTournamentInstance || isTennisDescription;
-   });
-
-   if (tournament) {
+      return isTennisDescription;
+      });
+      
+      if (tournament) {
       console.log(`Wikidata_id encontrado: ${tournament.id}`)
       return tournament.id;
-    }
-
-   console.log('Wikidata_id no encontrado')
-   return null;
+      }
+      
+      console.log('Wikidata_id no encontrado')
+      return null;
 };
 
+
+// Gets complete entity by wikidata_id and searches logo in images properties
 export const getWikiDataLogo = async (wikidata_id) => {
    console.log('Requesting to WikiData for logo...');
    const res = await httpClientWikiData.get(wikiDataEndpoint, {

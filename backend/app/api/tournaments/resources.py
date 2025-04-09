@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import current_app, request
-from sqlalchemy import func, desc, cast, Integer
+from sqlalchemy import func, desc
 
 from app.extensions import db
 from app.models.match import Match

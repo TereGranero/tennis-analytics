@@ -3,6 +3,7 @@ import { cleanAttribution } from '@/services/attribution_services';
 
 const wikiCommonsEndpoint = '/w/api.php';
 
+// Searches jpg image by a query
 export const getWikiCommonsImage = async (query) => {
    console.log('Requesting to WikiCommons for image...');
    const res = await httpClientWikiCommons.get(wikiCommonsEndpoint, {
@@ -40,7 +41,7 @@ export const getWikiCommonsImage = async (query) => {
    return null;
 };
 
-
+// Retrieves metadata from image for attribution
 export const getImageAttribution = async (fileName) => {
    console.log(`Requesting to WikiCommons for attribution...`);
    const res = await httpClientWikiCommons.get(wikiCommonsEndpoint, {

@@ -133,7 +133,6 @@ class PlayersAPI(Resource):
       
 
    def get_names(self, search_fullname=''):
-      print('Entra en get_names')
       
       # --------------- Parameters validation -------------------
       
@@ -187,7 +186,7 @@ class PlayersAPI(Resource):
             .filter(Player.fullname.ilike(f'{search_fullname}%'))
             .all()
          )
-         print(search_fullname)
+
          players = [
             {
                'player_id': player.player_id,
@@ -195,7 +194,6 @@ class PlayersAPI(Resource):
             }
             for player in query
          ]
-         print(players[0])
          
          response_object = {
             'status': 'success',
