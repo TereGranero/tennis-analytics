@@ -1,5 +1,5 @@
 <template>
-   <div>
+   <div class="d-flex flex-column min-vh-100">
       <!-- Skip Link by https://vuejs.org/guide/best-practices/accessibility -->
       <span ref="backToTop" tabindex="-1"></span>
          <a 
@@ -94,12 +94,12 @@
       <!-- Main content -->
        <div 
          id="mainContent"
-         class="mb-5">
+         class="flex-grow-1 mb-5">
          <router-view />
       </div>
 
       <!-- Footer with credits -->
-      <footer class="mt-5">
+      <footer class="mt-auto">
          <p>Aplicación web creada por Teresa Granero como proyecto fin de ciclo DAW (2025).</p>
          <p>Origen de los datos: Kaggle <a 
             href="https://www.kaggle.com/datasets/guillemservera/tennis">
