@@ -1,11 +1,19 @@
 <template>
-   <div class="d-flex flex-column align-items-start mb-5">
-      <h2 class="text-responsive-3 fw-bold m-0">
+   <section 
+      class="d-flex flex-column align-items-start mb-5"
+      aria-labelledby="rankingsTitle">
+      <h2 
+         id="rankingsTitle"
+         class="text-responsive-3 fw-bold m-0">
          EVOLUCIÓN RANKING ATP
       </h2>
-      <v-chart class="chart w-100" :option="ranksChartOption" autoresize />
-   </div>
-
+      <v-chart
+         class="chart w-100" 
+         :option="ranksChartOption" 
+         autoresize
+         role="img"
+         aria-label="Gráfico de linea que muestra la evolución del ranking ATP del jugador por años."  />
+   </section>
 </template>
  
 <script>

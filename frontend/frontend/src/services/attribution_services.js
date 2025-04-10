@@ -1,9 +1,9 @@
 export const cleanAttribution = (attribution) => {
    /* Removes some parts of Attributions in  title and author fields
-   Args:
-      attribution: object
-   Returns_
-      object: clean attribution
+      Args:
+         attribution: object
+      Returns:
+         object: clean attribution
    */
   
    // Attribution parts to be removed

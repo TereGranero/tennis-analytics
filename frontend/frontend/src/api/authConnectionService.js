@@ -3,6 +3,8 @@ import { httpClient } from './httpClients';
 const loginEndpoint = '/auth'
 
 export const tokenService = {
+   // Manages token in localStorage
+   // Sends credential to backend in order to receive a jwt
    
    login: async (user) => {
       const payload = { 

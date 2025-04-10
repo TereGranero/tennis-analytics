@@ -3,7 +3,7 @@
       <caption class="visually-hidden">
          Tabla de torneos del nivel seleccionado.
       </caption>
-      <tbody aria-live="polite">
+      <tbody>
          <TournamentItem
             v-for="(tourneyName, index) in tournaments" 
             :key="index"

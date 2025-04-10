@@ -10,7 +10,7 @@
             <th scope="col" class="col-3">Puntos</th>
          </tr>
       </thead>
-      <tbody aria-live="polite">
+      <tbody>
          <RankingItem
             v-for="(rk, index) in rankings" 
             :key="index"

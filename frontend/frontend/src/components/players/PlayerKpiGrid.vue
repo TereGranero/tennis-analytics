@@ -2,7 +2,6 @@
    <section
       v-if="hasAnyKpi"
       class="d-flex flex-column align items-start mb-5"
-      aria-live="polite"
       :aria-labelledby="titleGrid ? 'kpiTitle' : null"> 
 
       <header>
@@ -10,13 +9,13 @@
             v-if="titleGrid"
             id="kpiTitle"
             class="text-responsive-3 fw-bold m-0 mb-5">
-            {{titleGrid}}
+            {{ titleGrid }}
          </h2>
       </header>
 
       <ul class="d-flex flex-wrap gap-5 justify-content-center align-items-center mt-3 list-unstyled">
          <li 
-            v-for="kpi in kpis" 
+            v-for="kpi in kpis.filter(kpi => kpi.value && kpi.value != '-')" 
             :key="kpi.title" 
             role="listitem">
             <PlayerKpi

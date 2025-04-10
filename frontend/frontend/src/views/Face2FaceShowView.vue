@@ -66,11 +66,12 @@
          </article>
 
          <div v-else 
-            class="col-12 col-md-6"
-            role="status"
-            aria-live="polite">
+            class="col-12 col-md-6">
             <div 
-               class="alert alert-info text-responsive-3 text-center">
+               class="alert alert-info text-responsive-3 text-center"
+               role="status"
+               aria-live="polite"
+               :aria-busy="!player1">
                Cargando jugador 1...
             </div>
          </div>
@@ -101,11 +102,12 @@
          </article>
 
          <div v-else 
-            class="col-12 col-md-6"
-            role="status"
-            aria-live="polite">
+            class="col-12 col-md-6">
             <div 
-               class="alert alert-info text-responsive-3 text-center">
+               class="alert alert-info text-responsive-3 text-center"
+               role="status"
+               aria-live="polite"
+               :aria-busy="!player2">
                Cargando jugador 2...
             </div>
          </div>         

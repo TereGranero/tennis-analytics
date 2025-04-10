@@ -42,7 +42,7 @@
                @keypress="resetState"
                v-model="player.name_first"
                aria-required="true"   
-               aria-invalid="processing && invalidFirstName"
+               :aria-invalid="processing && invalidFirstName"
                aria-describedby="nameFirstError">
             <div 
                v-if="processing && invalidFirstName" 
@@ -72,7 +72,7 @@
                @focus="resetState"
                v-model="player.name_last"
                aria-required="true"   
-               aria-invalid="processing && invalidLastName"
+               :aria-invalid="processing && invalidLastName"
                aria-describedby="nameLastError">
             <div 
                v-if="processing && invalidLastName"
@@ -101,7 +101,7 @@
                :class="{'is-invalid': processing && invalidBirthDate}" 
                @focus="resetState"
                v-model="player.birth_date"
-               aria-invalid="processing && invalidBirthDate"
+               :aria-invalid="processing && invalidBirthDate"
                aria-describedby="birthDateError">
             <div 
                v-if="processing && invalidBirthDate" 
@@ -129,7 +129,7 @@
                :class="{'is-invalid': processing && invalidCountry}"
                @focus="resetState"
                v-model="player.country"
-               aria-invalid="processing && invalidCountry"
+               :aria-invalid="processing && invalidCountry"
                aria-describedby="countryError">
                <option 
                   v-for="country in allCountries"
@@ -167,7 +167,7 @@
                :class="{'is-invalid': processing && invalidProSince}"
                @focus="resetState"
                v-model="player.pro_since"
-               aria-invalid="processing && invalidProSince"
+               :aria-invalid="processing && invalidProSince"
                aria-describedby="proSinceError">
             <div 
                v-if="processing && invalidProSince" 
@@ -198,7 +198,7 @@
                :class="{'is-invalid': processing && invalidHeight}"
                @focus="resetState"
                v-model="player.height"
-               aria-invalid="processing && invalidHeight"
+               :aria-invalid="processing && invalidHeight"
                aria-describedby="heightError">
             <div 
                v-if="processing && invalidHeight" 
@@ -229,7 +229,7 @@
                :class="{'is-invalid': processing && invalidWeight}"
                @focus="resetState"
                v-model="player.weight"
-               aria-invalid="processing && invalidWeight"
+               :aria-invalid="processing && invalidWeight"
                aria-describedby="weightError">
             <div 
                v-if="processing && invalidWeight"
@@ -257,7 +257,7 @@
                :class="{'is-invalid': processing && invalidHand}"
                @focus="resetState"
                v-model="player.hand"
-               aria-invalid="processing && invalidHand"
+               :aria-invalid="processing && invalidHand"
                aria-describedby="handError">
                <option 
                   v-for="hand in allHands"
@@ -289,7 +289,9 @@
             <input 
                type="text" 
                class="form-control border-dark bg-transparent text-dark text-responsive-4"
-               @focus="resetState">
+               @focus="resetState"
+               v-model="player.wikidata_id">
+               
          </div>
 
          <!-- Instagram Username -->

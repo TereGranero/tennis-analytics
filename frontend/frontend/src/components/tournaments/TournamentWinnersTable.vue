@@ -9,7 +9,7 @@
             <th scope="col" class="col-3">Ganador</th>
          </tr>
       </thead>
-      <tbody aria-live="polite">
+      <tbody>
          <TournamentWinnerItem
             v-for="(winner, index) in winners" 
             :key="index"

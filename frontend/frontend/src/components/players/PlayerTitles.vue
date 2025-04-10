@@ -1,7 +1,11 @@
 <template>
-   <section class="d-flex flex-column align items-start mb-5">
+   <section 
+      class="d-flex flex-column align items-start mb-5"
+      aria-labelledby="titlesHeading">
       <header>
-         <h2 class="text-responsive-3 fw-bold m-0 mb-5">
+         <h2 
+            id="titlesHeading"
+            class="text-responsive-3 fw-bold m-0 mb-5">
             TITULOS TOUR ATP
          </h2>
       </header>
@@ -18,7 +22,7 @@
                <th scope="col">Nivel</th>
             </tr>
          </thead>
-         <tbody aria-live="polite">
+         <tbody>
             <tr 
                v-for="(title, index) in titles" 
                :key="index"

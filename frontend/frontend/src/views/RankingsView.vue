@@ -11,13 +11,14 @@
       <!-- Loading Message -->
       <section
          class="row" 
-         v-if="!rankings.length && isLoading" 
-         aria-live="polite">
+         v-if="!rankings.length && isLoading">
 
          <div class="col-12">
             <div 
                class="alert alert-info text-responsive-3 text-center"         
-               role="status">
+               role="status"
+               aria-live="polite"
+               :aria-busy="!rankings.length && isLoading">
                Cargando rankings...
             </div>
          </div>

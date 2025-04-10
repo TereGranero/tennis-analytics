@@ -9,7 +9,11 @@
       </h1>
 
       <section aria-labelledby="formHeading">
-         <h2 id="formHeading" class="visually-hidden">Selección de jugadores</h2>
+         <h2 
+            id="formHeading" 
+            class="visually-hidden">
+            Selección de jugadores
+         </h2>
          <p 
             id="formInstructions" 
             class="text-responsive-4 text-center mb-5">

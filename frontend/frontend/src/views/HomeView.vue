@@ -15,12 +15,13 @@
          <!-- Loading Message -->
          <div 
             class="row" 
-            v-if="isLoading['grand-slam']" 
-            aria-live="polite">
+            v-if="isLoading['grand-slam']">
             <div class="col-12">
                <div 
                   class="alert alert-info text-responsive-3 text-center" 
-                  role="status">
+                  role="status"
+                  aria-live="polite"
+                  :aria-busy="isLoading['grand-slam']">
                   Cargando ranking de Grand Slams...
                </div>
             </div>
@@ -75,12 +76,13 @@
          <!-- Loading Message -->
          <div 
             class="row" 
-            v-if="isLoading['masters-1000']" 
-            aria-live="polite">
+            v-if="isLoading['masters-1000']">
             <div class="col-12">
                <div 
                   class="alert alert-info text-responsive-3 text-center" 
-                  role="status">
+                  role="status"
+                  aria-live="polite"
+                  :aria-busy="isLoading['masters-1000']">
                   Cargando ranking de Masters 1000...
                </div>
             </div>
@@ -136,8 +138,8 @@
             class="text-responsive-3 text-center mb-5">
             fuente: 
             <a 
-            href="https://www.apinews.org">
-            News API
+               href="https://www.apinews.org">
+               News API
             </a>
          </h2>
 

@@ -11,13 +11,14 @@
       <!-- Loading Message -->
       <section
          class="row" 
-         v-if="!players.length && isSearching" 
-         aria-live="polite">
+         v-if="!players.length && isSearching">
 
          <div class="col-12">
             <div 
                class="alert alert-info text-responsive-3 text-center" 
-               role="status">
+               role="status"
+               aria-live="polite"
+               :aria-busy="!players.length && isSearching">
                Cargando jugadores...
             </div>
          </div>

@@ -11,6 +11,9 @@ import TournamentWinnersView from '@/views/TournamentWinnersView.vue'
 import LoginView from '@/views/LoginView.vue'
 import Face2FaceSelectView from '@/views/Face2FaceSelectView.vue'
 import Face2FaceShowView from '@/views/Face2FaceShowView.vue'
+import ErrorView from '@/views/ErrorView.vue'
+
+// Vue Router
 
 const routes = [
    {
@@ -61,7 +64,7 @@ const routes = [
    },
 
    {
-      path: '/tournaments', // levels select, chose tournament
+      path: '/tournaments', // levels select, choose tournament
       name: 'Tournaments',
       component: TournamentsView,
    },
@@ -87,8 +90,9 @@ const routes = [
    },
 
    {
-      path: "/404",
-      redirect: "/error"
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: ErrorView,
     }
 ];
 

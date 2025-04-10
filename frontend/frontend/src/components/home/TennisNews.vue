@@ -1,6 +1,11 @@
 <template>
    <div class="mt-4">
-      <div v-if="loading" class="text-center">
+      <div 
+         v-if="loading" 
+         class="text-center"
+         role="status"
+         aria-live="polite"
+         :aria-busy="loading">
          Cargando noticias...
       </div>
       <div v-else>
@@ -12,7 +17,7 @@
                   <img 
                      v-if="nw.urlToImage"
                      :src="nw.urlToImage" 
-                     alt="Imagen noticia" />
+                     :alt="`Imagen noticia ${nw.title}`" />
                   <span v-else class="text-center"> Imagen no disponible</span>
 
                   <div class="card-body">
@@ -20,7 +25,7 @@
                      <p class="card-text">{{ nw.description }}</p>
                      <a 
                         :href="nw.url" 
-                        class="btn btn-secondary" 
+                        class="btn btn-submit" 
                         target="_blank">
                         Leer más
                      </a>

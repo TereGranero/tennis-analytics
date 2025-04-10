@@ -1,4 +1,5 @@
 <template>
+   <!-- Titles by top-players table -->
    <table class="table table-hover text-responsive-4">
       <thead>
          <tr class="text-center">

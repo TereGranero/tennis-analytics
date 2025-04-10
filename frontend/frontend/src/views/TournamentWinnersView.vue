@@ -12,12 +12,14 @@
       <!-- Alert Messages -->
       <section
          class="row" 
-         v-if="!winners.length && isLoading" 
-         aria-live="polite">
+         v-if="!winners.length && isLoading">
 
          <div class="col-12">
             <div 
-               class="alert alert-info text-responsive-3 text-center" role="status">
+               class="alert alert-info text-responsive-3 text-center" 
+               role="status"
+               aria-live="polite"
+               :aria-busy="!winners.length && isLoading">
                Cargando torneos...
             </div>
          </div>

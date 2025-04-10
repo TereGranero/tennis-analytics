@@ -20,7 +20,7 @@
                licencia <a 
                   :href="imageAttribution.licenseUrl"
                   target="_blank"
-                  aria-label="Ver licencia {{ imageAttribution.license }} (se abre en nueva ventana)">
+                  :aria-label="`Ver licencia ${ imageAttribution.license } (se abre en nueva ventana)`">
                   {{ imageAttribution.license }}
                </a>.
                <a 

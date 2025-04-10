@@ -11,13 +11,14 @@
       <!-- Alert Messages -->
       <section
          class="row" 
-         v-if="!tournaments.length && isLoading" 
-         aria-live="polite">
+         v-if="!tournaments.length && isLoading">
 
          <div class="col-12">
             <div 
                class="alert alert-info text-responsive-3 text-center" 
-               role="status">
+               role="status"
+               aria-live="polite"
+               :aria-busy="!tournaments.length && isLoading">
                Cargando torneos...
             </div>
          </div>
@@ -94,7 +95,6 @@
 </template>
 
 <script>
-import HeaderImage from '@/components/HeaderImage.vue'
 import TournamentsTable from '@/components/tournaments/TournamentsTable.vue'
 import Pagination from '@/components/Pagination.vue'
 import { getTournamentsByLevel } from '@/api/serverConnectionService.js'
@@ -105,7 +105,6 @@ export default {
    name: 'TournamentsView',
 
    components: {
-      HeaderImage,
       TournamentsTable,
       Pagination
    },

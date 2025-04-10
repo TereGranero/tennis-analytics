@@ -2,6 +2,7 @@
 
    <form 
       class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-5 text-green mb-5"
+      role="search"
       @submit.prevent="sendForm">
 
       <!-- Player1 -->

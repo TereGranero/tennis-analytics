@@ -18,7 +18,7 @@
          @input="resetState"
          @keydown.enter="search"
          placeholder="Buscar por apellido"
-         aria-invalid="invalidLastName"
+         :aria-invalid="invalidLastName"
          aria-describedby="searchError" />
       <button 
          class="btn btn-outline-dark btn-lg" 

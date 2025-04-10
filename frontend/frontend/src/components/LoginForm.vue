@@ -4,8 +4,9 @@
       @submit.prevent="sendForm"
       aria-describedby="loginInstructions">
 
-      <h2 class="visually-hidden">Formulario de inicio de sesión para administradores</h2>
-      
+      <h2 class="visually-hidden">
+         Formulario de inicio de sesión para administradores
+      </h2>
       <p 
          id="loginInstructions" 
          class="visually-hidden">
@@ -31,7 +32,7 @@
             @focus="resetState"
             v-model="user.username"
             aria-required="true"   
-            aria-invalid="processing && invalidUsername"
+            :aria-invalid="processing && invalidUsername"
             aria-describedby="usernameError">
          <div 
             v-if="processing && invalidUsername" 
@@ -61,7 +62,7 @@
             @focus="resetState"
             v-model="user.password"
             aria-required="true"
-            aria-invalid="processing && invalidPassword"
+            :aria-invalid="processing && invalidPassword"
             aria-describedby="passwordError">
          <div 
             v-if="processing && invalidPassword"

@@ -27,24 +27,26 @@
                @search-player="searchPlayer" 
                aria-label="Buscar jugadores por apellido"/>
          </div>
-      </section>
+      </section>  <!-- Ends Controls -->
 
       <!-- Header fullname and flag -->
-      <PlayerFullnameFlagHeader
-         v-if="player" 
-         :player="player"/>
-         
-      <div v-else class="row">
-         <div 
-         class="col-12"
-         role="status"
-         aria-live="polite">
-            <div class="alert alert-info text-responsive-3 text-center" 
-            >
-               Cargando jugador...
+      <header>
+         <PlayerFullnameFlagHeader
+            v-if="player" 
+            :player="player"/>
+            
+         <div v-else class="row">
+            <div class="col-12">
+               <div 
+                  class="alert alert-info text-responsive-3 text-center"
+                  role="status"
+                  aria-live="polite"
+                  :aria-busy="!player">
+                  Cargando jugador...
+               </div>
             </div>
          </div>
-      </div>
+      </header>
 
       <!-- Basic information -->
       <PlayerBio 
