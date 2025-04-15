@@ -3,7 +3,7 @@ import axios from 'axios';
 // ---------- Backend Server API ------------
 
 const httpClient = axios.create({
-   baseURL: 'http://127.0.0.1:5000/api', 
+   baseURL: process.env.VUE_APP_API_URL, 
    timeout: 15000,                              
    headers: {
       'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ httpClient.interceptors.response.use(
 // ---------- Backend Server API with authentication ------------
 
 const httpAuthClient = axios.create({
-   baseURL: 'http://127.0.0.1:5000/api', 
+   baseURL: process.env.VUE_APP_API_URL, 
    timeout: 15000,                              
    headers: {
       'Content-Type': 'application/json',
