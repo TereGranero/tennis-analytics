@@ -3,7 +3,6 @@ import os
 import json
 import sqlite3
 import pandas as pd
-from kaggle.api.kaggle_api_extended import KaggleApi
 import gc
 
 def format_name(name):
@@ -23,6 +22,8 @@ with open(os.path.join(kaggle_path, "kaggle.json"), "w") as f:
     json.dump(kaggle_json, f)
 
 os.chmod(os.path.join(kaggle_path, "kaggle.json"), 0o600)
+
+from kaggle.api.kaggle_api_extended import KaggleApi
 
 # Files and paths
 kaggle_resource = 'guillemservera/tennis'
