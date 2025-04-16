@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import json
 import sqlite3
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
@@ -10,8 +11,18 @@ def format_name(name):
 
 # Loads env variables
 load_dotenv(verbose=False)
-os.environ['KAGGLE_USERNAME'] = os.getenv("KAGGLE_USERNAME")
-os.environ['KAGGLE_KEY'] = os.getenv("KAGGLE_KEY")
+kaggle_path = os.path.expanduser("~/.kaggle")
+os.makedirs(kaggle_path, exist_ok=True)
+
+kaggle_json = {
+    "username": os.getenv("KAGGLE_USERNAME"),
+    "key": os.getenv("KAGGLE_KEY")
+}
+
+with open(os.path.join(kaggle_path, "kaggle.json"), "w") as f:
+    json.dump(kaggle_json, f)
+
+os.chmod(os.path.join(kaggle_path, "kaggle.json"), 0o600)
 
 # Files and paths
 kaggle_resource = 'guillemservera/tennis'
