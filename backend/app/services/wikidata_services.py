@@ -5,7 +5,8 @@ import time
 from functools import lru_cache
 
 BASE_SLEEP = 0.5  # seconds between requests
-MAX_RETRIES = 5       
+MAX_RETRIES = 3
+MAX_ACCEPTABLE_WAIT = 10
 
 # Memo cache to avoid repeated requests
 @lru_cache(maxsize=128)
@@ -32,6 +33,7 @@ def get_wikidata_property(wikidata_id, property):
    
    for attempt in range(1, MAX_RETRIES + 1):
       try:
+         
          # Requests Wikidata API
          res = requests.get(
             wiki_api_url, 
@@ -52,11 +54,10 @@ def get_wikidata_property(wikidata_id, property):
             return data['claims'][property]
          
          elif res.status_code == 429:  # too many requests
-            retry_after = res.headers.get("Retry-After")
-            if retry_after:
-               wait = int(retry_after)
-               print(f"WikidataServices Warning in get_wikidata_property: Too many requests. Waiting {wait} seconds (Retry-After)...")
-               time.sleep(wait)
+            retry_after = int(res.headers.get("Retry-After", sleep_time))
+            if retry_after > MAX_ACCEPTABLE_WAIT:
+               print(f"WikidataServices Error in get_wikidata_property: Retry-After is too long {retry_after} s.")
+               return None
             else:
                print(f"WikidataServices Warning in get_wikidata_property: Too many requests. Waiting {sleep_time} seconds (backoff exponencial)...")
                time.sleep(sleep_time)
@@ -191,11 +192,10 @@ def get_wikidata_id(name_last, name_first):
             return wikidata_id
          
          elif res.status_code == 429:  # too many requests
-            retry_after = res.headers.get("Retry-After")
-            if retry_after:
-               wait = int(retry_after)
-               print(f"WikidataServices Warning: Too many requests. Waiting {wait} seconds (Retry-After)...")
-               time.sleep(wait)
+            retry_after = int(res.headers.get("Retry-After", sleep_time))
+            if retry_after > MAX_ACCEPTABLE_WAIT:
+               print(f"WikidataServices Error in get_wikidata_id: Retry-After is too long {retry_after} s.")
+               return None
             else:
                print(f"WikidataServices Warning: Too many requests. Waiting {sleep_time} seconds (backoff exponencial)...")
                time.sleep(sleep_time)

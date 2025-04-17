@@ -1,13 +1,21 @@
 <template>
    <div class="mt-4">
+      <!-- Loading Message -->
       <div 
          v-if="loading" 
-         class="text-center"
+         class="alert alert-info text-responsive-3 text-center"
          role="status"
          aria-live="polite"
          :aria-busy="loading">
          Cargando noticias...
       </div>
+      <div 
+         v-else-if="error" 
+         class="alert alert-info text-responsive-3 text-center"
+         role="alert">
+         Servicio de noticias no disponible en estos momentos.
+      </div>
+
       <div v-else>
          <div class="row">
             <div v-for="(nw, index) in news" 
@@ -55,7 +63,8 @@ export default {
       return {
          news: [],
          sources: [],
-         loading: true
+         loading: true,
+         error: false
       }
    },
 
@@ -67,23 +76,27 @@ export default {
 
             if (data.status == 'error') {
                console.error(`News Api response error: ${data.code}-${data.message}`)
-               alert('Se ha producido un error y no se encontraron fuentes de noticias.')
+               //alert('Se ha producido un error y no se encontraron fuentes de noticias.')
+               this.error = true
             } else {
                console.log(`${data.sources.length} sports news sources have been retrieved.`)
                console.log(data.sources)
                if (data.sources.length == 0) {
-                  alert('No se han encontrado fuentes de noticias.')
+                  //alert('No se han encontrado fuentes de noticias.')
+                  this.error = true
+               } else {
+                  this.error = false
+                  this.sources = data.sources
+                     .slice(0, 20)        // Max 20 sources
+                     .map(source => source.id)
+                     .join(',')
                }
-               
-               this.sources = data.sources
-                  .slice(0, 20)        // Max 20 sources
-                  .map(source => source.id)
-                  .join(',')
             }
 
          } catch(err) {
             console.error(`Error retrieving sources: ${err}`)
-            alert('Se ha producido un error y no se encontraron fuentes de noticias.')
+            this.error = true
+            //alert('Se ha producido un error y no se encontraron fuentes de noticias.')
          }
       },
 
@@ -93,18 +106,23 @@ export default {
 
             if (data.status == 'error') {
                console.error(`News Api response error: ${data.code}-${data.message}`)
-               alert('Se ha producido un error y las noticias no se han podido cargar.')
+               this.error = true
+               //alert('Se ha producido un error y las noticias no se han podido cargar.')
             } else {
                console.log(`${data.totalResults} news have been retrieved.`)
                if (data.totalResults == 0) {
-                  alert('No se han encontrado noticias de tenis.')
+                  //alert('No se han encontrado noticias de tenis.')
+                  this.error = true
+               } else {
+                  this.news = data.articles.slice(0, this.totalNews)
+                  this.error = false
                }
-               this.news = data.articles.slice(0, this.totalNews)
             }
 
          } catch(err) {
             console.error(`Error retrieving news: ${err}`)
-            alert('Se ha producido un error y las noticias no se han podido cargar.')
+            this.error = true
+            //alert('Se ha producido un error y las noticias no se han podido cargar.')
          }
       },
    },
