@@ -1,6 +1,14 @@
 import requests
 from requests.exceptions import HTTPError, RequestException
 from datetime import datetime
+import time
+from functools import lru_cache
+
+BASE_SLEEP = 0.5  # seconds between requests
+MAX_RETRIES = 5       
+
+# Memo cache to avoid repeated requests
+@lru_cache(maxsize=128)
 
 def get_wikidata_property(wikidata_id, property):
    
@@ -20,37 +28,59 @@ def get_wikidata_property(wikidata_id, property):
       'property': property
    }
    
-   try:
-      # Requests Wikidata API
-      res = requests.get(
-         wiki_api_url, 
-         params=params, 
-         timeout=10
-      )
-      
-      # Raises HTTPError when response status is 4XX or 5XX
-      res.raise_for_status()
-      
-      data = res.json()
-      
-      # Empty response
-      if not property in data.get('claims', {}): 
-         print(f'WikidataServices Warning from get_property: Property {property} does not exist for wikidata id {wikidata_id}')   
-         return None
-      
-      # Extracts property array
-      return data['claims'][property]
-      
-   except HTTPError as e:
-      print(f'WikidataServices Error in get_wikidata_property: HTTPError - {e}')
-      return None
-   except RequestException as e:
-      print(f'WikidataServices Error in get_wikidata_property: HTTP Request Error - {e}')
-      return None
-   except Exception as e:
-      print(f'WikidataServices Error in get_wikidata_property: {e}')
-      return None
+   sleep_time = BASE_SLEEP
+   
+   for attempt in range(1, MAX_RETRIES + 1):
+      try:
+         # Requests Wikidata API
+         res = requests.get(
+            wiki_api_url, 
+            params=params, 
+            timeout=10
+         )
+         
+         if res.status_code == 200: # OK
+         
+            data = res.json()
+            
+            # Empty response
+            if not property in data.get('claims', {}): 
+               print(f'WikidataServices Warning from get_property: Property {property} does not exist for wikidata id {wikidata_id}')   
+               return None
+            
+            # Extracts property array
+            return data['claims'][property]
+         
+         elif res.status_code == 429:  # too many requests
+            retry_after = res.headers.get("Retry-After")
+            if retry_after:
+               wait = int(retry_after)
+               print(f"WikidataServices Warning in get_wikidata_property: Too many requests. Waiting {wait} seconds (Retry-After)...")
+               time.sleep(wait)
+            else:
+               print(f"WikidataServices Warning in get_wikidata_property: Too many requests. Waiting {sleep_time} seconds (backoff exponencial)...")
+               time.sleep(sleep_time)
+               sleep_time *= 2  # backoff exponencial
 
+         else:
+            print(f"WikidataServices Error in get_wikidata_property: HTTP {res.status_code} - {res.text}")
+            break
+         
+      except HTTPError as e:
+         print(f'WikidataServices Error in get_wikidata_property: HTTPError - {e}')
+         time.sleep(sleep_time)
+         sleep_time *= 2
+      except RequestException as e:
+         print(f'WikidataServices Error in get_wikidata_property: HTTP Request Error - {e}')
+         time.sleep(sleep_time)
+         sleep_time *= 2
+      except Exception as e:
+         print(f'WikidataServices Error in get_wikidata_property: {e}')
+         time.sleep(sleep_time)
+         sleep_time *= 2
+   
+   print(f'WikidataServices Error in get_wikidata_property: Failed after {MAX_RETRIES} attempts.')
+   return None
 
 def is_tennis_player(wikidata_id):
    
@@ -128,45 +158,67 @@ def get_wikidata_id(name_last, name_first):
       'props': 'id'
    }
 
-   try: 
-      # Requests Wikidata API
-      res = requests.get(
-         wiki_api_url, 
-         params=params, 
-         timeout=10
-      )
-      
-      # Raises HTTPError when response status is 4XX or 5XX
-      res.raise_for_status()
-      
-      data = res.json()
-      
-      # Empty response
-      if not data.get('search'):
-         print(f'WikidataServices Warning from get_wikidata_id: No wikidata id has been found for player {player_name}')
-         return None
-      
-      wikidata_id = data['search'][0]['id']
-      
-      # Empty response or not validated tennis player
-      if not wikidata_id or not is_tennis_player(wikidata_id):
-         print(f'WikidataServices Warning from get_wikidata_id: No wikidata id has been found for player {player_name}')
-         return None
-      
-      # Validated wikidata_id found
-      print(f'WikidataServices Info from get_wikidata_id: wikidata id {wikidata_id} has been found for player {player_name}')
-      return wikidata_id
+   sleep_time = BASE_SLEEP
    
-   except HTTPError as e:
-      print(f'WikidataServices Error in get_wikidata_id: HTTPError - {e}')
-      return None
-   except RequestException as e:
-      print(f'WikidataServices Error in get_wikidata_id: HTTP Request Error - {e}')
-      return None
-   except Exception as e:
-      print(f'WikidataServices Error in get_wikidata_id: {e}')
-      return None
+   for attempt in range(1, MAX_RETRIES + 1):
    
+      try: 
+         # Requests Wikidata API
+         res = requests.get(
+            wiki_api_url, 
+            params=params, 
+            timeout=10
+         )
+         
+         if res.status_code == 200: # OK
+         
+            data = res.json()
+            
+            # Empty response
+            if not data.get('search'):
+               print(f'WikidataServices Warning from get_wikidata_id: No wikidata id has been found for player {player_name}')
+               return None
+            
+            wikidata_id = data['search'][0]['id']
+            
+            # Empty response or not validated tennis player
+            if not wikidata_id or not is_tennis_player(wikidata_id):
+               print(f'WikidataServices Warning from get_wikidata_id: No wikidata id has been found for player {player_name}')
+               return None
+            
+            # Validated wikidata_id found
+            print(f'WikidataServices Info from get_wikidata_id: wikidata id {wikidata_id} has been found for player {player_name}')
+            return wikidata_id
+         
+         elif res.status_code == 429:  # too many requests
+            retry_after = res.headers.get("Retry-After")
+            if retry_after:
+               wait = int(retry_after)
+               print(f"WikidataServices Warning: Too many requests. Waiting {wait} seconds (Retry-After)...")
+               time.sleep(wait)
+            else:
+               print(f"WikidataServices Warning: Too many requests. Waiting {sleep_time} seconds (backoff exponencial)...")
+               time.sleep(sleep_time)
+               sleep_time *= 2  # backoff exponencial
+
+         else:
+            print(f"WikidataServices Error: HTTP {res.status_code} - {res.text}")
+            break
+      
+      except HTTPError as e:
+         print(f'WikidataServices Error in get_wikidata_id: HTTPError - {e}')
+         time.sleep(sleep_time)
+         sleep_time *= 2
+      except RequestException as e:
+         print(f'WikidataServices Error in get_wikidata_id: HTTP Request Error - {e}')
+         time.sleep(sleep_time)
+         sleep_time *= 2
+      except Exception as e:
+         print(f'WikidataServices Error in get_wikidata_id: {e}')
+         time.sleep(sleep_time)
+         sleep_time *= 2
+   print(f'WikidataServices Error in get_wikidata_id: Failed after {MAX_RETRIES} attempts.')
+   return None
 
 def get_wikidata_name_last(wikidata_id):
    

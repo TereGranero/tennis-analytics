@@ -30,7 +30,7 @@ with app.app_context():
 
    # Inserts administrator if not exists
    if not Administrator.query.filter_by(username='tere').first():
-      new_administrator = Administrator(id=1, username='tere')
+      new_administrator = Administrator(username='tere')
       new_administrator.set_password(os.getenv('ADMIN_SECRET_KEY'))
       db.session.add(new_administrator)
       db.session.commit()
