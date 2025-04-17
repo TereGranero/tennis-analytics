@@ -12,23 +12,6 @@
             class="form-label">
             Escribe o selecciona el apellido del primer jugador: 
          </label>
-         <!-- <input
-            id="player1Select"
-            class="form-control border-dark bg-transparent text-dark text-responsive-4"
-            :class="{'is-invalid': processing && invalidPlayer1}"
-            v-model="player1"
-            @focus="resetState"
-            @input="handleInput(1)"
-            list="player1List"
-            autocomplete="off"
-            aria-describedby="player1Help player1Error">
-         <datalist id="player1List">
-            <option 
-               v-for="player in filteredPlayers1" 
-               :key="player.player_id" 
-               :value="player.fullname">
-            </option>
-         </datalist> -->
          <div class="position-relative">
             <input
                id="player1Select"
@@ -193,11 +176,12 @@ export default {
          try {
             const data = await getNamePlayers(fullnameToSearch)
 
-            if (data.status === 'error') {
+            if (data.status == 'error') {
                console.error(`Backend response error: ${data.message}`);
 
             } else { // ok
                this.namePlayers = data.players
+               console.log(`Data from backend for player ${playerNum}:`, data)
 
                // Sends backend names to create datalist
                if (playerNum == 1) {
@@ -220,7 +204,7 @@ export default {
             this.player2 = name
             this.showSuggestions2 = false
          }
-         },
+      },
 
       hideSuggestionsWithDelay() {
          setTimeout(() => {
@@ -232,6 +216,13 @@ export default {
 
       handleInput(playerNum) {
          clearTimeout(this.searchTimeOut)
+
+         // Shows the list when writting
+         if (playerNum === 1) {
+            this.showSuggestions1 = true
+         } else {
+            this.showSuggestions2 = true
+         }
          
          // Sleeps 500ms and searches again
          this.searchTimeOut = setTimeout(() => {
