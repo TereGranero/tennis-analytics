@@ -1,13 +1,6 @@
 <template>
    <main class="container mb-5">
 
-      <!-- Skip Link -->
-      <a 
-         href="#formHeading" 
-         class="visually-hidden-focusable">
-         Ir al formulario
-      </a>
-
       <!-- Conditional Heading -->
       <h1 
          id="formHeading" 
