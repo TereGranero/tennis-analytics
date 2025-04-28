@@ -1,10 +1,9 @@
 import { httpClientNews } from './httpClients';
 
+// Retrieves tennis news in Spanish from NewsAPI
 // GET https://newsapi.org/v2/everything?q=bitcoin&apiKey=APIKEY
 
 const NEWS_API_KEY = process.env.VUE_APP_NEWS_API_KEY;
-// THIS KEY IS NOT SAFE. REQUESTS SHOULD BE DONE FROM BACKEND
-
 const newsEndpoint = '/v2/everything';
 const sourcesEndpoint = '/v2/top-headlines/sources'
 
@@ -33,8 +32,8 @@ export const getTennisNews = async (sources) => {
    return res.data;
 }
 
-
-//GET https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=API_KEY
+// Retrieves sources for tennis news in Spanish from NewsAPI
+// GET https://newsapi.org/v2/top-headlines/sources?country=us&apiKey=API_KEY
 
 export const getSourcesForTennisNews = async () => {
    const res = await httpClientNews.get(sourcesEndpoint, {

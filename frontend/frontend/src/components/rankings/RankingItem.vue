@@ -1,4 +1,5 @@
 <template>
+   <!-- Ranking table row -->
    <tr>
       <!-- Rank -->
       <td class="text-center">

@@ -2,9 +2,11 @@ import { httpClientWikiData } from './httpClients';
 import { getImageAttribution } from './wikiCommonsConnectionService';
 import { cleanAttribution } from '@/services/attribution_services';
 
+// Connects to Wikidata
+
 const wikiDataEndpoint = '/w/api.php';
 
-
+// Retrieves image for a provided Wikidata entity ID
 export const getWikiDataImage = async (wikidata_id) => {
    console.log('Requesting to WikiData for image...');
    const res = await httpClientWikiData.get(wikiDataEndpoint, {
@@ -17,22 +19,22 @@ export const getWikiDataImage = async (wikidata_id) => {
       },
    });
 
-      const fileName = res.data.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
-      if (fileName) {
-         const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`;
-         console.log(`Image URL: ${imageUrl}`);
+   const fileName = res.data.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
+   if (fileName) {
+      const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}`;
+      console.log(`Image URL: ${imageUrl}`);
 
-         let imageAttribution = await getImageAttribution(fileName);
-         imageAttribution = cleanAttribution(imageAttribution)
+      let imageAttribution = await getImageAttribution(fileName);
+      imageAttribution = cleanAttribution(imageAttribution)
 
-         return { imageUrl, imageAttribution };
-      }
+      return { imageUrl, imageAttribution };
+   }
 
    console.log('Image URL no encontrada');
    return null;
 };
 
-// Searches entities by tournament name. Returns wikidata_id
+// Searches Wikidata entity ID for a tournament name
 // In the future, try to query Wikimedia Commons too
 export const getWikiDataId = async (name) => {
    console.log(`Requesting to WikiData for ${name} Id...`);
@@ -50,33 +52,7 @@ export const getWikiDataId = async (name) => {
       },
    });
 
-
-   // // Get claims for each result    NOT USED IT IS SLOW
-   // const resultsWithClaims = await Promise.all(
-   //    res.data.search.map(async (item) => {
-   //       const entityRes = await httpClientWikiData.get(wikiDataEndpoint, {
-   //          params: {
-   //             action: 'wbgetentities',
-   //             ids: item.id,
-   //             format: 'json',
-   //             origin: '*'
-   //          }
-   //       });
-   //       return {
-   //          ...item,
-   //          claims: entityRes.data.entities[item.id]?.claims || {}
-   //       };
-   //    })
-   // );
-
-   // const tournament = resultsWithClaims.find(item => {
-   //    const tennisInstance = item.claims.P31?.some(claim => 
-   //       ['Q300007', 'Q13219666'].includes(claim.mainsnak.datavalue?.value.id)
-   //    );
-   //    const tennisDescription = item.description?.toLowerCase().includes('tennis');
-   //    return tennisInstance || tennisDescription;
-   // });
-
+   // Verifies it is a tennis tournament
    const tournament = res.data.search.find(item => {
       const isTennisDescription = item.description?.toLowerCase().includes('tennis');
       return isTennisDescription;
@@ -92,7 +68,7 @@ export const getWikiDataId = async (name) => {
 };
 
 
-// Gets complete entity by wikidata_id and searches logo in images properties
+// Retrieves all claims of an entity for a provided Wikidata ID and searches logo in images properties
 export const getWikiDataLogo = async (wikidata_id) => {
    console.log('Requesting to WikiData for logo...');
    const res = await httpClientWikiData.get(wikiDataEndpoint, {

@@ -411,6 +411,7 @@ export default {
 
    computed: {
       isEditing() {
+         // Checks if editing or adding player
          console.log(`Checking if there is an id for editing: ${this.id}`)
          return this.id !== null
       },
@@ -444,7 +445,7 @@ export default {
       },
 
       invalidBirthDate() {
-         // not future dates
+         // Not future dates
          if (this.player.birth_date){
             return ( new Date(this.player.birth_date) > new Date() ) 
          }
@@ -452,7 +453,7 @@ export default {
       },
       
       invalidProSince() {
-         // allowed years 1800-current_year
+         // Allowed years 1800-current_year
          if (this.player.pro_since){
             return (      
                this.player.pro_since != 0 &&
@@ -464,7 +465,7 @@ export default {
       },
 
       invalidCountry() {
-         // choose one from select
+         // Checks if one from select is chosen
          return (
             !this.player.country || 
             this.player.country == '-'
@@ -472,7 +473,7 @@ export default {
       },
 
       invalidHeight() {
-         // allowed values 100-270
+         // Allowed values 100-270
          return (
             this.player.height != 0 &&
             (this.player.height < 100 || 

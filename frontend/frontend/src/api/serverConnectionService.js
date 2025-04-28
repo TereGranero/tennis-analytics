@@ -1,6 +1,8 @@
 import { httpClient, httpAuthClient } from './httpClients';
 
+// Connects to backend endpoints to retrieve data
 
+// --------------- players ----------------------------
 const playersEndpoint = '/players';
 
 export const getAllPlayers = async (page, perPage, lastNameToSearch = '') => {
@@ -49,6 +51,7 @@ export const deletePlayer = async (id) => {
 };
 
 
+// --------------- rankings ----------------------------
 
 const rankingsEndpoint = '/rankings';
 
@@ -62,7 +65,7 @@ export const getEndYearRankings = async (page, perPage, yearToSearch = '2023') =
 return res.data;
 };
 
-
+// --------------- tournaments ----------------------------
 const tournamentsEndpoint = '/tournaments';
 
 export const getTournamentsByLevel = async (page, perPage, levelSlug = 'grand-slam') => {

@@ -9,6 +9,7 @@ from app.extensions import db
 from app.models.administrator import Administrator
 from sqlalchemy import Column, Integer, String, MetaData, Table
 
+# Creates table administrator and inserts a unique registered administrator user
 with app.app_context():
    # Connects to dabase and gets schema
    engine = db.engine

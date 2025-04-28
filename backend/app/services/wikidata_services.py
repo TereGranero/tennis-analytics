@@ -12,6 +12,16 @@ MAX_ACCEPTABLE_WAIT = 10
 @lru_cache(maxsize=128)
 
 def get_wikidata_property(wikidata_id, property):
+   """ Retrieves the requested property from a Wikidata entity using the MediaWiki Action API.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID
+      property (str): The requested property ID
+      
+   Returns:
+      (list or None): A list of claims for the specified property 
+                     or None if an error occurs or the property does not exist.
+   """
    
    # Validates arguments
    arguments = [wikidata_id, property]
@@ -29,6 +39,7 @@ def get_wikidata_property(wikidata_id, property):
       'property': property
    }
    
+   # Sends requests with retry and exponential backoff mechanisms to avoid API saturation
    sleep_time = BASE_SLEEP
    
    for attempt in range(1, MAX_RETRIES + 1):
@@ -83,7 +94,16 @@ def get_wikidata_property(wikidata_id, property):
    print(f'WikidataServices Error in get_wikidata_property: Failed after {MAX_RETRIES} attempts.')
    return None
 
+
 def is_tennis_player(wikidata_id):
+   """ Validates if the provided Wikidata entity is a tennis player.
+   
+   Args:
+      wikidata_id (str): Wikidata entity ID to validate
+
+   Returns:
+      (bool or None): Validates if it a tennis player or None in case wikidata_id is empty
+   """
    
    validated = False
    
@@ -93,7 +113,7 @@ def is_tennis_player(wikidata_id):
          print('WikidataServices Error in is_tennis_player: empty wikidata_id.')
          return None
       
-      # Requests Wikidata API
+      # Requests Wikidata API for properties P106=job and P641=sport 
       jobs_claim = get_wikidata_property(wikidata_id, 'P106')
       sport_claim = get_wikidata_property(wikidata_id, 'P641')
       
@@ -124,7 +144,6 @@ def is_tennis_player(wikidata_id):
                validated = True
                break
          
-
       if validated:
          print(f'WikidataServices Info from is_tennis_player: wikidata_id {wikidata_id} has been validated as a tennis player.')
          return True
@@ -138,7 +157,16 @@ def is_tennis_player(wikidata_id):
 
 
 def get_wikidata_id(name_last, name_first):
-         
+   """ Retrieves verified Wikidata ID for a tennis player searching by first and last name.
+
+   Args:
+      name_last (str): Player's last name.
+      name_first (str): Player's first name.
+
+   Returns:
+      (str or None): verified Wikidata ID for a tennis player or None if not found
+   """
+     
    # Composes complete player name to search wikidata_id
    player_name = compose_name_for_search(name_last, name_first)
 
@@ -159,6 +187,7 @@ def get_wikidata_id(name_last, name_first):
       'props': 'id'
    }
 
+   # Sends requests with retry and exponential backoff mechanisms to avoid API saturation
    sleep_time = BASE_SLEEP
    
    for attempt in range(1, MAX_RETRIES + 1):
@@ -220,7 +249,16 @@ def get_wikidata_id(name_last, name_first):
    print(f'WikidataServices Error in get_wikidata_id: Failed after {MAX_RETRIES} attempts.')
    return None
 
+
 def get_wikidata_name_last(wikidata_id):
+   """ Retrieves last name for the provided Wikidata ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID
+
+   Returns:
+      (str or None): last name in Spanish or None if not found
+   """
    
    try:
       # Validates argument 
@@ -237,10 +275,10 @@ def get_wikidata_name_last(wikidata_id):
          print(f'WikidataServices Warning from get_wikidata_name_last: No last name has been found for wikidata_id {wikidata_id}')
          return None
       
-      # Extracts entity name_last id
+      # Extracts entity name_last ID
       name_last_id = name_last_claim[0]['mainsnak']['datavalue']['value']['id']
                
-      # Requests label for name_last id                  
+      # Requests label (text) for name_last ID in Spanish                 
       params_label = {
          'action': 'wbgetentities',
          'format': 'json',
@@ -266,6 +304,14 @@ def get_wikidata_name_last(wikidata_id):
 
 
 def get_wikidata_name_first(wikidata_id):
+   """ Retrieves first name for the provided Wikidata ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID
+
+   Returns:
+      (str or None): first name in Spanish or None if not found
+   """
    
    try:
       # Validates argument 
@@ -282,10 +328,10 @@ def get_wikidata_name_first(wikidata_id):
          print(f'WikidataServices Warning from get_wikidata_name_first: No last name has been found for wikidata_id {wikidata_id}')
          return None
       
-      # Extracts entity name_first id
+      # Extracts entity name_first ID
       name_first_id = name_first_claim[0]['mainsnak']['datavalue']['value']['id']
                
-      # Requests label for name_first id                  
+      # Requests label for name_first ID            
       params_label = {
          'action': 'wbgetentities',
          'format': 'json',
@@ -311,7 +357,15 @@ def get_wikidata_name_first(wikidata_id):
 
 
 def get_wikidata_country(wikidata_id):
-   
+   """ Retrieves ISO-3166-1 alpha-2 country code for provided Wikidata entity ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID.
+
+   Returns:
+      (str or None): ISO-3166-1 alpha-2 country code in lowercase, or None if not found.
+   """
+
    try:
 
       # Validates argument
@@ -320,7 +374,7 @@ def get_wikidata_country(wikidata_id):
          print('WikidataServices Error in get_wikidata_country: empty wikidata_id.')
          return None
 
-      # Requests Wikidata API
+      # Requests the country (P27 property) to Wikidata API
       country_claim = get_wikidata_property(wikidata_id, 'P27')
 
       # Empty response
@@ -328,7 +382,7 @@ def get_wikidata_country(wikidata_id):
          print(f'WikidataServices Warning from get_wikidata_country: No country id has been found for wikidata_id {wikidata_id}')
          return None
       
-      # Extracts entity country id
+      # Extracts entity country ID
       country_id = country_claim[0]['mainsnak']['datavalue']['value']['id']
       
       # Empty response
@@ -362,6 +416,14 @@ def get_wikidata_country(wikidata_id):
    
 
 def get_wikidata_birth_date(wikidata_id):
+   """ Retrieves and formats birth date for provided Wikidata entity ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID to search for the birth date.
+
+   Returns:
+      (str or None): birth date with format "DD-MM-YYYY", or None if not found.
+   """
 
    try:
       # Validates argument
@@ -418,6 +480,14 @@ def get_wikidata_birth_date(wikidata_id):
    
 
 def get_wikidata_height(wikidata_id):
+   """ Retrieves and normalizes the height in cm for provided Wikidata entity ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID.
+
+   Returns:
+      (str or None): Height in centimeters or None if not found.
+   """
 
    try:
       # Validates argument 
@@ -472,7 +542,14 @@ def get_wikidata_height(wikidata_id):
    
 
 def get_wikidata_weight(wikidata_id):
+   """ Retrieves and normalizes the weight in kg for provided Wikidata entity ID.
 
+   Args:
+      wikidata_id (str): Wikidata entity ID.
+
+   Returns:
+      (str or None): Weight in kilograms or None if not found.
+   """
    try:
       # Validates argument
       wikidata_id = wikidata_id.strip()
@@ -524,6 +601,15 @@ def get_wikidata_weight(wikidata_id):
    
    
 def get_wikidata_hand(wikidata_id):
+   """
+   Retrieves the handedness of a player for provided Wikidata entity ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID.
+
+   Returns:
+      (str or None): "Derecha" for right-handed players, "Izquierda" for left-handed players, or None if not found.
+   """
 
    try:
       # Validates argument 
@@ -541,7 +627,7 @@ def get_wikidata_hand(wikidata_id):
          return None
       
       # Extracts entinty hand id
-      hand = hand_claim[0]['mainsnak']['datavalue']['value']['amount']
+      hand = hand_claim[0]['mainsnak']['datavalue']['value']['id']
       
       hand_dict = {
          'Q1310443': 'Derecha',
@@ -565,16 +651,14 @@ def get_wikidata_hand(wikidata_id):
    
    
 def get_wikidata_networks(wikidata_id, network='instagram'):
-   """
-   Searches network username in Wikidata
-   Allowed networks: instagram, facebook, x_twitter
+   """ Retrieves network username for a provided Wikidata entity ID and composes network link.
    
    Args:
       wikidata_id (str): 
-      networki (str): network name
+      network (str): network name. Allowed networks: instagram, facebook, x_twitter.
    
    Returns:
-      str or None: link
+      (str or None): network link.
    """
    
    try:
@@ -632,7 +716,15 @@ def get_wikidata_networks(wikidata_id, network='instagram'):
    
    
 def get_wikidata_pro_since(wikidata_id):
-   
+   """ Retrieves the year when a player turned professional for the provided Wikidata entity ID.
+
+   Args:
+      wikidata_id (str): Wikidata entity ID.
+
+   Returns:
+      (str or None): Year when the player turned professional with format 4-digit string, or None if not found.
+   """
+
    try:
       # Validates argument 
       wikidata_id = wikidata_id.strip()
@@ -671,7 +763,15 @@ def get_wikidata_pro_since(wikidata_id):
    
 
 def compose_name_for_search(name_last, name_first='-'):
-   # Composes complete player name to search its wikidata_id
+   """ Composes a complete player name to search its wikidata ID.
+
+   Args:
+      name_last (str): Player's last name.
+      name_first (str): Player's first name.
+
+   Returns:
+      (str or None): Full name or None if last name is invalid.
+   """
    
    name_last = name_last.strip()
    name_first = name_first.strip()
@@ -679,19 +779,19 @@ def compose_name_for_search(name_last, name_first='-'):
    if name_last is None:
       return None
 
+   # If first name is not valid, only uses last name
    return name_last if (name_first == '-' or name_first == 'unknown') else name_first + ' ' + name_last
       
       
 def get_wikidata_enrichment(player):
-   """  
-   Searches in Wikidata the missing fields of the provided player.
+   """ Searches in Wikidata the missing fields of the provided player.
    
    Args:
       player (dict): register from database
    
    Return:
-      boolean: if player_object must be commited into the database (if enriched)
-      dict: enriched player or player
+      (boolean): if player_object must be commited into the database (if enriched)
+      (dict): enriched player or player
    """ 
    
    update_flag = False

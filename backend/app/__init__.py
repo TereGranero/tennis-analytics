@@ -12,6 +12,7 @@ from .api import init_api
 load_dotenv()
 
 def create_app():
+    # Creates Flask app
    
    # Selects type of configuration
    flask_env = os.getenv('FLASK_ENV', 'development')

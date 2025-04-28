@@ -1,4 +1,5 @@
 <template>
+   
    <picture>
       <!-- Mobile -->
       <source :srcset="imgPathMobile" media="(max-width: 768px)">

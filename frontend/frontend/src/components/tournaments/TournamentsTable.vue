@@ -1,4 +1,5 @@
 <template>
+   <!-- Tournaments table -->
    <table class="table table-hover text-responsive-4">
       <caption class="visually-hidden">
          Tabla de torneos del nivel seleccionado.

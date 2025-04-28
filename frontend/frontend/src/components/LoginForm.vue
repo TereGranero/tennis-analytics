@@ -1,4 +1,5 @@
 <template>
+   <!-- Login form -->
    <form 
       class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-5 mb-5"
       @submit.prevent="sendForm"

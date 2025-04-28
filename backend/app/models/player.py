@@ -52,6 +52,10 @@ class Player(db.Model):
    
 
    def get_best_ranking(self):
+      """ Retrieves player's best ranking in career
+      Returns:
+         (int or str): best ranking if exists or '-'
+      """
       
       best_ranking = self.rankings.with_entities(
          func.min(cast(Ranking.rank, Integer))
@@ -63,8 +67,11 @@ class Player(db.Model):
    
    
    def get_all_rankings(self):
-      # return array of dicts with 'player_id', 'ranking_date','points','rank'
-      
+      """ Retrieves all player's ranking in career ordered by date
+      Returns:
+         (list of dict): dictionaries contain 'player_id', 'ranking_date','points','rank'
+      """
+            
       rankings_object_list = self.rankings.order_by(Ranking.ranking_date.asc()).all()
       rankings_list_in_player = []
       for ranking_object in rankings_object_list:
@@ -75,8 +82,12 @@ class Player(db.Model):
    
    
    def get_rank_by_year(self):
+      """ Retrieves player's end-of-season ATP rankings in career
+      Returns:
+         (list of dict): dictionaries contain 'year', 'rank'
+      """
 
-      # Groups rankings by year and retrieves last ranking by year. rankings takes all the columns that is why uses with_entities
+      # Groups rankings by year and retrieves last ranking by year. rankings takes all the columns, that is why uses with_entities
       subquery = self.rankings.with_entities(
          extract('year', Ranking.ranking_date).label('year'),    
          func.max(Ranking.ranking_date).label('max_date')
@@ -103,11 +114,9 @@ class Player(db.Model):
 
 
    def get_matches_won(self):
-      """
-      Retrieves all won matches
-      
+      """ Retrieves all won matches
       Returns:
-         array: array of dict with won matches
+         (list of dict): won matches
       """
       matches_won = self.matches_won.all()
       
@@ -115,11 +124,9 @@ class Player(db.Model):
    
       
    def get_matches_lost(self):
-      """
-      Retrieves all lost matches
-      
+      """ Retrieves all lost matches
       Returns:
-         array: dicts with lost matches
+         (list of dict): lost matches
       """
       matches_lost = self.matches_lost.all()
       
@@ -127,6 +134,10 @@ class Player(db.Model):
    
    
    def get_total_matches(self):
+      """ Retrieves number or total played matches
+      Returns:
+         (int): number of total played matches
+      """
       total_matches_won = self.matches_won.count() 
       total_matches_lost = self.matches_lost.count()
       
@@ -134,11 +145,9 @@ class Player(db.Model):
       
       
    def get_won_lost_ratio(self):
-      """
-      Calculates victories versus looses ratio
-      
+      """ Calculates victories versus looses ratio
       Returns:
-         float: won/lost ratio
+         (float): won/lost ratio
       """
       total_matches_won = self.matches_won.count() 
       total_matches_lost = self.matches_lost.count()
@@ -150,14 +159,13 @@ class Player(db.Model):
       
    
    def get_titles(self, level=None):
-      """
-      Retrieves won titles, filtering by level
+      """ Retrieves won titles, filtering by level
       
       Args:
          level (optional): tourney level to filter
       
       Returns:
-         array: a dict for each title
+         (list of dict): won titles with provided level
       """
       
       titles = []
@@ -185,14 +193,13 @@ class Player(db.Model):
    
    
    def get_number_of_titles(self, level=None):
-      """
-      Calculates number of won titles, filtering by level
+      """ Calculates number of won titles, filtering by level
       
       Args:
          level (optional): tourney level to filter
       
       Returns:
-         int: total titles
+         (int): total won titles by provided level
       """
            
       # Filters won finals
@@ -208,11 +215,10 @@ class Player(db.Model):
    
    
    def get_aces(self):
-      """
-      Calculates number of aces in career
+      """ Calculates number of aces in career
       
       Returns:
-         int: total aces
+         (int): total aces in career
       """
       w_aces = db.session.query(
          func.sum(cast(Match.w_aces, Integer))
@@ -228,11 +234,10 @@ class Player(db.Model):
    
    
    def get_aces_by_match(self):
-      """
-      Calculates number of aces by match in career
+      """ Calculates number of aces by match in career
       
       Returns:
-         int: aces ratio
+         (float): aces ratio by match in career
       """
       w_aces = db.session.query(
          func.sum(cast(Match.w_aces, Integer))
@@ -252,11 +257,10 @@ class Player(db.Model):
    
    
    def get_double_faults(self):
-      """
-      Calculates number of double faults in career
+      """ Calculates number of double faults in career
       
       Returns:
-         int: total double faults
+         (int): total double faults in career
       """
       w_df = db.session.query(
          func.sum(cast(Match.w_df, Integer))
@@ -272,11 +276,10 @@ class Player(db.Model):
    
    
    def get_double_faults_by_match(self):
-      """
-      Calculates number of double faults by match in career
+      """ Calculates number of double faults by match in career
       
       Returns:
-         int:  double faults ratio
+         (float): double faults ratio by match in career
       """
       w_df = db.session.query(
          func.sum(cast(Match.w_df, Integer))
@@ -296,11 +299,10 @@ class Player(db.Model):
    
    
    def get_points_on_first(self):
-      """
-      Calculates number of won points on first service in career
+      """ Calculates number of won points on first service in career
       
       Returns:
-         int: total won points
+         (int): total won points on first service in career
       """
       w_1stWon = db.session.query(
          func.sum(cast(Match.w_1stWon, Integer))
@@ -316,11 +318,10 @@ class Player(db.Model):
    
    
    def get_points_on_first_by_match(self):
-      """
-      Calculates number of won points on first service by match in career
+      """ Calculates ratio of won points on first service by match in career
       
       Returns:
-         int: won points on first ratio
+         (float): ratio of won points on first service by match in career
       """
       w_1stWon = db.session.query(
          func.sum(cast(Match.w_1stWon, Integer))
@@ -340,11 +341,10 @@ class Player(db.Model):
    
    
    def get_points_on_second(self):
-      """
-      Calculates number of won points on second service in career
+      """ Calculates number of won points on second service in career
       
       Returns:
-         int: total won points
+         (int): total won points on second service in career
       """
       w_2ndWon = db.session.query(
          func.sum(cast(Match.w_2ndWon, Integer))
@@ -360,11 +360,10 @@ class Player(db.Model):
    
    
    def get_points_on_second_by_match(self):
-      """
-      Calculates number of won points on second service by match in career
+      """ Calculates ratio of won points on second service by match in career
       
       Returns:
-         int: won points on second serve ratio
+         (float): ratio of won points on second by match in career
       """
       w_2ndWon = db.session.query(
          func.sum(cast(Match.w_2ndWon, Integer))
@@ -384,11 +383,10 @@ class Player(db.Model):
 
    
    def get_games_on_serve(self):
-      """
-      Calculates number of won games on service in career
+      """ Calculates number of won games on service in career
       
       Returns:
-         int: total won games on serve
+         int: total won games on serve in career
       """
       w_SvGms = db.session.query(
          func.sum(cast(Match.w_SvGms, Integer))
@@ -404,11 +402,10 @@ class Player(db.Model):
    
       
    def get_games_on_serve_by_match(self):
-      """
-      Calculates number of won games on service by match in career
+      """ Calculates ratio of won games on service by match in career
       
       Returns:
-         int: won games on serve ratio
+         (float): ratio of won games on serve by match in career
       """
       w_SvGms = db.session.query(
          func.sum(cast(Match.w_SvGms, Integer))
@@ -429,11 +426,10 @@ class Player(db.Model):
    
    
    def get_first_in(self):
-      """
-      Calculates number of first service in in career
+      """ Calculates number of first-service-in in career
       
       Returns:
-         int: total first services in
+         (int): total first-service-in in career
       """
       w_1stIn = db.session.query(
          func.sum(cast(Match.w_1stIn, Integer))
@@ -449,11 +445,10 @@ class Player(db.Model):
    
       
    def get_first_in_by_match(self):
-      """
-      Calculates number of first service by match in in career
+      """ Calculates ratio of first service by match in in career
       
       Returns:
-         int: first services in ratio
+         (float): ratio of first service by match in in career
       """
       w_1stIn = db.session.query(
          func.sum(cast(Match.w_1stIn, Integer))
@@ -475,11 +470,10 @@ class Player(db.Model):
    
 
    def get_faced_break_points(self):
-      """
-      Calculates number of faced break points in in career
+      """ Calculates number of faced break points in in career
       
       Returns:
-         int: total break points
+         (int): total faced break points in career
       """
       w_bpFaced = db.session.query(
          func.sum(cast(Match.w_bpFaced, Integer))
@@ -494,11 +488,10 @@ class Player(db.Model):
       return w_bpFaced + l_bpFaced
    
    def get_saved_break_points(self):
-      """
-      Calculates number of saved break points in career
+      """ Calculates number of saved break points in career
       
       Returns:
-         int: total break points
+         int: total saved break points in career
       """
       w_bpSaved = db.session.query(
          func.sum(cast(Match.w_bpSaved, Integer))
@@ -513,11 +506,10 @@ class Player(db.Model):
       return w_bpSaved + l_bpSaved
    
    def get_saved_break_points_percentage(self):
-      """
-      Calculates percentage of saved break points in career
+      """ Calculates percentage of saved break points in career
       
       Returns:
-         int: total break points
+         (float): percentage of saved break points in career
       """
       bpSaved = self.get_saved_break_points()
       bpFaced = self.get_faced_break_points()

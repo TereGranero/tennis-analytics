@@ -4,11 +4,11 @@ from flask_jwt_extended import verify_jwt_in_request
 def auth_required():
    """ Creates a customized decorator to verify JWT
    Returns:
-      function: 
+      (function) : functions that verifies JWT 
    """
    
    def wrapper(fn):
-      """ Decorator to be applied to protected functions
+      """ Creates a decorator to be applied to protected functions
       Args:
          fn: decorator original function which is applied to protected functions
       Returns:
@@ -21,7 +21,7 @@ def auth_required():
          """ Creates customized function that verifies JWT token
          and returns customized error messages if any
          Returns:
-            function: decorator original function if no exceptions
+            (function): decorator original function if no exceptions
          """
          
          try:

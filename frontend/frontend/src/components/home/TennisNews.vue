@@ -16,6 +16,7 @@
          Servicio de noticias no disponible en estos momentos.
       </div>
 
+      <!-- Display news in cards -->
       <div v-else>
          <div class="row">
             <div v-for="(nw, index) in news" 
@@ -71,6 +72,7 @@ export default {
    methods: {
 
       async loadSources() {
+         // Loads sources from NewsAPI
          try {
             const data = await getSourcesForTennisNews()
 
@@ -101,6 +103,7 @@ export default {
       },
 
       async loadNews() {
+         // Loads news from found sources
          try {
             const data = await getTennisNews(this.sources)
 

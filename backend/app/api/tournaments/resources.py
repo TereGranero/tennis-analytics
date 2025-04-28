@@ -15,7 +15,7 @@ class TournamentsAPI(Resource):
       search_level_slug=None, 
       search_tournament_slug=None):
       
-      # Handles different routes and parameters
+      # Handles GET requests depending on arguments and routes
       path = request.path
 
       if 'level' in path and 'titles' not in path and search_level_slug:
@@ -27,7 +27,20 @@ class TournamentsAPI(Resource):
       
       
    def get_ranking_titles(self, search_level_slug):
-      # GET ranking players by number of titles for a level
+      """ Retrieves ranking players by number of titles for a given level
+      Args:
+         search_level_slug (str): level slug to filter
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'winners' (list, optional): List of winners dictionaries
+               - 'total_winners': (int, optional): Total number of winners (only on success)
+               - 'page' (int, optional): Current page returned (only on success)
+               - 'pages' (int, optional): Total number of pages (only on success)
+            - int: HTTP status code 
+      """
       
       # --------------- Parameters validation -------------------
       
@@ -89,19 +102,6 @@ class TournamentsAPI(Resource):
             .subquery()
          )
          
-         # Joins Finals with winner's titles in order to convert into dict and get fullname and country
-         # base_query = (db.session
-         #    .query(
-         #       Match, 
-         #       subquery.c.titles
-         #    ).join(
-         #       subquery, 
-         #       subquery.c.winner_id == Match.winner_id
-         #    )
-         #    .filter(Match.tourney_level_slug == search_level_slug)
-         #    .filter(Match.round_ == 'The Final')
-         #    .order_by(desc(subquery.c.titles))
-         # )
          base_query = (db.session
             .query(
                subquery.c.winner_id,
@@ -114,7 +114,6 @@ class TournamentsAPI(Resource):
             
                   
          # Calculates the number of winners
-         #total_winners = base_query.count()
          total_winners = base_query.distinct(subquery.c.winner_id).count()
          
          # Calculates number of pages for all winners
@@ -218,7 +217,20 @@ class TournamentsAPI(Resource):
 
      
    def get_tournaments_by_level(self, search_level_slug):    
-      # GET tournaments for level     
+      """ Retrieves tournaments for a given level
+      Args:
+         search_level_slug (str): level slug to filter
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'tournaments' (list, optional): List of tournaments names
+               - 'total_tournaments': (int, optional): Total number of tournaments (only on success)
+               - 'page' (int, optional): Current page returned (only on success)
+               - 'pages' (int, optional): Total number of pages (only on success)
+            - int: HTTP status code 
+      """
       
       # --------------- Parameters validation -------------------
       
@@ -317,7 +329,20 @@ class TournamentsAPI(Resource):
    
   
    def get_tournament_winners(self, search_tournament_slug):
-      # GET winners for tournament     
+      """ Retrieves winners for a given tournament
+      Args:
+         search_tournament_slug (str): tournament slug to filter
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'winners' (list, optional): List of winners dictionaries
+               - 'total_winners': (int, optional): Total number of winners (only on success)
+               - 'page' (int, optional): Current page returned (only on success)
+               - 'pages' (int, optional): Total number of pages (only on success)
+            - int: HTTP status code 
+      """
       
       # --------------- Parameters validation -------------------
          

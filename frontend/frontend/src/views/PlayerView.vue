@@ -1,4 +1,5 @@
 <template>
+   <!-- Player page -->
    <main class="container">
       
       <!-- Controls -->

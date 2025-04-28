@@ -1,4 +1,5 @@
 <template>
+   <!-- KPI card -->
    <div
       class="card h-100 border-dark"
       role="region"

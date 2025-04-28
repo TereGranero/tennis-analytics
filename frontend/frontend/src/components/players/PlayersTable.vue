@@ -1,4 +1,5 @@
 <template>
+   <!-- Players Table -->
    <table class="table table-hover text-responsive-4">
       <caption class="visually-hidden">
          Tabla de tenistas con su país de origen y fecha de nacimiento.

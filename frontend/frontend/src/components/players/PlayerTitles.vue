@@ -1,4 +1,5 @@
 <template>
+   <!-- Won titles table -->
    <section 
       class="d-flex flex-column align items-start mb-5"
       aria-labelledby="titlesHeading">

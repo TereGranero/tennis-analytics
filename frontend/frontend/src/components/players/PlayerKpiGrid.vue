@@ -1,4 +1,5 @@
 <template>
+   <!-- KPI grid -->
    <section
       v-if="hasAnyKpi"
       class="d-flex flex-column align items-start mb-5"

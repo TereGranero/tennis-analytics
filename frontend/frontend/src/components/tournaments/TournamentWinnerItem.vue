@@ -1,4 +1,5 @@
 <template>
+   <!-- Tournament's winners row -->
    <tr>
       <!-- Year -->
       <td class="text-center">

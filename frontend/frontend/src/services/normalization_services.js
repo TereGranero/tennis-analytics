@@ -1,4 +1,5 @@
 export const normalizeIntoBackend = (player) => {
+   // Normalizes player data before sending to database
    for (const [field, value] of Object.entries(player)) {
 
       if ([
@@ -33,6 +34,7 @@ export const normalizeIntoBackend = (player) => {
 
 
 export const normalizeIntoForm = (player) => {
+   // Normalizes player data coming from database to be displayed in a form
 
    // Capitalizes country
    if (player.country) {

@@ -2,6 +2,8 @@ from flask import Blueprint
 from flask_restful import Api
 from .resources import TournamentsAPI
 
+# Defines blueprint and associates resources and routes
+
 tournaments_bp = Blueprint('tournaments', __name__)
 api = Api(tournaments_bp)
 

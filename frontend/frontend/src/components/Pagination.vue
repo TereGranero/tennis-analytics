@@ -1,4 +1,5 @@
 <template>
+   <!-- Pagination menu -->
    <nav 
       aria-label="Paginación de jugadores" 
       class="mb-5">

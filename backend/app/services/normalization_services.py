@@ -5,6 +5,12 @@ import re
 
 
 def normalize_to_frontend(register):
+   """ Normalizes a database register to compliant frontend format
+   Args:
+      register (dict): register coming from database
+   Returns:
+      (dict): frontend format normalized register
+   """
    
    for field, value in register.items():
       
@@ -74,6 +80,12 @@ def normalize_to_frontend(register):
     
 
 def normalize_into_db(register):
+   """ Normalizes a register to compliant database format
+   Args:
+      register (dict): register to normalize
+   Returns:
+      (dict): database format normalized register
+   """
       
    for field, value in register.items():
       
@@ -207,8 +219,14 @@ def normalize_into_db(register):
    
 
 def compose_initials(name):
-   # Composes capital initials followed by dots, if needed
-   # Used by normalize_fullname function
+   """ Composes capital initials followed by dots, if needed
+   Used by normalize_fullname function
+   
+   Args:
+      name (str): name to convert into capital initials
+   Returns:
+      (str): formatted name in capital initials, if needed
+   """
    
    name = name.strip()
    

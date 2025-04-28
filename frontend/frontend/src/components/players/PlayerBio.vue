@@ -20,6 +20,8 @@
                Detalles personales del jugador {{ player.fullname }}.
             </caption>
             <tbody>
+               
+               <!-- Country -->
                <tr 
                   v-if="player.country !== 'unknown' && player.country !== '-'"
                   class="text-responsive-4">
@@ -35,6 +37,7 @@
                   </td>
                </tr>
 
+               <!-- Birth -->
                <tr class="text-responsive-4">
                   <th 
                      scope="row"
@@ -47,7 +50,8 @@
                      {{ player.birth_date }}
                   </td>
                </tr>
-
+               
+               <!-- Hand -->
                <tr 
                   class="text-responsive-4">
                   <th 
@@ -62,6 +66,7 @@
                   </td>
                </tr>
 
+               <!-- Height -->
                <tr class="text-responsive-4">
                   <th 
                      scope="row"
@@ -74,7 +79,8 @@
                      {{ player.height }}
                   </td>
                </tr>
-
+               
+               <!-- Weight -->
                <tr class="text-responsive-4">
                   <th 
                      scope="row"
@@ -87,6 +93,8 @@
                      {{ player.weight }} 
                   </td>
                </tr>
+
+               <!-- Pro since -->
 
                <tr class="text-responsive-4">
                   <th 
@@ -101,6 +109,7 @@
                   </td>
                </tr>
 
+               <!-- Networks -->
                <tr class="text-responsive-4">
                   <th 
                      scope="row"

@@ -13,7 +13,7 @@ from app.services.normalization_services import normalize_into_db, normalize_to_
 
 class PlayerPostPutSchema(Schema):
    
-   # Schema for post/put request
+   # Defines schema for post/put request and error messages if not fulfilled
    player_id = fields.Str(
       required=True, 
       error_messages={
@@ -112,6 +112,7 @@ class PlayerPostPutSchema(Schema):
 
 
 class PlayersAPI(Resource):
+   # Implements REST functions for players resource
    
    def __init__(self) -> None:
       super().__init__()
@@ -119,6 +120,8 @@ class PlayersAPI(Resource):
       
       
    def get(self, player_id=None):
+      # Handles GET requests depending on arguments and routes
+      
       if not player_id:
          if '/names' in request.path:
             # Extracts argument
@@ -133,12 +136,23 @@ class PlayersAPI(Resource):
       
 
    def get_names(self, search_fullname=''):
+      """ Retrieves a list of players fullnames that start with the given substring
+      Args:
+         search_fullname (string):  Substring to search players fullnames
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'players' (list, optional): List of players (only on success)
+            - int: HTTP status code 
+      """
       
       # --------------- Parameters validation -------------------
       
       # Validates search_fullname
       try:
-
+         # not empty
          if not search_fullname:
             error_msg = f'Error retrieving players: search_fullname is empty.'
             print(error_msg)
@@ -158,7 +172,7 @@ class PlayersAPI(Resource):
             }
             return response_object, 400
          
-         # if exists en database
+         # checks if any player fullname starting with search_fullname exists en database
          if not db.session.query(Player).filter(Player.fullname.ilike(f'{search_fullname}%')).first():
             error_msg = f'Error retrieving players: Fullname starting with {search_fullname} not found in database.'
             print(error_msg)
@@ -187,6 +201,7 @@ class PlayersAPI(Resource):
             .all()
          )
 
+         # Creates a list of dict with results
          players = [
             {
                'player_id': player.player_id,
@@ -213,7 +228,18 @@ class PlayersAPI(Resource):
       
       
    def get_all_players(self):   
-      # GET all players
+      """ Retrieves all players youngest first
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'players' (list, optional): List of players dictionaries (only on success)
+               - 'total_players' (int, optional): Total number of players (only on success)
+               - 'page' (int, optional): Current page returned (only on success)
+               - 'pages' (int, optional): Total number of pages (only on success)
+            - int: HTTP status code 
+      """
       
       # --------------- Parameters validation -------------------
       
@@ -367,6 +393,18 @@ class PlayersAPI(Resource):
 
 
    def get_single_player(self, player_id):
+      """Retrieves data player with provided ID
+      Args:
+         player_id (str): player ID
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'player' (dict, optional): player dictionaries (only on success)
+            - int: HTTP status code 
+      """
+
       try:
          player_object = Player.query.filter_by(player_id=player_id).first()
 
@@ -451,6 +489,17 @@ class PlayersAPI(Resource):
 
    @auth_required()
    def get_for_editing(self, player_id):
+      """Retrieves data player with provided ID for editing purposes
+      Args:
+         player_id (str): player ID
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'player' (dict, optional): player dictionaries (only on success)
+            - int: HTTP status code 
+      """
       try:
          player_object = Player.query.filter_by(player_id=player_id).first()
 
@@ -484,7 +533,15 @@ class PlayersAPI(Resource):
          
    @auth_required()
    def post(self):
-      # POST new player
+      """Posts a new player
+
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+            - int: HTTP status code 
+      """
       
       try:
          # Gets payload from request
@@ -573,9 +630,17 @@ class PlayersAPI(Resource):
 
    @auth_required()
    def delete(self, player_id=None):
-      # DELETE player
+      """Deletes player with provided ID
+
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+            - int: HTTP status code 
+      """
       
-      # No player_id
+      # No player_id provided
       if player_id is None:
          error_msg = "Error deleting player: No player id has been provided."
          response_object = {
@@ -585,7 +650,7 @@ class PlayersAPI(Resource):
          return response_object, 400
       
       try:
-         # Retrieves player to update
+         # Checks if player exists
          player = Player.query.filter_by(player_id=player_id).first()
          
          if not player:
@@ -621,8 +686,17 @@ class PlayersAPI(Resource):
 
    @auth_required()      
    def put(self, player_id=None):
+      """Modifies player with provided ID
+
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+            - int: HTTP status code 
+      """
       
-      # No player_id
+      # No player_id provided
       if player_id is None:
          error_msg = "Error updating player: No player id has been provided."
          response_object = {

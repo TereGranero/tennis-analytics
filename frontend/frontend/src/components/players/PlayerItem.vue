@@ -1,4 +1,5 @@
 <template>
+   <!-- Players table row -->
    <tr>
       <!-- Full Name -->
       <td 

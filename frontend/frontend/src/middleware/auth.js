@@ -3,7 +3,7 @@ import { tokenService } from '../api/authConnectionService.js';
 export const authMiddleware = async (to, from, next) => {
    const token = tokenService.getToken();
 
-   // Redirects to login if not token and saves destination page to redirect after successful login
+   // Redirects to login if no token and saves destination page to redirect after successful login
    if (!token) {
       next({ path: '/login', query: { redirect: to.fullPath } });
 

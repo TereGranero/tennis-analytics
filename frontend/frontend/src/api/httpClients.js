@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// Axios Connection Client configurations
+
 // ---------- Backend Server API ------------
 
 const httpClient = axios.create({

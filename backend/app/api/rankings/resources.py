@@ -12,7 +12,20 @@ from app.services.normalization_services import normalize_into_db, normalize_to_
 class RankingsAPI(Resource):
       
    def get(self, search_year=None):
-      # GET rankings by year
+      """ Retrieves end-of-season ATP ranking for a given year
+      Args:
+         search_year (int): year to filter
+      Returns:
+         (dict, int):
+            - dict: JSON response object
+               - 'status' (str): 'success' or 'error'
+               - 'message' (str): Error or success message
+               - 'rankings' (list, optional): List of ranked players dictionaries
+               - 'total_rankings': (int, optional): Total number of ranked players (only on success)
+               - 'page' (int, optional): Current page returned (only on success)
+               - 'pages' (int, optional): Total number of pages (only on success)
+            - int: HTTP status code 
+      """
       
       # --------------- Parameters validation -------------------
       

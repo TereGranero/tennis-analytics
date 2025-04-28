@@ -1,4 +1,5 @@
 <template>
+   <!-- Double KPI for players comparison -->
    <article 
       class="card h-100 border-dark"
       aria-labelledby="cardHeading">

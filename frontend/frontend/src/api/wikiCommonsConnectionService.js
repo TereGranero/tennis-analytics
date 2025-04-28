@@ -1,6 +1,8 @@
 import { httpClientWikiCommons } from './httpClients';
 import { cleanAttribution } from '@/services/attribution_services';
 
+// Connects to Wikimedia Commons to retrieve images and their metadata
+
 const wikiCommonsEndpoint = '/w/api.php';
 
 // Searches jpg image by a query
@@ -56,7 +58,6 @@ export const getImageAttribution = async (fileName) => {
    });
 
    const pages = res.data.query?.pages;
-   //console.log('API Response:', JSON.stringify(res.data, null, 2));
    const imageInfo = Object.values(pages)[0]?.imageinfo?.[0];
 
    if (imageInfo) {

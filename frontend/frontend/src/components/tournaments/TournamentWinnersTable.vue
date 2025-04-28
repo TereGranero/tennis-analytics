@@ -1,4 +1,5 @@
 <template>
+   <!-- Tournament's winners table -->
    <table class="table table-hover text-responsive-4">
       <caption class="visually-hidden">
          Tabla de ganadores del torneo seleccionado.

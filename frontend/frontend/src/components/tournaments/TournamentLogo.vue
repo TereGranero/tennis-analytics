@@ -71,6 +71,7 @@ export default {
 
    methods: {
       async getTournamentLogo() {
+         // Retrieves tournament logo from Wikidata or a generic one
          try {
             this.wikidata_id = await getWikiDataId(`${this.tournament}`)
 
@@ -98,8 +99,8 @@ export default {
       },
 
       getGenericLogo() {
+         // When a logo is not found in WikiCommmons, uses a generic one
          let imageName = this.mappingImage[this.level] || this.defaultLogo
-         //console.log(this.level)
          this.urlTournamentLogo = `${this.imagesPath}/${imageName}`
          console.log(`Logo: ${this.urlTournamentLogo}`)
       }

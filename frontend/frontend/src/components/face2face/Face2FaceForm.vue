@@ -1,5 +1,5 @@
 <template>
-
+   <!-- Form to select the two players to compare  -->
    <form 
       class="d-flex flex-column align-items-center gap-3 gap-md-5 text-responsive-5 text-green mb-5"
       role="search"
@@ -163,7 +163,7 @@ export default {
 
       async loadNamePlayers(fullnameToSearch, playerNum) {
 
-         // User did'nt write at least 3 chars. No requesto to backend
+         // User did'nt write at least 3 chars. No request to backend
          if (fullnameToSearch.length < 3) {
             if (playerNum === 1) {
                this.filteredPlayers1 = []

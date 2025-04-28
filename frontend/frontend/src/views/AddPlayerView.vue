@@ -18,6 +18,7 @@
    following https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html
    */
    watch: {
+      // When arriving to a new page, focus on the element with this ref
       $route() {
          this.$refs.backToTop.focus()
       }

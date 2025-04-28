@@ -1,4 +1,5 @@
 <template>
+   <!-- Titles table row -->
    <tr>
       <!-- Player fullname and flag -->
       <td 

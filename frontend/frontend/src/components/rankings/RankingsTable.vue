@@ -1,4 +1,5 @@
 <template>
+   <!-- Rankings Table -->
    <table class="table table-hover text-responsive-4">
       <caption class="visually-hidden">
          Tabla de ranking ATP con el jugador, su ranking y puntos conseguidos en el año seleccionado.

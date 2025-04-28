@@ -1,4 +1,5 @@
 <template>
+   <!-- Tournament table row -->
    <tr>
       <!-- Tournament Name -->
       <td

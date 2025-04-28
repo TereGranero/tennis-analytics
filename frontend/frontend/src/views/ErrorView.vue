@@ -1,4 +1,6 @@
 <template>
+   <!-- Error 404 view -->
+    
    <div class="container text-center py-5">
 
       <div class="row justify-content-center">
